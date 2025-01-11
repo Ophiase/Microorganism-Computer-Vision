@@ -15,7 +15,7 @@ Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
     - If a cluster's shape remains consistent (e.g., bounding box)
         - It may be an entity 
     - Visualize the entities
-        - Propose other approaches
+    - Propose alternative approaches (e.g., Kalman filter with YOLO object detection)
 - Motion analysis
     - Create time series of the form (x, y, radius)
         - Depends on the information we can extract from the microorganisms
