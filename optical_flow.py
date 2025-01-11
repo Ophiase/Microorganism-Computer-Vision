@@ -1,7 +1,14 @@
 import cv2
 import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+
+###################################################################################
+
 
 VERBOSE = False
+
+###################################################################################
 
 
 def compute_optical_flow(video: np.ndarray, verbose: bool = VERBOSE) -> np.ndarray:
@@ -16,7 +23,11 @@ def compute_optical_flow(video: np.ndarray, verbose: bool = VERBOSE) -> np.ndarr
         if verbose and (i % 30 == 0):
             print(
                 f"Computed optical flow for frame {i}, flow shape: {flow.shape}")
+    # Duplicate the first flow to match the video length
+    optical_flow.insert(0, optical_flow[0])
     return np.array(optical_flow)
+
+###################################################################################
 
 
 def preview_optical_flow(video: np.ndarray, optical_flow: np.ndarray, verbose: bool = False):
@@ -36,3 +47,20 @@ def preview_optical_flow(video: np.ndarray, optical_flow: np.ndarray, verbose: b
             print(
                 f"Previewing optical flow for frame {i}, rgb_flow shape: {rgb_flow.shape}")
     cv2.destroyAllWindows()
+
+
+def visualize_optical_flow_arrows(video: np.ndarray, optical_flow: np.ndarray):
+    for i in range(len(optical_flow)):
+        frame = video[i]
+        flow = optical_flow[i]
+        y, x = np.mgrid[0:flow.shape[0], 0:flow.shape[1]]
+        fig = px.imshow(frame, binary_string=True)
+        fig.add_trace(go.Scatter(x=x.flatten(), y=y.flatten(),
+                                 mode='markers',
+                                 marker=dict(color='red', size=2)))
+        fig.add_trace(go.Scatter(x=x.flatten(), y=y.flatten(),
+                                 mode='markers+lines',
+                                 line=dict(color='blue', width=1),
+                                 x=x.flatten() + flow[..., 0].flatten(),
+                                 y=y.flatten() + flow[..., 1].flatten()))
+        fig.show()
