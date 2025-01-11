@@ -15,6 +15,7 @@ def load_video(video_path: str, color_mode: str = 'grayscale', interval: tuple =
         if interval is None or (frame_count >= interval[0] and frame_count < interval[1]):
             if color_mode == 'grayscale':
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            frame = frame.astype(np.float32) / 255.0
             frames.append(frame)
         frame_count += 1
     cap.release()
