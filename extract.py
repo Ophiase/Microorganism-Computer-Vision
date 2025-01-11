@@ -4,7 +4,8 @@ from pathlib import Path
 
 DATA_DIR = "data"
 
-# source: https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
+# source: 
+# https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
 DATA_PATHS = [
     "https://plos.figshare.com/ndownloader/files/342430",
     "https://plos.figshare.com/ndownloader/files/342517",
