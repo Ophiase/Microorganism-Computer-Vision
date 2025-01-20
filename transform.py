@@ -1,8 +1,10 @@
 import os
+from typing import Tuple
 import numpy as np
 from enum import Enum
 from scipy.ndimage import convolve
 
+from common import DATA_FOLDER, PREPROCESSED_FOLDER
 from load import load_video
 from optical_flow import compute_optical_flow
 from visualization import show_grayscale
@@ -10,8 +12,9 @@ from visualization import show_grayscale
 
 ###################################################################################
 
-VIDEO = os.path.join("data", "342843.avi")
-FOLDER = os.path.join("data", "preprocessed")
+VIDEO = os.path.join(DATA_FOLDER, "342843.avi")
+FOLDER = PREPROCESSED_FOLDER
+INTERVAL = (0, 20)
 
 HIGH = 0.49
 LOW = 0.2
@@ -161,12 +164,13 @@ def check_kernel() -> None:
 
 ###################################################################################
 
+
 def save_processed_video(
-        processed_video: np.ndarray, 
-        output_folder: str = FOLDER, 
+        processed_video: np.ndarray,
+        output_folder: str = FOLDER,
         filename: str = "processed_video.npy"
-        ):
-    
+):
+
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -175,8 +179,11 @@ def save_processed_video(
     print(f"Processed video saved to {output_path}")
 
 
-def process(video_path: str = VIDEO, output_folder: str = FOLDER, debug: bool = DEBUG):
-    video = load_video(video_path, interval=(0, 2), verbose=True)
+def process(
+        video_path: str = VIDEO, output_folder: str = FOLDER,
+        interval: Tuple[int] = INTERVAL,
+        debug: bool = DEBUG) -> None:
+    video = load_video(video_path, interval=interval, verbose=True)
     video = pre_transform(video)
 
     video_optical_flow: np.ndarray = compute_optical_flow(video)
@@ -188,6 +195,8 @@ def process(video_path: str = VIDEO, output_folder: str = FOLDER, debug: bool = 
     processed_video: np.ndarray = transform_video(video, video_optical_flow)
 
     if DEBUG:
+        print("Processed video shape: " + processed_video)
+
         FRAME_TO_SHOW = 0
         to_show = [
             processed_video[FRAME_TO_SHOW, :, :, i, j]
@@ -195,13 +204,15 @@ def process(video_path: str = VIDEO, output_folder: str = FOLDER, debug: bool = 
             for j in range(4)]
         show_grayscale(to_show).show()
 
-    save_processed_video(processed_video, output_folder, os.path.basename(video_path))
+    save_processed_video(processed_video, output_folder,
+                         os.path.basename(video_path))
 
 ###################################################################################
 
 
 def main():
-    process()
+    # process()
+    full_test()
 
 
 if __name__ == "__main__":

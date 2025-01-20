@@ -2,9 +2,9 @@ import os
 import requests
 from pathlib import Path
 
-DATA_DIR = "data"
+from common import DATA_FOLDER
 
-# source: 
+# source:
 # https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
 DATA_PATHS = [
     "https://plos.figshare.com/ndownloader/files/342430",
@@ -18,8 +18,10 @@ DATA_PATHS = [
     "https://plos.figshare.com/ndownloader/files/342998",
 ]
 
+
 def create_data_dir(data_dir: str) -> None:
     os.makedirs(data_dir, exist_ok=True)
+
 
 def download_file(url: str, output_dir: str) -> None:
     filename = os.path.join(output_dir, Path(url).name + ".avi")
@@ -29,14 +31,17 @@ def download_file(url: str, output_dir: str) -> None:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
 
+
 def download_videos(data_paths: list[str], output_dir: str) -> None:
     for url in data_paths:
         download_file(url, output_dir)
 
+
 def main() -> None:
-    create_data_dir(DATA_DIR)
-    download_videos(DATA_PATHS, DATA_DIR)
-    print(f"Extracted and moved to: {DATA_DIR}")
+    create_data_dir(DATA_FOLDER)
+    download_videos(DATA_PATHS, DATA_FOLDER)
+    print(f"Extracted and moved to: {DATA_FOLDER}")
+
 
 if __name__ == "__main__":
     main()
