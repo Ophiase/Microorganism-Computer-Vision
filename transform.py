@@ -1,13 +1,22 @@
+import os
 import numpy as np
 from enum import Enum
 from scipy.ndimage import convolve
 
+from load import load_video
+from optical_flow import compute_optical_flow
 from visualization import show_grayscale
+
 
 ###################################################################################
 
+VIDEO = os.path.join("data", "342843.avi")
+FOLDER = os.path.join("data", "preprocessed")
 
-VERBOSE = False
+HIGH = 0.49
+LOW = 0.2
+
+DEBUG = True
 
 #########################################
 
@@ -61,15 +70,21 @@ def tensor_gradient(tensor: np.ndarray) -> np.ndarray:
     return np.stack((dx, dy), axis=-1)
 
 
+def pre_transform(tensor: np.ndarray) -> np.ndarray:
+    result = np.clip(tensor, LOW, HIGH)
+    result = (result - LOW) / (HIGH - LOW)
+    return result
+
+
 def transform(tensor: np.ndarray) -> np.ndarray:
     trend = average_neighbors(tensor)
     normalized = tensor - trend
     gradient = tensor_gradient(tensor)
     return np.stack((
-        trend, 
-        normalized, 
+        trend,
+        normalized,
         gradient[..., 0], gradient[..., 1]
-        ), axis=-1)
+    ), axis=-1)
 
 
 def transform_frame(frame: np.ndarray, optical_flow: np.ndarray) -> np.ndarray:
@@ -144,9 +159,49 @@ def check_kernel() -> None:
         tensor, avg
     ]).show()
 
+###################################################################################
+
+def save_processed_video(
+        processed_video: np.ndarray, 
+        output_folder: str = FOLDER, 
+        filename: str = "processed_video.npy"
+        ):
+    
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    output_path = os.path.join(output_folder, filename)
+    np.save(output_path, processed_video)
+    print(f"Processed video saved to {output_path}")
+
+
+def process(video_path: str = VIDEO, output_folder: str = FOLDER, debug: bool = DEBUG):
+    video = load_video(video_path, interval=(0, 2), verbose=True)
+    video = pre_transform(video)
+
+    video_optical_flow: np.ndarray = compute_optical_flow(video)
+
+    if DEBUG:
+        print(video.shape)
+        print(video_optical_flow.shape)
+
+    processed_video: np.ndarray = transform_video(video, video_optical_flow)
+
+    if DEBUG:
+        FRAME_TO_SHOW = 0
+        to_show = [
+            processed_video[FRAME_TO_SHOW, :, :, i, j]
+            for i in range(3)
+            for j in range(4)]
+        show_grayscale(to_show).show()
+
+    save_processed_video(processed_video, output_folder, os.path.basename(video_path))
+
+###################################################################################
+
 
 def main():
-    full_test()
+    process()
 
 
 if __name__ == "__main__":

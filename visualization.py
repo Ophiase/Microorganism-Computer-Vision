@@ -5,30 +5,35 @@ import plotly.subplots as sp
 import plotly.graph_objects as go
 
 # matplotlib has internal bugs
+
+
 def show_grayscale_plt(images: List[np.ndarray]) -> plt:
     n_images = len(images)
     grid_size = int(np.ceil(np.sqrt(n_images)))
-    
-    _, axes = plt.subplots(grid_size, grid_size, figsize=(5 * grid_size, 5 * grid_size))
-    
+
+    _, axes = plt.subplots(grid_size, grid_size,
+                           figsize=(5 * grid_size, 5 * grid_size))
+
     if grid_size == 1:
         axes = [[axes]]
-    
+
     axes = np.array(axes).flatten()
 
     for ax, img, i in zip(axes, images, range(n_images)):
         ax.imshow(img, cmap='gray', vmin=0, vmax=1)
         ax.set_title(f"Image {i+1}")
         ax.axis('off')
-    
+
     for ax in axes[n_images:]:
         ax.axis('off')
 
     plt.tight_layout()
     return plt
 
+
 def show_grayscale(images: List[np.ndarray]) -> go.Figure:
     n_images = len(images)
+    height, width = images[0].shape[0], images[0].shape[1]
     grid_size = int(np.ceil(np.sqrt(n_images)))
 
     fig = sp.make_subplots(
@@ -46,8 +51,8 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
         )
 
     fig.update_layout(
-        height=300 * grid_size,
-        width=300 * grid_size,
+        height=height * grid_size,
+        width=width * grid_size,
         showlegend=False,
     )
     fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
