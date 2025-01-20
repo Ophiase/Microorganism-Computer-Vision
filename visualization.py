@@ -1,9 +1,11 @@
 from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.subplots as sp
+import plotly.graph_objects as go
 
-
-def show_grayscale(images: List[np.ndarray]) -> plt:
+# matplotlib has internal bugs
+def show_grayscale_plt(images: List[np.ndarray]) -> plt:
     n_images = len(images)
     grid_size = int(np.ceil(np.sqrt(n_images)))
     
@@ -24,3 +26,30 @@ def show_grayscale(images: List[np.ndarray]) -> plt:
 
     plt.tight_layout()
     return plt
+
+def show_grayscale(images: List[np.ndarray]) -> go.Figure:
+    n_images = len(images)
+    grid_size = int(np.ceil(np.sqrt(n_images)))
+
+    fig = sp.make_subplots(
+        rows=grid_size,
+        cols=grid_size,
+        subplot_titles=[f"Image {i+1}" for i in range(n_images)],
+    )
+
+    for i, img in enumerate(images):
+        row, col = divmod(i, grid_size)
+        fig.add_trace(
+            go.Heatmap(z=img, showscale=False),
+            row=row + 1,
+            col=col + 1,
+        )
+
+    fig.update_layout(
+        height=300 * grid_size,
+        width=300 * grid_size,
+        showlegend=False,
+    )
+    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+
+    return fig
