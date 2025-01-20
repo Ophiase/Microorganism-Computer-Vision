@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import plotly.subplots as sp
 import plotly.graph_objects as go
 
-# matplotlib has internal bugs
-
 
 def show_grayscale_plt(images: List[np.ndarray]) -> plt:
     n_images = len(images)
@@ -45,16 +43,37 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
     for i, img in enumerate(images):
         row, col = divmod(i, grid_size)
         fig.add_trace(
-            go.Heatmap(z=img, showscale=False),
+            go.Heatmap(z=img, showscale=False, colorscale="Greys"),
             row=row + 1,
             col=col + 1,
         )
 
     fig.update_layout(
-        height=height * grid_size,
-        width=width * grid_size,
+        height=500 * grid_size,
+        width=500 * grid_size,
         showlegend=False,
     )
     fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
 
     return fig
+
+###################################################################################
+
+
+def full_test() -> None:
+    np.random.seed(100)
+
+    RES = 500
+    tensors = [np.random.rand(RES, RES) for _ in range(5)]
+
+    show_grayscale(tensors).show()
+
+#########################################
+
+
+def main() -> None:
+    full_test()
+
+
+if __name__ == "__main__":
+    main()
