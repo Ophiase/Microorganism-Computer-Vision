@@ -19,5 +19,11 @@ Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
 - Motion analysis
     - Create time series of the form (x, y, radius)
         - Depends on the information we can extract from the microorganisms
+            - Eg: Salmonel
     - Propose diffusion hypotheses (e.g., Gaussian Random Walk)
     - Perform statistical tests
+
+
+- Experimental:
+    - Simulate videos, to train a segmentation model
+
