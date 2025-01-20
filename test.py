@@ -3,17 +3,18 @@ from optical_flow import (
     compute_optical_flow, visualize_optical_flow_with_arrows,
     visualize_optical_flow_with_slider, visualize_video_and_optical_flow_side_by_side
 )
+from transform import full_test
 
 ###################################################################################
 
 
-VIDEO = "data/342430.avi"
+VIDEO = "data/342843.avi"
 
 ###################################################################################
 
 
 def main() -> None:
-    video = load_video(VIDEO, interval=(0, 10), verbose=True)
+    video = load_video(VIDEO, interval=(0, 2), verbose=True)
     video_optical_flow = compute_optical_flow(video)
 
     print(video.shape)
@@ -21,10 +22,11 @@ def main() -> None:
 
     #########################################
 
-    print("Visualize")
+    # print("Visualize")
+    # visualize_video_and_optical_flow_side_by_side(
+    #     video, video_optical_flow).show()
 
-    visualize_video_and_optical_flow_side_by_side(
-        video, video_optical_flow).show()
+    full_test(video, video_optical_flow)
 
     # preview_optical_flow(video, video_optical_flow)
     # visualize_optical_flow_single_frame(video, video_optical_flow).show()
