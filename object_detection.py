@@ -3,6 +3,7 @@ import os
 from typing import List, Tuple
 
 from common import OBJECTS_FOLDER, PREPROCESSED_FOLDER
+from visualization import show_grayscale
 
 ###################################################################################
 
@@ -66,6 +67,12 @@ def process(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLD
 
 def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLDER):
     video_tensor = load_npy_file(file_path)
+    show_grayscale(
+        [video_tensor[i, :, :, 0, 0] for i in range(video_tensor.shape[0])]
+    ).show()
+
+    exit()
+
     bounding_boxes = apply_yolo_on_frame(video_tensor[0])
     print(bounding_boxes)
 
