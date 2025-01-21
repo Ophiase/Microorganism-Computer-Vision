@@ -26,7 +26,7 @@ def extract_high_optical_flow_areas(frame: np.ndarray, threshold: float = 0.1) -
 
 def detect_shapes(frame: np.ndarray,
                   min_size: int = 10,
-                  max_size: int = 1000) -> List[Tuple[int, int, int, int]]:
+                  max_size: int = 1000) -> List[BoundingBox]:
     """
     Detect bounding boxes of white regions in a grayscale image.
 
@@ -52,7 +52,7 @@ def detect_shapes(frame: np.ndarray,
         x, y, w, h = cv2.boundingRect(contour)
         area = w * h
         if min_size <= area <= max_size:
-            bounding_boxes.append((x, y, w, h))
+            bounding_boxes.append(BoundingBox(None, x, y, w, h))
 
     return bounding_boxes
 
@@ -62,7 +62,7 @@ def detect_shapes(frame: np.ndarray,
 def process(
     file_path: str = DEFAULT_NPY_FILE,
     output_folder: str = BOUNDING_BOX_FOLDER
-) -> List[List[Tuple[int, int, int, int]]]:
+) -> List[List[BoundingBox]]:
     video_tensor = np.load(file_path)[:, :, :, 0, 0]
     bounding_boxes_per_frame = [
         detect_shapes(frame) for frame in video_tensor
@@ -81,11 +81,11 @@ def process_with_tracking(
     file_path: str = DEFAULT_NPY_FILE,
     output_folder: str = TRACKING_FOLDER,
     interval: Tuple[int, int] = None
-) -> List[List[Tuple[int, int, int, int]]]:
+) -> List[List[BoundingBox]]:
     """
     Process video with tracking and save results
     """
-    
+
     # Load full data cube
     full_data = np.load(file_path)
     if interval is not None:

@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import plotly.subplots as sp
 import plotly.graph_objects as go
 
+from bounding_box import BoundingBox
+
 
 def show_grayscale_plt(images: List[np.ndarray]) -> plt:
     n_images = len(images)
@@ -62,7 +64,7 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
 
 
 def plot_bboxes(frame: np.ndarray,
-                bboxes: List[Tuple[int, int, int, int]],
+                bboxes: List[BoundingBox],
                 fig: Optional[go.Figure] = None) -> go.Figure:
     """
     Plot grayscale image with bounding boxes using Plotly.
@@ -97,13 +99,13 @@ def plot_bboxes(frame: np.ndarray,
     ))
 
     # Add bounding boxes
-    for x, y, w, h in bboxes:
+    for bbox in bboxes:
         fig.add_shape(
             type="rect",
-            x0=x,
-            y0=y,
-            x1=x + w,
-            y1=y + h,
+            x0=bbox.x,
+            y0=bbox.y,
+            x1=bbox.x + bbox.w,
+            y1=bbox.y + bbox.h,
             line=dict(color="red", width=2)
         )
 
@@ -132,7 +134,7 @@ def plot_bboxes(frame: np.ndarray,
 
 
 def plot_bboxes_video(video: np.ndarray,
-                      bboxes_list: List[List[Tuple[int, int, int, int]]],
+                      bboxes_list: List[List[BoundingBox]],
                       frame_duration: int = 100) -> go.Figure:
     """
     Create interactive video visualization with bounding boxes and a slider.
@@ -159,8 +161,8 @@ def plot_bboxes_video(video: np.ndarray,
         frame = go.Frame(
             data=[go.Heatmap(z=video[i])],
             layout=go.Layout(
-                shapes=[_create_shape(x, y, w, h)
-                        for (x, y, w, h) in bboxes_list[i]]
+                shapes=[_create_shape(*bbox.getBbox())
+                        for bbox in bboxes_list[i]]
             ),
             name=f"frame_{i}"
         )
@@ -264,14 +266,14 @@ def add_optical_flow(fig: go.Figure,
 
 def plot_tracked_bboxes(fig: go.Figure,
                         frame: np.ndarray,
-                        tracked_bboxes: List[Tuple[int, int, int, int, int]],
+                        tracked_bboxes: List[BoundingBox],
                         optical_flow: Optional[np.ndarray] = None,
                         flow_stride: int = 10) -> go.Figure:
     """
     Plot frame with tracked bounding boxes and IDs
     Returns modified Plotly figure
     """
-    fig = plot_bboxes(frame, [bbox[1:] for bbox in tracked_bboxes], fig)
+    fig = plot_bboxes(frame, tracked_bboxes, fig)
 
     for bbox_id, x, y, w, h in tracked_bboxes:
         fig.add_annotation(
@@ -291,14 +293,14 @@ def plot_tracked_bboxes(fig: go.Figure,
 
 
 def plot_tracked_video(video: np.ndarray,
-                       tracked_boxes: List[List[Tuple[int, int, int, int, int, bool]]],
+                       tracked_boxes: List[List[BoundingBox]],
                        optical_flow_video: np.ndarray = None,
                        show_flow: bool = False) -> go.Figure:
     """
     Create interactive video visualization with tracked bounding boxes
     """
     fig = plot_bboxes_video(
-        video, [[bbox[1:5] for bbox in frame_boxes] for frame_boxes in tracked_boxes])
+        video, tracked_boxes)
     
     # Add ID annotations to each frame
     for i, frame_boxes in enumerate(tracked_boxes):
