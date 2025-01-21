@@ -1,4 +1,6 @@
 opencv-python
-numpy
+numpy >= 1.18
 seaborn
 plotly
+pillow >= 8.0
+imageio >= 2.9
