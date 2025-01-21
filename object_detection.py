@@ -83,11 +83,11 @@ def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLDER)
     #     [video_tensor[i, :, :, 0, 0] for i in range(video_tensor.shape[0])]
     # ).show()
 
-    frame = (1.0 - video_tensor[0][:, :, 0, 0])
-    frame = (frame - np.min(frame)) / (np.max(frame) - np.min(frame))
+    frame = np.clip(video_tensor[0][:, :, 0, 0] * 4, 0, 1)
     print(frame.shape)
 
-    bboxes = detect_shapes(frame, min_size=0, max_size=10000)
+    bboxes = detect_shapes(frame, min_size=5, max_size=800)
+    # TODO: multiple size detection to exclude intersecting samples
     plot_bboxes(frame, bboxes).show()
 
 

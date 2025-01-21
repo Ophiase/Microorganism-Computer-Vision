@@ -77,6 +77,7 @@ def pre_transform(tensor: np.ndarray) -> np.ndarray:
     result = np.clip(tensor, LOW, HIGH)
     result = (result - np.min(result)) / (np.max(result) - np.min(result))
     result = 1.0 - result
+    result = np.clip(result * 4, 0.0, 1.0)
     return result
 
 
@@ -196,7 +197,7 @@ def process(
     processed_video: np.ndarray = transform_video(video, video_optical_flow)
 
     if debug:
-        print("Processed video shape: " + processed_video)
+        print(f"Processed video shape: {processed_video.shape}")
 
         FRAME_TO_SHOW = 0
         to_show = [
@@ -212,8 +213,8 @@ def process(
 
 
 def main():
-    # process()
-    full_test()
+    process()
+    # full_test()
 
 
 if __name__ == "__main__":
