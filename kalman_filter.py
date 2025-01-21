@@ -4,11 +4,12 @@ from typing import List, Tuple, Dict, Optional
 
 
 class BacterialTracker:
-    def __init__(self,
-                 optical_flow_video: np.ndarray,
-                 max_missed_frames: int = 5,
-                 process_noise: float = 1e-4,
-                 measurement_noise: float = 1e-1):
+    def __init__(self, 
+                optical_flow_video: np.ndarray,
+                max_missed_frames: int = 10,  
+                process_noise: float = 1e-3,  # Adjusted for pixel coordinates
+                measurement_noise: float = 5e-1,
+                flow_percentile: float = 75):
         """
         Track bacteria across frames using Kalman Filter with optical flow integration
 
@@ -22,24 +23,38 @@ class BacterialTracker:
         self.max_missed = max_missed_frames
         self.Q = np.eye(4) * process_noise  # Process noise
         self.R = np.eye(2) * measurement_noise  # Measurement noise
+        self.flow_percentile = flow_percentile
+
+    def _get_representative_flow(self, frame_idx: int, x: int, y: int, w: int, h: int) -> Tuple[float, float]:
+        """Get representative flow using fastest vectors in ROI"""
+        # Extract flow vectors in bounding box
+        flow_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].flatten()
+        flow_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].flatten()
+        
+        # Calculate speeds
+        speeds = np.sqrt(flow_x**2 + flow_y**2)
+        
+        # Threshold for fastest vectors
+        threshold = np.percentile(speeds, self.flow_percentile)
+        mask = speeds >= threshold
+        
+        if np.any(mask):
+            return np.median(flow_x[mask]), np.median(flow_y[mask])
+        return np.median(flow_x), np.median(flow_y)
 
     def _initialize_kalman(self, bbox: Tuple[int, int, int, int], frame_idx: int) -> dict:
-        """Create new track with Kalman filter state"""
         x, y, w, h = bbox
-        dt = 1.0  # Time step (1 frame)
-
-        # Get average optical flow in the bbox area
-        of_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].mean()
-        of_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].mean()
-
+        
+        # Get representative flow using improved method
+        of_x, of_y = self._get_representative_flow(frame_idx, x, y, w, h)
+        
         return {
             'id': self.next_id,
             'bbox': bbox,
             'age': 0,
             'missed': 0,
-            # [cx, cy, dx, dy]
             'state': np.array([x + w/2, y + h/2, of_x, of_y]),
-            'covariance': np.eye(4),
+            'covariance': np.eye(4) * 0.1,  # Initial uncertainty
             'history': []
         }
 
@@ -135,50 +150,3 @@ class BacterialTracker:
             del self.tracks[track_id]
 
         return [(t['id'], *t['bbox']) for t in self.tracks.values()]
-
-class EnhancedBacterialTracker(BacterialTracker):
-    def __init__(self, 
-                optical_flow_video: np.ndarray,
-                max_missed_frames: int = 10,  
-                process_noise: float = 1e-3,  # Adjusted for pixel coordinates
-                measurement_noise: float = 5e-1,
-                flow_percentile: float = 75):
-        """
-        Args:
-            flow_percentile: Use top (100 - percentile)% of fastest vectors
-        """
-        super().__init__(optical_flow_video, max_missed_frames, process_noise, measurement_noise)
-        self.flow_percentile = flow_percentile
-
-    def _get_representative_flow(self, frame_idx: int, x: int, y: int, w: int, h: int) -> Tuple[float, float]:
-        """Get representative flow using fastest vectors in ROI"""
-        # Extract flow vectors in bounding box
-        flow_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].flatten()
-        flow_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].flatten()
-        
-        # Calculate speeds
-        speeds = np.sqrt(flow_x**2 + flow_y**2)
-        
-        # Threshold for fastest vectors
-        threshold = np.percentile(speeds, self.flow_percentile)
-        mask = speeds >= threshold
-        
-        if np.any(mask):
-            return np.median(flow_x[mask]), np.median(flow_y[mask])
-        return np.median(flow_x), np.median(flow_y)
-
-    def _initialize_kalman(self, bbox: Tuple[int, int, int, int], frame_idx: int) -> dict:
-        x, y, w, h = bbox
-        
-        # Get representative flow using improved method
-        of_x, of_y = self._get_representative_flow(frame_idx, x, y, w, h)
-        
-        return {
-            'id': self.next_id,
-            'bbox': bbox,
-            'age': 0,
-            'missed': 0,
-            'state': np.array([x + w/2, y + h/2, of_x, of_y]),
-            'covariance': np.eye(4) * 0.1,  # Initial uncertainty
-            'history': []
-        }

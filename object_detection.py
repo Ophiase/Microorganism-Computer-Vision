@@ -5,7 +5,7 @@ import cv2
 import plotly.graph_objects as go
 
 from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER
-from kalman_filter import BacterialTracker, EnhancedBacterialTracker
+from kalman_filter import BacterialTracker
 from visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video, show_grayscale
 
 ###################################################################################
@@ -92,7 +92,7 @@ def process_with_tracking(
     ], axis=-1)
 
     # Initialize tracker
-    tracker = EnhancedBacterialTracker(optical_flow)
+    tracker = BacterialTracker(optical_flow)
     tracked_boxes = []
 
     # Process frames
