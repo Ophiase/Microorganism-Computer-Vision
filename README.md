@@ -2,6 +2,8 @@
 
 Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
 
+- <img src="./resources/results/342843_original.gif" width="300" /> <img src="./resources/results/342843_transformed.gif" width="300" />
+
 ## TODO (Deadline: February 30th, 2025)
 
 - ✅ Find videos of microorganisms

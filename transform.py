@@ -14,7 +14,7 @@ from visualization import show_grayscale
 
 VIDEO = os.path.join(DATA_FOLDER, "342843.avi")
 FOLDER = PREPROCESSED_FOLDER
-INTERVAL = (0, 20)
+INTERVAL = (0, 17*5)
 
 HIGH = 0.49
 LOW = 0.2

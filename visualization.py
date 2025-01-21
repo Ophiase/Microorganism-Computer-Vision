@@ -293,7 +293,6 @@ def plot_tracked_bboxes(fig: go.Figure,
 def plot_tracked_video(video: np.ndarray,
                        tracked_boxes: List[List[Tuple[int, int, int, int, int]]],
                        optical_flow_video: np.ndarray = None,
-                       frame_duration: int = 100,
                        show_flow: bool = False) -> go.Figure:
     """
     Create interactive video visualization with tracked bounding boxes

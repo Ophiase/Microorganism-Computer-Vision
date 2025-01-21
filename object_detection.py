@@ -104,7 +104,7 @@ def process_with_tracking(
 
     # Save results
     file_name = os.path.basename(file_path)
-    output_file = os.path.join(output_folder, f"tracked_{file_name}")
+    output_file = os.path.join(output_folder, f"{file_name}")
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     np.save(output_file, tracked_boxes)
