@@ -58,6 +58,9 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
     return fig
 
 
+###################################################################################
+
+
 def plot_bboxes(frame: np.ndarray,
                 bboxes: List[Tuple[int, int, int, int]],
                 fig: Optional[go.Figure] = None) -> go.Figure:
@@ -124,6 +127,8 @@ def plot_bboxes(frame: np.ndarray,
         )
 
     return fig
+
+#########################################
 
 
 def plot_bboxes_video(video: np.ndarray,
@@ -213,6 +218,112 @@ def _create_shape(x: int, y: int, w: int, h: int) -> dict:
         'line': {'color': 'red', 'width': 2}
     }
 
+###################################################################################
+
+
+def add_optical_flow(fig: go.Figure,
+                     optical_flow_frame: np.ndarray,
+                     stride: int = 10,
+                     scale: float = 5.0) -> go.Figure:
+    """
+    Add optical flow vectors to plot
+    Args:
+        stride: Show every nth vector
+        scale: Arrow size multiplier
+    """
+    h, w = optical_flow_frame.shape[:2]
+
+    # Create grid
+    xx, yy = np.meshgrid(np.arange(0, w, stride),
+                         np.arange(0, h, stride))
+
+    # Get vectors
+    u = optical_flow_frame[::stride, ::stride, 0]
+    v = optical_flow_frame[::stride, ::stride, 1]
+
+    # Create line segments
+    arrows = []
+    for x, y, dx, dy in zip(xx.flatten(), yy.flatten(), u.flatten(), v.flatten()):
+        if abs(dx) + abs(dy) > 0.1:  # Filter static vectors
+            arrows.append(
+                go.Scatter(
+                    x=[x, x + dx*scale],
+                    y=[y, y + dy*scale],
+                    mode='lines',
+                    line=dict(color='cyan', width=1),
+                    hoverinfo='none',
+                    showlegend=False
+                )
+            )
+
+    fig.add_traces(arrows)
+    return fig
+
+###################################################################################
+
+
+def plot_tracked_bboxes(fig: go.Figure,
+                        frame: np.ndarray,
+                        tracked_bboxes: List[Tuple[int, int, int, int, int]],
+                        optical_flow: Optional[np.ndarray] = None,
+                        flow_stride: int = 10) -> go.Figure:
+    """
+    Plot frame with tracked bounding boxes and IDs
+    Returns modified Plotly figure
+    """
+    fig = plot_bboxes(frame, [bbox[1:] for bbox in tracked_bboxes], fig)
+
+    for bbox_id, x, y, w, h in tracked_bboxes:
+        fig.add_annotation(
+            x=x + w/2,
+            y=y + h/2,
+            text=str(bbox_id),
+            showarrow=False,
+            font=dict(color="red", size=14),
+            bordercolor="white",
+            borderwidth=2
+        )
+
+    if optical_flow is not None:
+        fig = add_optical_flow(fig, optical_flow, stride=flow_stride)
+
+    return fig
+
+
+def plot_tracked_video(video: np.ndarray,
+                       tracked_boxes: List[List[Tuple[int, int, int, int, int]]],
+                       optical_flow_video: np.ndarray = None,
+                       frame_duration: int = 100,
+                       show_flow: bool = False) -> go.Figure:
+    """
+    Create interactive video visualization with tracked bounding boxes
+    """
+    fig = plot_bboxes_video(
+        video, [[bbox[1:] for bbox in frame_boxes] for frame_boxes in tracked_boxes])
+    
+    # Add ID annotations to each frame
+    for i, frame_boxes in enumerate(tracked_boxes):
+        annotations = [
+            dict(
+                x=x + w/2,
+                y=y + h/2,
+                text=str(bbox_id),
+                showarrow=False,
+                font=dict(color="red", size=14)
+            )
+            for bbox_id, x, y, w, h in frame_boxes
+        ]
+
+        fig.frames[i].layout.annotations = annotations
+
+        if show_flow:
+            flow_frame = optical_flow_video[i]
+            fig.frames[i].data += tuple(
+                add_optical_flow(go.Figure(), flow_frame).data
+            )
+    
+
+    return fig
 
 ###################################################################################
 
