@@ -4,8 +4,8 @@ from typing import List, Tuple
 import cv2
 import plotly.graph_objects as go
 
-from common import OBJECTS_FOLDER, PREPROCESSED_FOLDER
-from visualization import plot_bboxes, show_grayscale
+from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER
+from visualization import plot_bboxes, plot_bboxes_video, show_grayscale
 
 ###################################################################################
 
@@ -63,11 +63,14 @@ def load_npy_file(file_path: str) -> np.ndarray:
     return np.load(file_path)
 
 
-def process(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLDER):
+def process(file_path: str = DEFAULT_NPY_FILE, output_folder: str = BOUNDING_BOX_FOLDER):
     video_tensor = load_npy_file(file_path)
-    bounding_boxes_per_frame = detect_shapes(video_tensor)
+    bounding_boxes_per_frame = [
+        detect_shapes(frame) for frame in video_tensor
+    ]
 
-    output_file = os.path.join(output_folder, "bounding_boxes.npy")
+    file_name = os.path.basename(file_path)
+    output_file = os.path.join(output_folder, file_name)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     np.save(output_file, bounding_boxes_per_frame)
@@ -76,24 +79,27 @@ def process(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLD
 
 #########################################
 
-def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = OBJECTS_FOLDER):
-    video_tensor = load_npy_file(file_path)
+def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = BOUNDING_BOX_FOLDER):
+    video_tensor = load_npy_file(file_path)[:,:,:,0,0]
 
     # show_grayscale(
     #     [video_tensor[i, :, :, 0, 0] for i in range(video_tensor.shape[0])]
     # ).show()
 
-    frame = np.clip(video_tensor[0][:, :, 0, 0] * 4, 0, 1)
-    print(frame.shape)
+    bounding_boxes_per_frame = [
+        detect_shapes(frame, min_size=10, max_size=800) 
+        for frame in video_tensor
+    ]
 
-    bboxes = detect_shapes(frame, min_size=5, max_size=800)
-    # TODO: multiple size detection to exclude intersecting samples
-    plot_bboxes(frame, bboxes).show()
+    # print(bounding_boxes_per_frame[0].shape)
+
+    plot_bboxes_video(video_tensor, bounding_boxes_per_frame).show()
 
 
 #########################################
 
 
+# TODO: multiple size detection to exclude intersecting samples
 def main():
     # process()
     test()

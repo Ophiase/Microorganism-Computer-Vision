@@ -10,4 +10,4 @@ OUTPUT_FOLDER = "output"
 
 
 PREPROCESSED_FOLDER = os.path.join(DATA_FOLDER, "preprocessed")
-OBJECTS_FOLDER = os.path.join(DATA_FOLDER, "objects")
+BOUNDING_BOX_FOLDER = os.path.join(DATA_FOLDER, "bounding_box")
