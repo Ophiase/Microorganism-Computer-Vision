@@ -1,12 +1,14 @@
+from dataclasses import dataclass
 import numpy as np
 import os
 from typing import List, Tuple
 import cv2
 import plotly.graph_objects as go
 
+from bounding_box import BoundingBox
 from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER
 from kalman_filter import BacterialTracker
-from visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video, show_grayscale
+from visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video
 
 ###################################################################################
 
@@ -14,7 +16,6 @@ from visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video, sh
 DEFAULT_NPY_FILE = os.path.join(PREPROCESSED_FOLDER, "342843.avi.npy")
 
 ###################################################################################
-
 
 def extract_high_optical_flow_areas(frame: np.ndarray, threshold: float = 0.1) -> np.ndarray:
     optical_flow_magnitude = np.sqrt(
@@ -78,13 +79,18 @@ def process(
 
 def process_with_tracking(
     file_path: str = DEFAULT_NPY_FILE,
-    output_folder: str = TRACKING_FOLDER
+    output_folder: str = TRACKING_FOLDER,
+    interval: Tuple[int, int] = None
 ) -> List[List[Tuple[int, int, int, int]]]:
     """
     Process video with tracking and save results
     """
+    
     # Load full data cube
     full_data = np.load(file_path)
+    if interval is not None:
+        full_data = full_data[interval[0]:interval[1]]
+
     video_tensor = full_data[:, :, :, 0, 0]  # Trend channel
     optical_flow = np.stack([
         full_data[:, :, :, 1, 0],  # Optical flow x (transformed)
@@ -93,7 +99,7 @@ def process_with_tracking(
 
     # Initialize tracker
     tracker = BacterialTracker(optical_flow)
-    tracked_boxes = []
+    tracked_boxes: List[List[BoundingBox]] = []
 
     # Process frames
     for frame_idx in range(len(video_tensor)):
@@ -115,7 +121,10 @@ def process_with_tracking(
 #########################################
 
 
-def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = BOUNDING_BOX_FOLDER):
+def test_detect_shapes(
+        file_path: str = DEFAULT_NPY_FILE,
+        output_folder: str = BOUNDING_BOX_FOLDER
+):
     video_tensor = np.load(file_path)[:, :, :, 0, 0]
 
     # show_grayscale(
@@ -132,14 +141,22 @@ def test(file_path: str = DEFAULT_NPY_FILE, output_folder: str = BOUNDING_BOX_FO
     plot_bboxes_video(video_tensor, bounding_boxes_per_frame).show()
 
 
-def test_2(file_path: str = DEFAULT_NPY_FILE, output_folder: str = TRACKING_FOLDER):
+def test_kalman_filter(
+        file_path: str = DEFAULT_NPY_FILE,
+        output_folder: str = TRACKING_FOLDER,
+        interval: Tuple[int, int] = None,
+):
+    tracked_boxes = process_with_tracking(file_path, output_folder, interval)
+
+    #########################################
+
     full_data = np.load(file_path)
+    if interval is not None:
+        full_data = full_data[interval[0]:interval[1]]
 
     video_tensor = full_data[:, :, :, 0, 0]
     optical_flow = np.stack(
         [full_data[:, :, :, 1, 0], full_data[:, :, :, 2, 0]], -1)
-
-    tracked_boxes = process_with_tracking(file_path, output_folder)
 
     fig = plot_tracked_video(
         video=video_tensor,
@@ -157,7 +174,7 @@ def main():
     # test()
 
     # process_with_tracking()
-    test_2()
+    test_kalman_filter(interval=(0, 20))
 
 
 if __name__ == "__main__":
