@@ -44,15 +44,15 @@ class BacterialTracker:
             return np.median(flow_x[mask]), np.median(flow_y[mask])
         return np.median(flow_x), np.median(flow_y)
 
-    def _initialize_kalman(self, bbox: Tuple[int, int, int, int], frame_idx: int) -> dict:
-        x, y, w, h = bbox
+    def _initialize_kalman(self, bbox: BoundingBox, frame_idx: int) -> dict:
+        x, y, w, h = bbox.getBbox()
         
         # Get representative flow using improved method
         of_x, of_y = self._get_representative_flow(frame_idx, x, y, w, h)
         
         return {
             'id': self.next_id,
-            'bbox': bbox,
+            'bbox': bbox.getBbox(),
             'age': 0,
             'missed': 0,
             'state': np.array([x + w/2, y + h/2, of_x, of_y]),
@@ -90,16 +90,16 @@ class BacterialTracker:
 
     def _match_bboxes(self,
                       predicted: List[dict],
-                      detections: List[Tuple[int, int, int, int]],
+                      detections: List[BoundingBox],
                       frame_idx: int) -> List[Tuple[int, int]]:
         """Hungarian algorithm matching between predictions and detections"""
         cost_matrix = np.zeros((len(predicted), len(detections)))
 
         for i, track in enumerate(predicted):
             pred_cx, pred_cy = track['state'][:2]
-            for j, (x, y, w, h) in enumerate(detections):
-                det_cx = x + w/2
-                det_cy = y + h/2
+            for j, bbox in enumerate(detections):
+                det_cx = bbox.x + bbox.w/2
+                det_cy = bbox.y + bbox.h/2
                 cost_matrix[i, j] = np.sqrt(
                     (pred_cx - det_cx)**2 + (pred_cy - det_cy)**2)
 
@@ -107,7 +107,7 @@ class BacterialTracker:
         return list(zip(row_ind, col_ind))
 
     def update_tracks(self,
-                      frame_bboxes: List[Tuple[int, int, int, int]],
+                      frame_bboxes: List[BoundingBox],
                       frame_idx: int) -> List[BoundingBox]:
         """
         Update tracks with new detections
@@ -125,7 +125,7 @@ class BacterialTracker:
         used_detections = set()
         for i, j in matches:
             track = list(self.tracks.values())[i]
-            x, y, w, h = frame_bboxes[j]
+            x, y, w, h = frame_bboxes[j].getBbox()
             self._update(track, (x + w/2, y + h/2))
             track['bbox'] = (x, y, w, h)
             track['missed'] = 0
@@ -152,6 +152,6 @@ class BacterialTracker:
             del self.tracks[track_id]
 
         return [
-            (t['id'], *t['bbox'], t['missed'] > 0)
+            BoundingBox(t['id'], *t['bbox'], t['missed'] > 0)
             for t in self.tracks.values()
         ]
