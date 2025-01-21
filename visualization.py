@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.subplots as sp
@@ -59,28 +59,38 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
 
 
 def plot_bboxes(frame: np.ndarray,
-                bboxes: List[Tuple[int, int, int, int]]) -> go.Figure:
+                bboxes: List[Tuple[int, int, int, int]],
+                fig: Optional[go.Figure] = None) -> go.Figure:
     """
     Plot grayscale image with bounding boxes using Plotly.
 
     Args:
         frame: 2D numpy array of shape (height, width)
         bboxes: List of bounding boxes from detect_shapes()
+        fig: Optional existing figure to modify
 
     Returns:
         Plotly Figure object
     """
     height, width = frame.shape
 
-    fig = go.Figure()
+    if fig is None:
+        fig = go.Figure()
+        add_axes_config = True
+    else:
+        fig.data = []
+        fig.layout.shapes = []
+        add_axes_config = False
+
+    # Add heatmap
     fig.add_trace(go.Heatmap(
         z=frame,
         colorscale='gray',
         showscale=False,
-        dx=1,
-        dy=1,
         x0=0,
-        y0=0
+        y0=0,
+        dx=1,
+        dy=1
     ))
 
     # Add bounding boxes
@@ -91,31 +101,117 @@ def plot_bboxes(frame: np.ndarray,
             y0=y,
             x1=x + w,
             y1=y + h,
-            line=dict(color="red", width=2),
-            xref="x",
-            yref="y"
+            line=dict(color="red", width=2)
         )
 
-    # Configure layout
-    fig.update_layout(
-        width=800,
-        height=600,
-        xaxis=dict(
-            showgrid=False,
-            range=[0, width],
-            scaleanchor="y",
-            constrain="domain"
-        ),
-        yaxis=dict(
-            showgrid=False,
-            range=[height, 0],
-            scaleanchor="x",
-            autorange=False
-        ),
-        margin=dict(l=0, r=0, t=0, b=0)
-    )
+    if add_axes_config:
+        fig.update_layout(
+            width=800,
+            height=600,
+            xaxis=dict(
+                showgrid=False,
+                range=[0, width],
+                scaleanchor="y",
+                constrain="domain"
+            ),
+            yaxis=dict(
+                showgrid=False,
+                range=[height, 0],
+                scaleanchor="x",
+                autorange=False
+            ),
+            margin=dict(l=0, r=0, t=0, b=0)
+        )
 
     return fig
+
+
+def plot_bboxes_video(video: np.ndarray,
+                      bboxes_list: List[List[Tuple[int, int, int, int]]],
+                      frame_duration: int = 100) -> go.Figure:
+    """
+    Create interactive video visualization with bounding boxes and a slider.
+
+    Args:
+        video: 3D numpy array (num_frames, height, width)
+        bboxes_list: List of bbox lists (one per frame)
+        frame_duration: Milliseconds between frames in animation
+
+    Returns:
+        Plotly Figure object with slider
+    """
+    assert video.ndim == 3, "Video must be 3D (frames, height, width)"
+    num_frames, height, width = video.shape
+    assert len(
+        bboxes_list) == num_frames, "bboxes_list length must match video frames"
+
+    # Create initial figure with first frame
+    fig = plot_bboxes(video[0], bboxes_list[0])
+
+    # Create animation frames
+    frames = []
+    for i in range(num_frames):
+        frame = go.Frame(
+            data=[go.Heatmap(z=video[i])],
+            layout=go.Layout(
+                shapes=[_create_shape(x, y, w, h)
+                        for (x, y, w, h) in bboxes_list[i]]
+            ),
+            name=f"frame_{i}"
+        )
+        frames.append(frame)
+
+    # Create slider
+    sliders = [{
+        'active': 0,
+        'currentvalue': {'prefix': 'Frame: '},
+        'steps': [
+            {
+                'args': [[f.name], {'frame': {'duration': 0}, 'mode': 'immediate'}],
+                'label': str(i),
+                'method': 'animate'
+            } for i, f in enumerate(frames)
+        ]
+    }]
+
+    # Add animation controls
+    fig.update_layout(
+        updatemenus=[{
+            'type': 'buttons',
+            'buttons': [
+                {
+                    'args': [None, {'frame': {'duration': frame_duration}, 'fromcurrent': True}],
+                    'label': 'Play',
+                    'method': 'animate'
+                },
+                {
+                    'args': [[None], {'frame': {'duration': 0}, 'mode': 'immediate'}],
+                    'label': 'Pause',
+                    'method': 'animate'
+                }
+            ],
+            'x': 0.1,
+            'xanchor': 'right',
+            'y': 0,
+            'yanchor': 'top'
+        }],
+        sliders=sliders
+    )
+
+    fig.frames = frames
+    return fig
+
+
+def _create_shape(x: int, y: int, w: int, h: int) -> dict:
+    """Helper to create rectangle shape dictionary"""
+    return {
+        'type': 'rect',
+        'x0': x,
+        'y0': y,
+        'x1': x + w,
+        'y1': y + h,
+        'line': {'color': 'red', 'width': 2}
+    }
 
 
 ###################################################################################
