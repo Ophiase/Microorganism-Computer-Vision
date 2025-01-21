@@ -75,7 +75,8 @@ def tensor_gradient(tensor: np.ndarray) -> np.ndarray:
 
 def pre_transform(tensor: np.ndarray) -> np.ndarray:
     result = np.clip(tensor, LOW, HIGH)
-    result = (result - LOW) / (HIGH - LOW)
+    result = (result - np.min(result)) / (np.max(result) - np.min(result))
+    result = 1.0 - result
     return result
 
 
@@ -188,13 +189,13 @@ def process(
 
     video_optical_flow: np.ndarray = compute_optical_flow(video)
 
-    if DEBUG:
+    if debug:
         print(video.shape)
         print(video_optical_flow.shape)
 
     processed_video: np.ndarray = transform_video(video, video_optical_flow)
 
-    if DEBUG:
+    if debug:
         print("Processed video shape: " + processed_video)
 
         FRAME_TO_SHOW = 0

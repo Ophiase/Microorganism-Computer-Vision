@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.subplots as sp
@@ -56,6 +56,67 @@ def show_grayscale(images: List[np.ndarray]) -> go.Figure:
     fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
 
     return fig
+
+
+def plot_bboxes(frame: np.ndarray,
+                bboxes: List[Tuple[int, int, int, int]]) -> go.Figure:
+    """
+    Plot grayscale image with bounding boxes using Plotly.
+
+    Args:
+        frame: 2D numpy array of shape (height, width)
+        bboxes: List of bounding boxes from detect_shapes()
+
+    Returns:
+        Plotly Figure object
+    """
+    height, width = frame.shape
+
+    fig = go.Figure()
+    fig.add_trace(go.Heatmap(
+        z=frame,
+        colorscale='gray',
+        showscale=False,
+        dx=1,
+        dy=1,
+        x0=0,
+        y0=0
+    ))
+
+    # Add bounding boxes
+    for x, y, w, h in bboxes:
+        fig.add_shape(
+            type="rect",
+            x0=x,
+            y0=y,
+            x1=x + w,
+            y1=y + h,
+            line=dict(color="red", width=2),
+            xref="x",
+            yref="y"
+        )
+
+    # Configure layout
+    fig.update_layout(
+        width=800,
+        height=600,
+        xaxis=dict(
+            showgrid=False,
+            range=[0, width],
+            scaleanchor="y",
+            constrain="domain"
+        ),
+        yaxis=dict(
+            showgrid=False,
+            range=[height, 0],
+            scaleanchor="x",
+            autorange=False
+        ),
+        margin=dict(l=0, r=0, t=0, b=0)
+    )
+
+    return fig
+
 
 ###################################################################################
 
