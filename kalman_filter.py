@@ -2,6 +2,8 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 from typing import List, Tuple, Dict, Optional
 
+from bounding_box import BoundingBox
+
 
 class BacterialTracker:
     def __init__(self, 
@@ -106,7 +108,7 @@ class BacterialTracker:
 
     def update_tracks(self,
                       frame_bboxes: List[Tuple[int, int, int, int]],
-                      frame_idx: int) -> List[Tuple[int, int, int, int, int]]:
+                      frame_idx: int) -> List[BoundingBox]:
         """
         Update tracks with new detections
         Returns list of (id, x, y, w, h) tuples
@@ -149,4 +151,7 @@ class BacterialTracker:
         for track_id in to_remove:
             del self.tracks[track_id]
 
-        return [(t['id'], *t['bbox']) for t in self.tracks.values()]
+        return [
+            (t['id'], *t['bbox'], t['missed'] > 0)
+            for t in self.tracks.values()
+        ]

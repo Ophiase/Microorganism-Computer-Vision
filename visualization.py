@@ -291,14 +291,14 @@ def plot_tracked_bboxes(fig: go.Figure,
 
 
 def plot_tracked_video(video: np.ndarray,
-                       tracked_boxes: List[List[Tuple[int, int, int, int, int]]],
+                       tracked_boxes: List[List[Tuple[int, int, int, int, int, bool]]],
                        optical_flow_video: np.ndarray = None,
                        show_flow: bool = False) -> go.Figure:
     """
     Create interactive video visualization with tracked bounding boxes
     """
     fig = plot_bboxes_video(
-        video, [[bbox[1:] for bbox in frame_boxes] for frame_boxes in tracked_boxes])
+        video, [[bbox[1:5] for bbox in frame_boxes] for frame_boxes in tracked_boxes])
     
     # Add ID annotations to each frame
     for i, frame_boxes in enumerate(tracked_boxes):
@@ -310,7 +310,7 @@ def plot_tracked_video(video: np.ndarray,
                 showarrow=False,
                 font=dict(color="red", size=14)
             )
-            for bbox_id, x, y, w, h in frame_boxes
+            for bbox_id, x, y, w, h, visible in frame_boxes
         ]
 
         fig.frames[i].layout.annotations = annotations
