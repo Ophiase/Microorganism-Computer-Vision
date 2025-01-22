@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from logic.filters import tensor_gradient, transform_video
 from logic.kernel import KernelType, average_neighbors
-from logic.visualization import show_grayscale
+from visualization.visualization import show_grayscale
 from test.utils import describe_test
 
 

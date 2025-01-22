@@ -9,7 +9,7 @@ from logic.bounding_box import BoundingBox
 from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER
 from logic.kalman_filter import BacterialTracker
 from logic.shape_detection import detect_shapes
-from logic.visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video
+from visualization.visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video
 
 ###################################################################################
 
