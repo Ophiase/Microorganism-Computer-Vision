@@ -36,6 +36,8 @@ def download_videos(data_paths: list[str], output_dir: str) -> None:
     for url in data_paths:
         download_file(url, output_dir)
 
+###################################################################################
+
 
 def main() -> None:
     create_data_dir(DATA_FOLDER)
