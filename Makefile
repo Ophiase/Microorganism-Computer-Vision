@@ -1,4 +1,4 @@
-.PHONY: pip extract transform detection coherence analysis report
+.PHONY: pip extract transform detection render analysis report
 
 #########################################
 
@@ -6,22 +6,19 @@ pip:
 	pip install -r requirements.txt
 
 extract:
-	python3 extract.py
+	python3 -m script.extract
 
 transform:
-	python3 transform.py
+	python3 -m script.transform
 
 detection:
-	python3 object_detection.py
+	python3 -m script.object_detection
 
 render:
-	python3 render.py
-
-coherence:
-	echo "TODO"
+	python3 -m script.render
 
 analysis:
-	echo "TODO"
+	python3 -m script.statistical_tests
 
 report:
 	echo "TODO"
