@@ -1,6 +1,5 @@
 from enum import Enum
 from scipy.ndimage import convolve
-
 import numpy as np
 
 

@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 
 from logic.trajectories import Trajectory
 
-from .bounding_box import BoundingBox
+from ..logic.bounding_box import BoundingBox
 
 
 def show_grayscale_plt(images: List[np.ndarray]) -> plt:
@@ -329,6 +329,7 @@ def plot_tracked_video(video: np.ndarray,
 
 ###################################################################################
 
+
 def plot_trajectories(trajectories: List[Trajectory]) -> go.Figure:
     fig = go.Figure()
     for i, traj in enumerate(trajectories):
@@ -342,9 +343,10 @@ def plot_trajectories(trajectories: List[Trajectory]) -> go.Figure:
             opacity=0.7
         ))
     fig.update_layout(title='Microorganism Trajectories',
-                     xaxis_title='X Position',
-                     yaxis_title='Y Position')
+                      xaxis_title='X Position',
+                      yaxis_title='Y Position')
     return fig
+
 
 def plot_speed_distribution(trajectories: List[Trajectory]) -> go.Figure:
     speeds = []
@@ -355,12 +357,12 @@ def plot_speed_distribution(trajectories: List[Trajectory]) -> go.Figure:
         dt = traj.time_deltas()
         speed = np.sqrt(np.array(dx)**2 + np.array(dy)**2) / np.array(dt)
         speeds.extend(speed.tolist())
-    
+
     fig = go.Figure()
     fig.add_trace(go.Histogram(x=speeds, nbinsx=50))
     fig.update_layout(title='Speed Distribution',
-                     xaxis_title='Speed (pixels/frame)',
-                     yaxis_title='Count')
+                      xaxis_title='Speed (pixels/frame)',
+                      yaxis_title='Count')
     return fig
 
 ###################################################################################
