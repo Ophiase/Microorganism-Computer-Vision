@@ -1,4 +1,3 @@
-# render.py
 import os
 import numpy as np
 from pathlib import Path
@@ -6,9 +5,9 @@ from PIL import Image, ImageDraw, ImageFont
 import imageio
 import cv2
 
-from common import DATA_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER, OUTPUT_FOLDER
+from common import DATA_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER, OUTPUT_FOLDER, DEFAULT_FONT
 
-DEFAULT_FONT = "Arial.ttf"
+#########################################
 
 
 def render_gifs(tracking_path: Path, output_dir: Path, fps: int = 10):
@@ -101,6 +100,9 @@ def _save_gif(frames: list, tracked_data, output_path: Path, fps: int):
         optimize=True
     )
     print(f"Saved GIF to {output_path}")
+
+
+###################################################################################
 
 
 def main():

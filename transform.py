@@ -5,16 +5,16 @@ from enum import Enum
 from scipy.ndimage import convolve
 
 from common import DATA_FOLDER, PREPROCESSED_FOLDER
-from load import load_video
-from optical_flow import compute_optical_flow
-from visualization import show_grayscale
+from logic.load import load_video
+from logic.optical_flow import compute_optical_flow
+from logic.visualization import show_grayscale
 
 
 ###################################################################################
 
 VIDEO = os.path.join(DATA_FOLDER, "342843.avi")
 FOLDER = PREPROCESSED_FOLDER
-INTERVAL = (0, 17*5)
+INTERVAL = (0, 40)
 
 HIGH = 0.49
 LOW = 0.2
