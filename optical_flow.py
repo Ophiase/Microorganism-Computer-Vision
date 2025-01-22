@@ -92,7 +92,7 @@ def visualize_video_and_optical_flow_side_by_side(video: np.ndarray, optical_flo
         fig.add_trace(go.Heatmap(
             z=frame_255, name="Original Video Frame",
             showscale=False
-            ), row=1, col=1)
+        ), row=1, col=1)
     else:
         fig.add_trace(
             go.Image(z=frame_255, name="Original Video Frame"), row=1, col=1)

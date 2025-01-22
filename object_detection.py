@@ -17,6 +17,7 @@ DEFAULT_NPY_FILE = os.path.join(PREPROCESSED_FOLDER, "342843.avi.npy")
 
 ###################################################################################
 
+
 def extract_high_optical_flow_areas(frame: np.ndarray, threshold: float = 0.1) -> np.ndarray:
     optical_flow_magnitude = np.sqrt(
         frame[..., 1, 0] ** 2 + frame[..., 1, 1] ** 2)
@@ -104,7 +105,7 @@ def process_with_tracking(
     # Process frames
     for frame_idx in range(len(video_tensor)):
         frame = video_tensor[frame_idx]
-        bboxes = detect_shapes(frame, 15, 800)
+        bboxes = detect_shapes(frame, 10, 800)
         tracked = tracker.update_tracks(bboxes, frame_idx)
         tracked_boxes.append(tracked)
 
@@ -171,10 +172,10 @@ def test_kalman_filter(
 
 def main():
     # process()
-    # test()
+    # test_detect_shape()
 
     # process_with_tracking()
-    test_kalman_filter(interval=(0, 20))
+    test_kalman_filter(interval=(0, 40))
 
 
 if __name__ == "__main__":

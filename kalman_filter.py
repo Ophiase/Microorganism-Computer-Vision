@@ -6,12 +6,12 @@ from bounding_box import BoundingBox
 
 
 class BacterialTracker:
-    def __init__(self, 
-                optical_flow_video: np.ndarray,
-                max_missed_frames: int = 10,  
-                process_noise: float = 1e-3,  # Adjusted for pixel coordinates
-                measurement_noise: float = 5e-1,
-                flow_percentile: float = 75):
+    def __init__(self,
+                 optical_flow_video: np.ndarray,
+                 max_missed_frames: int = 10,
+                 process_noise: float = 1e-3,  # Adjusted for pixel coordinates
+                 measurement_noise: float = 5e-1,
+                 flow_percentile: float = 75):
         """
         Track bacteria across frames using Kalman Filter with optical flow integration
 
@@ -32,24 +32,24 @@ class BacterialTracker:
         # Extract flow vectors in bounding box
         flow_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].flatten()
         flow_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].flatten()
-        
+
         # Calculate speeds
         speeds = np.sqrt(flow_x**2 + flow_y**2)
-        
+
         # Threshold for fastest vectors
         threshold = np.percentile(speeds, self.flow_percentile)
         mask = speeds >= threshold
-        
+
         if np.any(mask):
             return np.median(flow_x[mask]), np.median(flow_y[mask])
         return np.median(flow_x), np.median(flow_y)
 
     def _initialize_kalman(self, bbox: BoundingBox, frame_idx: int) -> dict:
         x, y, w, h = bbox.getBbox()
-        
+
         # Get representative flow using improved method
         of_x, of_y = self._get_representative_flow(frame_idx, x, y, w, h)
-        
+
         return {
             'id': self.next_id,
             'bbox': bbox.getBbox(),
