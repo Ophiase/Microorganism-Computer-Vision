@@ -73,7 +73,7 @@ def process_with_tracking(
     output_file = os.path.join(output_folder, f"{file_name}")
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    np.save(output_file, tracked_boxes)
+    np.save(output_file, np.array(tracked_boxes, dtype=object))
 
     print(f"Tracked boxes saved to {output_file}")
     return tracked_boxes
@@ -132,7 +132,6 @@ def test_kalman_filter(
 def main():
     # process()
     # test_detect_shape()
-
     # process_with_tracking()
     test_kalman_filter(interval=(0, 40))
 

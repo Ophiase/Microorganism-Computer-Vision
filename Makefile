@@ -14,6 +14,9 @@ transform:
 detection:
 	python3 object_detection.py
 
+render:
+	python3 render.py
+
 coherence:
 	echo "TODO"
 
