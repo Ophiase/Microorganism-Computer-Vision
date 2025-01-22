@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import plotly.subplots as sp
 import plotly.graph_objects as go
 
-from bounding_box import BoundingBox
+from .bounding_box import BoundingBox
 
 
 def show_grayscale_plt(images: List[np.ndarray]) -> plt:
