@@ -301,7 +301,7 @@ def plot_tracked_video(video: np.ndarray,
     """
     fig = plot_bboxes_video(
         video, tracked_boxes)
-    
+
     # Add ID annotations to each frame
     for i, frame_boxes in enumerate(tracked_boxes):
         annotations = [
@@ -322,7 +322,6 @@ def plot_tracked_video(video: np.ndarray,
             fig.frames[i].data += tuple(
                 add_optical_flow(go.Figure(), flow_frame).data
             )
-    
 
     return fig
 
