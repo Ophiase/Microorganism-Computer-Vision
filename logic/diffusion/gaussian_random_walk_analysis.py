@@ -1,9 +1,9 @@
 import numpy as np
-from logic.diffusion import DiffusionAnalysis
+from logic.diffusion import DiffusionTest
 from logic.trajectories import Trajectory
 
 
-class GaussianRandomWalkAnalysis(DiffusionAnalysis):
+class GaussianRandomWalkTest(DiffusionTest):
     """
     Tests if particle displacements follow a Gaussian random walk by checking
     normality of coordinate displacements using Kolmogorov-Smirnov test.

@@ -1,3 +1,3 @@
-from .base import DiffusionAnalysis
+from .base import DiffusionTest
 
-__all__ = ['DiffusionAnalysis']
+__all__ = ['DiffusionTest']

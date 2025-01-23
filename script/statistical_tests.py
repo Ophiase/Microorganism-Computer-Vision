@@ -4,8 +4,8 @@ import numpy as np
 from common import TRACKING_FOLDER
 from logic.bounding_box import BoundingBox, restructure_data
 from logic.trajectories import Trajectory
-from logic.diffusion.gaussian_random_walk_analysis import GaussianRandomWalkAnalysis
-from logic.diffusion.msd_linear_analysis import MSDLinearAnalysis
+from logic.diffusion.gaussian_random_walk_analysis import GaussianRandomWalkTest
+from logic.diffusion.msd_linear_analysis import MSDLinearTest
 from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution
 
 TRACKING_FILE = os.path.join(TRACKING_FOLDER, "342843.avi.npy")
@@ -19,8 +19,8 @@ def main() -> None:
     trajectories = [Trajectory(bboxes) for bboxes in restructured]
 
     # Analyze diffusion
-    gauss_analyzer = GaussianRandomWalkAnalysis()
-    msd_analyzer = MSDLinearAnalysis()
+    gauss_analyzer = GaussianRandomWalkTest()
+    msd_analyzer = MSDLinearTest()
 
     gauss_results = [gauss_analyzer.analyze(trajectory) for trajectory in trajectories]
     msd_results = [msd_analyzer.analyze(trajectory) for trajectory in trajectories]

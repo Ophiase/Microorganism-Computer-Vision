@@ -1,10 +1,10 @@
 from typing import List
 import numpy as np
-from logic.diffusion import DiffusionAnalysis
+from logic.diffusion import DiffusionTest
 from logic.trajectories import Trajectory
 
 
-class MSDLinearAnalysis(DiffusionAnalysis):
+class MSDLinearTest(DiffusionTest):
     """
     Analyzes diffusion characteristics by testing if mean squared displacement (MSD)
     shows linear behavior over time, using R-squared of linear fit as the criterion.
