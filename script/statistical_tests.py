@@ -22,8 +22,8 @@ def main() -> None:
     gauss_analyzer = GaussianRandomWalkAnalysis()
     msd_analyzer = MSDLinearAnalysis()
 
-    gauss_results = [gauss_analyzer.analyze(traj) for traj in trajectories]
-    msd_results = [msd_analyzer.analyze(traj) for traj in trajectories]
+    gauss_results = [gauss_analyzer.analyze(trajectory) for trajectory in trajectories]
+    msd_results = [msd_analyzer.analyze(trajectory) for trajectory in trajectories]
 
     print(f"Gaussian fit: {sum(gauss_results)}/{len(gauss_results)}")
     print(f"Linear MSD fit: {sum(msd_results)}/{len(msd_results)}")

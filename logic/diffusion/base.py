@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-import numpy as np
-from .trajectories import Trajectory
-from typing import List
+from logic.trajectories import Trajectory
 
 class DiffusionAnalysis(ABC):
     @abstractmethod

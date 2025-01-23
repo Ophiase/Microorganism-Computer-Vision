@@ -5,6 +5,15 @@ from logic.trajectories import Trajectory
 
 
 class MSDLinearAnalysis(DiffusionAnalysis):
+    """
+    Analyzes diffusion characteristics by testing if mean squared displacement (MSD)
+    shows linear behavior over time, using R-squared of linear fit as the criterion.
+    """
+    
+    def __init__(self, r_squared_threshold: float = 0.9):
+        super().__init__()
+        self.r_squared_threshold = r_squared_threshold
+
     def analyze(self, trajectory: Trajectory) -> bool:
         msd, tau = self.calculate_msd(trajectory)
         if len(msd) < 2:
@@ -16,7 +25,7 @@ class MSDLinearAnalysis(DiffusionAnalysis):
         ss_res = np.sum((msd - predicted)**2)
         ss_tot = np.sum((msd - np.mean(msd))**2)
         r_squared = 1 - (ss_res / ss_tot)
-        return r_squared > 0.9
+        return r_squared > self.r_squared_threshold
 
     def calculate_msd(self, trajectory: Trajectory) -> tuple[List[float], List[int]]:
         positions = trajectory.positions()
