@@ -2,9 +2,13 @@
 
 Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
 
-- <img src="./resources/results/342843_original.gif" width="300" /> <img src="./resources/results/342843_transformed.gif" width="300" />
+- <div style="text-align: center;"> <img src="./resources/results/342843_original.gif" width="300" /> <img src="./resources/results/342843_transformed.gif" width="300" /> </div>
 
-- <img src="./resources/results/342843_speed_distribution.png" width="300">
+- <div style="text-align: center;">
+  <img src="./resources/results/342843_speed_distribution.png" width="190">
+  <img src="./resources/results/342843_trajectories.png" width="200">
+</div>
+
 
 ## TODO (Deadline: February 30th, 2025)
 
