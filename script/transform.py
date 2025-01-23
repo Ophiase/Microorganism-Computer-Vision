@@ -2,12 +2,11 @@ import os
 from typing import Tuple
 import numpy as np
 from enum import Enum
-
 from common import DATA_FOLDER, PREPROCESSED_FOLDER
 from logic.filters import pre_transform, transform_video
 from logic.load import load_video
 from logic.optical_flow import compute_optical_flow
-from visualization.visualization import show_grayscale
+from visualization.grayscale_visualization import show_grayscale
 from logic.kernel import KernelType, KERNELS
 
 ###################################################################################

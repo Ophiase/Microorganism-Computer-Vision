@@ -1,11 +1,8 @@
-import os
 from typing import List
 import numpy as np
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
-import imageio
 import cv2
-
 from common import DATA_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER, OUTPUT_FOLDER, DEFAULT_FONT
 from logic.bounding_box import BoundingBox
 
@@ -15,7 +12,7 @@ from logic.bounding_box import BoundingBox
 def render_gifs(tracking_path: Path, output_dir: Path, fps: int = 10):
     """Render both original and transformed GIFs"""
     tracked_data = np.load(tracking_path, allow_pickle=True).tolist()
-    
+
     video_stem = tracking_path.stem.replace(
         '.avi', '')  # "342843.avi.npy" -> "342843"
 
@@ -26,13 +23,14 @@ def render_gifs(tracking_path: Path, output_dir: Path, fps: int = 10):
     transformed_gif = output_dir / f"{video_stem}_transformed.gif"
 
     _render_video_gif(orig_video_path, tracked_data, orig_gif, fps)
-    _render_transformed_gif(preprocessed_path, tracked_data, transformed_gif, fps)
+    _render_transformed_gif(
+        preprocessed_path, tracked_data, transformed_gif, fps)
 
 
 def _render_video_gif(
-        video_path: Path, 
-        tracked_data:List[List[BoundingBox]], 
-        output_path: Path, 
+        video_path: Path,
+        tracked_data: List[List[BoundingBox]],
+        output_path: Path,
         fps: int):
     """Render GIF from original video file"""
     cap = cv2.VideoCapture(str(video_path))
@@ -51,9 +49,9 @@ def _render_video_gif(
 
 
 def _render_transformed_gif(
-        npy_path: Path, 
-        tracked_data: List[List[BoundingBox]], 
-        output_path: Path, 
+        npy_path: Path,
+        tracked_data: List[List[BoundingBox]],
+        output_path: Path,
         fps: int):
     """Render GIF from preprocessed numpy array"""
     preprocessed = np.load(npy_path)
@@ -68,9 +66,9 @@ def _render_transformed_gif(
 
 
 def _save_gif(
-        frames: list, 
-        tracked_data: List[List[BoundingBox]], 
-        output_path: Path, 
+        frames: list,
+        tracked_data: List[List[BoundingBox]],
+        output_path: Path,
         fps: int):
     """Common GIF saving logic"""
     if not frames:
@@ -89,7 +87,8 @@ def _save_gif(
 
         if frame_idx < len(tracked_data):
             for bbox in tracked_data[frame_idx]:
-                draw.rectangle([bbox.x, bbox.y, bbox.x+bbox.w, bbox.y+bbox.h], outline="red", width=1)
+                draw.rectangle([bbox.x, bbox.y, bbox.x+bbox.w,
+                               bbox.y+bbox.h], outline="red", width=1)
                 draw.text((bbox.x + bbox.w//2, bbox.y + bbox.h//2), str(bbox.index),
                           fill="red", font=font)
 

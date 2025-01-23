@@ -3,69 +3,54 @@ import unittest
 import numpy as np
 from logic.filters import tensor_gradient, transform_video
 from logic.kernel import KernelType, average_neighbors
-from visualization.visualization import show_grayscale
-from test.utils import describe_test
+from visualization.grayscale_visualization import show_grayscale
 
 
-class TestFilter(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        describe_test("Filter")
+def test_full_on_noise(
+    self,
+    video: np.ndarray = None,
+    optical_flow_video: np.ndarray = None,
+    frame: int = 1
+) -> None:
+    np.random.seed(100)
 
-    def run(self, test):
-        result = super().run(test)
-        print("\n" + "=" * 30 + "\n")
-        return result
+    RES = 32
+    if video is None:
+        video = np.random.rand(2, RES, RES)
+    if optical_flow_video is None:
+        optical_flow_video = np.random.rand(2, RES, RES, 2)
 
-    #########################################
+    processed_video = transform_video(video, optical_flow_video)
 
-    def test_full_on_noise(
-        self,
-        video: np.ndarray = None,
-        optical_flow_video: np.ndarray = None,
-        frame: int = 1
-    ) -> None:
-        np.random.seed(100)
+    print("\nTransformed Video Shape:")
+    print(processed_video.shape)
 
-        RES = 32
-        if video is None:
-            video = np.random.rand(2, RES, RES)
-        if optical_flow_video is None:
-            optical_flow_video = np.random.rand(2, RES, RES, 2)
+    to_show = [
+        processed_video[frame, :, :, i, j]
+        for i in range(3)
+        for j in range(4)]
 
-        processed_video = transform_video(video, optical_flow_video)
+    show_grayscale(to_show).show()
 
-        print("\nTransformed Video Shape:")
-        print(processed_video.shape)
+def test_check_gradient(self) -> None:
+    tensor = np.random.rand(40, 60)
+    grad = tensor_gradient(tensor)
 
-        to_show = [
-            processed_video[frame, :, :, i, j]
-            for i in range(3)
-            for j in range(4)]
+    avg = tensor
+    for _ in range(1):
+        avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
+    grad_avg = tensor_gradient(avg)
+    show_grayscale([
+        tensor, grad[:, :, 0], grad[:, :, 0],
+        avg, grad_avg[:, :, 0], grad_avg[:, :, 1]
+    ]).show()
 
-        show_grayscale(to_show).show()
+def test_check_kernel(self) -> None:
+    tensor = np.random.rand(40, 60)
+    avg = tensor
+    for _ in range(20):
+        avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
 
-    @unittest.skip("visual test")
-    def test_check_gradient(self) -> None:
-        tensor = np.random.rand(40, 60)
-        grad = tensor_gradient(tensor)
-
-        avg = tensor
-        for _ in range(1):
-            avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
-        grad_avg = tensor_gradient(avg)
-        show_grayscale([
-            tensor, grad[:, :, 0], grad[:, :, 0],
-            avg, grad_avg[:, :, 0], grad_avg[:, :, 1]
-        ]).show()
-
-    @unittest.skip("visual test")
-    def test_check_kernel(self) -> None:
-        tensor = np.random.rand(40, 60)
-        avg = tensor
-        for _ in range(20):
-            avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
-
-        show_grayscale([
-            tensor, avg
-        ]).show()
+    show_grayscale([
+        tensor, avg
+    ]).show()
