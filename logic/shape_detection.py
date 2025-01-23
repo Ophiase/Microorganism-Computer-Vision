@@ -1,7 +1,6 @@
 from typing import List
 import cv2
 import numpy as np
-
 from logic.bounding_box import BoundingBox
 
 

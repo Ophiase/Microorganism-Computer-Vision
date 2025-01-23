@@ -1,8 +1,10 @@
 import os
 import requests
 from pathlib import Path
-
 from common import DATA_FOLDER
+
+###################################################################################
+
 
 # source:
 # https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
@@ -17,6 +19,8 @@ DATA_PATHS = [
     "https://plos.figshare.com/ndownloader/files/342910",
     "https://plos.figshare.com/ndownloader/files/342998",
 ]
+
+###################################################################################
 
 
 def create_data_dir(data_dir: str) -> None:

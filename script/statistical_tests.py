@@ -4,8 +4,9 @@ import numpy as np
 from common import TRACKING_FOLDER
 from logic.bounding_box import BoundingBox, restructure_data
 from logic.trajectories import Trajectory
-from logic.diffusion import GaussianRandomWalkAnalysis, MSDLinearAnalysis
-from visualization.visualization import plot_trajectories, plot_speed_distribution
+from logic.diffusion.gaussian_random_walk_analysis import GaussianRandomWalkAnalysis
+from logic.diffusion.msd_linear_analysis import MSDLinearAnalysis
+from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution
 
 TRACKING_FILE = os.path.join(TRACKING_FOLDER, "342843.avi.npy")
 

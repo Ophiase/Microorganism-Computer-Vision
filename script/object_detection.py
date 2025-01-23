@@ -1,15 +1,11 @@
-from dataclasses import dataclass
 import numpy as np
 import os
 from typing import List, Tuple
-import cv2
-import plotly.graph_objects as go
-
 from logic.bounding_box import BoundingBox
 from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER
 from logic.kalman_filter import BacterialTracker
 from logic.shape_detection import detect_shapes
-from visualization.visualization import plot_bboxes, plot_bboxes_video, plot_tracked_video
+from visualization.bbox_visualization import plot_bboxes_video, plot_tracked_video
 
 ###################################################################################
 
