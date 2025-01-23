@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from logic.trajectories import Trajectory
 
-class DiffusionAnalysis(ABC):
+class DiffusionTest(ABC):
     @abstractmethod
     def analyze(self, trajectory: Trajectory) -> bool:
         pass
