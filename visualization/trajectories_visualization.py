@@ -3,8 +3,6 @@ import numpy as np
 import plotly.graph_objects as go
 from logic.trajectories import Trajectory
 
-###################################################################################
-
 
 def plot_trajectories(trajectories: List[Trajectory]) -> go.Figure:
     fig = go.Figure()
@@ -39,4 +37,81 @@ def plot_speed_distribution(trajectories: List[Trajectory]) -> go.Figure:
     fig.update_layout(title='Speed Distribution',
                       xaxis_title='Speed (pixels/frame)',
                       yaxis_title='Count')
+    return fig
+
+
+def plot_speed_distribution_per_trajectory(trajectories: List[Trajectory]) -> go.Figure:
+    """
+    Displays speed distributions across trajectories using transparent overlapping curves.
+    Creates a density-like visualization of speed patterns.
+    """
+    fig = go.Figure()
+    for i, traj in enumerate(trajectories):
+        if len(traj.positions()) < 2:
+            continue
+
+        positions = np.array(traj.positions())
+        dx = positions[1:, 0] - positions[:-1, 0]
+        dy = positions[1:, 1] - positions[:-1, 1]
+        dt = traj.time_deltas()[:len(dx)]
+        
+        speed = np.sqrt(dx**2 + dy**2) / dt
+        indices = np.arange(len(speed))
+
+        fig.add_trace(go.Scatter(
+            x=indices,
+            y=speed,
+            mode='lines',
+            line=dict(width=1, color='blue'),
+            opacity=0.2,
+            hoverinfo='skip',
+            showlegend=False
+        ))
+
+    fig.update_layout(
+        title='Collective Speed Distribution Pattern',
+        xaxis_title='Time Step Index',
+        yaxis_title='Speed (pixels/frame)',
+        plot_bgcolor='white',
+        hovermode='x unified'
+    )
+    return fig
+
+
+def plot_angular_distribution(trajectories: List[Trajectory]) -> go.Figure:
+    """
+    Visualizes angular distribution patterns across all trajectories using
+    semi-transparent overlapping curves. Emphasizes common turning patterns.
+    """
+    fig = go.Figure()
+    for i, traj in enumerate(trajectories):
+        if len(traj.positions()) < 2:
+            continue
+
+        positions = np.array(traj.positions())
+        dx = positions[1:, 0] - positions[:-1, 0]
+        dy = positions[1:, 1] - positions[:-1, 1]
+        
+        # Use absolute angles for clearer distribution pattern
+        angles = np.degrees(np.arctan2(dy, dx)) % 360
+        indices = np.arange(len(angles))
+
+        fig.add_trace(go.Scatter(
+            x=indices,
+            y=angles,
+            mode='lines',
+            line=dict(width=1, color='red'),
+            opacity=0.2,
+            hoverinfo='skip',
+            showlegend=False
+        ))
+
+    fig.update_layout(
+        title='Collective Angular Distribution Pattern',
+        xaxis_title='Time Step Index',
+        yaxis_title='Angle (degrees)',
+        yaxis=dict(range=[0, 360], dtick=45),
+        plot_bgcolor='white',
+        hovermode='x unified'
+    )
     return fig
