@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from typing import List, Tuple
-from logic.bounding_box import BoundingBox
+from logic.structure.bounding_box import BoundingBox
 from common import BOUNDING_BOX_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER
 from logic.kalman_filter import BacterialTracker
 from logic.shape_detection import detect_shapes

@@ -1,7 +1,7 @@
 from typing import List
 import cv2
 import numpy as np
-from logic.bounding_box import BoundingBox
+from logic.structure.bounding_box import BoundingBox
 
 
 def extract_high_optical_flow_areas(frame: np.ndarray, threshold: float = 0.1) -> np.ndarray:

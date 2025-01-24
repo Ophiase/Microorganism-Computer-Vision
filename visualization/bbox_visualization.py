@@ -1,7 +1,7 @@
 from typing import List, Optional
 import numpy as np
 import plotly.graph_objects as go
-from logic.bounding_box import BoundingBox
+from logic.structure.bounding_box import BoundingBox
 
 
 def plot_bboxes(frame: np.ndarray,

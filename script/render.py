@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import cv2
 from common import DATA_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER, OUTPUT_FOLDER, DEFAULT_FONT
-from logic.bounding_box import BoundingBox
+from logic.structure.bounding_box import BoundingBox
 
 #########################################
 
