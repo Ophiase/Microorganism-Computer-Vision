@@ -1,5 +1,5 @@
 from typing import List, Optional, Tuple
-from .bounding_box import BoundingBox
+from .structure.bounding_box import BoundingBox
 import numpy as np
 
 

@@ -2,7 +2,7 @@ import os
 from typing import List
 import numpy as np
 from common import ANALYSIS_GRAPHICS_PATH, TRACKING_FOLDER
-from logic.bounding_box import BoundingBox, restructure_data
+from logic.structure.bounding_box import BoundingBox, restructure_data
 from logic.trajectories import Trajectory
 from logic.diffusion.gaussian_random_walk_analysis import GaussianRandomWalkTest
 from logic.diffusion.msd_linear_analysis import MSDLinearTest
