@@ -2,6 +2,7 @@ from typing import List
 import cv2
 import numpy as np
 from logic.structure.bounding_box import BoundingBox
+from logic.structure.rectangle import Rectangle
 
 
 def extract_high_optical_flow_areas(frame: np.ndarray, threshold: float = 0.1) -> np.ndarray:
@@ -39,6 +40,6 @@ def detect_shapes(frame: np.ndarray,
         x, y, w, h = cv2.boundingRect(contour)
         area = w * h
         if min_size <= area <= max_size:
-            bounding_boxes.append(BoundingBox(None, x, y, w, h))
+            bounding_boxes.append(BoundingBox(Rectangle(x, y, w, h)))
 
     return bounding_boxes
