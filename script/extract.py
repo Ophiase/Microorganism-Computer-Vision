@@ -10,8 +10,8 @@ from common import DATA_FOLDER
 # https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
 DATA_PATHS = [
     f"https://plos.figshare.com/ndownloader/files/{x}" for x in [
-        "342430", "342517", "342580", 
-        "342655", "342737", "342783", 
+        "342430", "342517", "342580",
+        "342655", "342737", "342783",
         "342843", "342910", "342998"
     ]
 ]
@@ -44,8 +44,10 @@ def process():
     download_videos(DATA_PATHS, DATA_FOLDER)
     print(f"Extracted and moved to: {DATA_FOLDER}")
 
+
 def main() -> None:
     process()
+
 
 if __name__ == "__main__":
     main()

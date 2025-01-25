@@ -9,6 +9,8 @@ from logic.diffusion.msd_linear_test import MSDLinearTest
 from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution, plot_angular_distribution, plot_speed_distribution_per_trajectory
 import csv
 
+###################################################################################
+
 TRACKING_PATH = os.path.join(TRACKING_FOLDER, DEFAULT_VIDEO + ".npy")
 
 ONLY_MOVING_BACTERIA = False
@@ -17,13 +19,15 @@ ONLY_MOVING_BACTERIA_BY_PERCENT = False
 MOVING_BACTERIA_PERCENT = 0.05
 DEBUG = True
 
+###################################################################################
+
 
 def load_trajectories(
         tracking_file: str = TRACKING_PATH
 ) -> List[Trajectory]:
     tracked_data: List[List[BoundingBox]] = np.load(
         tracking_file, allow_pickle=True
-        ).tolist()
+    ).tolist()
     restructured = restructure_data(tracked_data)
     return [Trajectory(bboxes) for bboxes in restructured]
 
