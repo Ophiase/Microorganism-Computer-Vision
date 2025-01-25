@@ -1,14 +1,14 @@
 import os
 from typing import List
 import numpy as np
-from common import ANALYSIS_GRAPHICS_PATH, TRACKING_FOLDER
+from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, TRACKING_FOLDER
 from logic.structure.bounding_box import BoundingBox, restructure_data
 from logic.trajectories import Trajectory
 from logic.diffusion.gaussian_random_walk_test import GaussianRandomWalkTest
 from logic.diffusion.msd_linear_test import MSDLinearTest
 from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution, plot_angular_distribution, plot_speed_distribution_per_trajectory
 
-TRACKING_FILE = os.path.join(TRACKING_FOLDER, "342843.avi.npy")
+TRACKING_FILE = os.path.join(TRACKING_FOLDER, DEFAULT_VIDEO + ".npy")
 
 ONLY_MOVING_BACTERIA = False
 MOVING_BACTERIA_MINIMAL_SPEED = 25

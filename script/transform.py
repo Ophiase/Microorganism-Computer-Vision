@@ -2,7 +2,7 @@ import os
 from typing import Tuple
 import numpy as np
 from enum import Enum
-from common import DATA_FOLDER, PREPROCESSED_FOLDER
+from common import DATA_FOLDER, DEFAULT_VIDEO, PREPROCESSED_FOLDER
 from logic.filters import pre_transform, transform_video
 from logic.load import load_video
 from logic.optical_flow import compute_optical_flow
@@ -11,7 +11,7 @@ from logic.kernel import KernelType, KERNELS
 
 ###################################################################################
 
-VIDEO = os.path.join(DATA_FOLDER, "342843.avi")
+VIDEO_PATH = os.path.join(DATA_FOLDER, DEFAULT_VIDEO)
 FOLDER = PREPROCESSED_FOLDER
 INTERVAL = (0, 40)
 DEBUG = True
@@ -34,7 +34,7 @@ def save_processed_video(
 
 
 def process(
-        video_path: str = VIDEO, output_folder: str = FOLDER,
+        video_path: str = VIDEO_PATH, output_folder: str = FOLDER,
         interval: Tuple[int] = INTERVAL,
         debug: bool = DEBUG) -> None:
     video = load_video(video_path, interval=interval, verbose=True)
