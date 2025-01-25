@@ -9,10 +9,10 @@ from .structure.bounding_box import BoundingBox
 class BacterialTracker:
     def __init__(self,
                  optical_flow_video: np.ndarray,
-                 max_missed_frames: int = 2,
+                 max_missed_frames: int = 5,
                  process_noise: float = 1e-5,
                  measurement_noise: float = 1e-5,
-                 max_assignment_distance: float = 20.0):
+                 max_assignment_distance: float = 30.0):
         self.optical_flow = optical_flow_video
         self.next_id = 0
         self.tracks: Dict[int, dict] = {}

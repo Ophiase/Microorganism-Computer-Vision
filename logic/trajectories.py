@@ -39,3 +39,20 @@ class Trajectory:
             for (dx, dy), dt in zip(displacements, time_deltas)
         ]
         return float(np.mean(speeds)) if speeds else 0.0
+
+
+def restructure_data(tracked_data: List[List[BoundingBox]]) -> List[List[Optional[BoundingBox]]]:
+    max_index = max(
+        bbox.index for frame in tracked_data for bbox in frame) if tracked_data else 0
+    total_frames = len(tracked_data)
+
+    restructured = [[] for _ in range(max_index + 1)]
+
+    for idx in range(max_index + 1):
+        restructured[idx] = [None] * total_frames
+
+    for frame_idx, frame in enumerate(tracked_data):
+        for bbox in frame:
+            if bbox.visible:
+                restructured[bbox.index][frame_idx] = bbox
+    return restructured

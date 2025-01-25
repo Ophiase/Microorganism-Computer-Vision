@@ -126,7 +126,7 @@ def test_kalman_filter(
 
 
 def main():
-    # process()
+    process()
     # test_detect_shape()
     # process_with_tracking()
     test_kalman_filter(interval=(0, 40))

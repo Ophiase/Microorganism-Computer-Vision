@@ -6,22 +6,25 @@ pip:
 	pip install -r requirements.txt
 
 extract:
-	python3 -m script.extract
+	python3 -m script.main --task extract
 
 transform:
-	python3 -m script.transform
-
+	python3 -m script.main --task transform 
+	
 detection:
-	python3 -m script.object_detection
+	python3 -m script.main --task detection
 
 render:
-	python3 -m script.render
+	python3 -m script.main --task render
 
 analysis:
-	python3 -m script.statistical_tests
+	python3 -m script.main --task analysis
 
 report:
-	echo "TODO"
+	echo "TODO..."
+
+test:
+	echo "TODO..."
 
 #########################################
 

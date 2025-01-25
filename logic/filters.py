@@ -6,7 +6,7 @@ from scipy.ndimage import convolve
 from common import DATA_FOLDER, PREPROCESSED_FOLDER
 from logic.load import load_video
 from logic.optical_flow import compute_optical_flow
-from visualization.visualization import show_grayscale
+from visualization.grayscale_visualization import show_grayscale
 from logic.kernel import KernelType, KERNELS, average_neighbors
 
 ###################################################################################

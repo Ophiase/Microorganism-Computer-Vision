@@ -39,11 +39,13 @@ def download_videos(data_paths: list[str], output_dir: str) -> None:
 ###################################################################################
 
 
-def main() -> None:
+def process():
     create_data_dir(DATA_FOLDER)
     download_videos(DATA_PATHS, DATA_FOLDER)
     print(f"Extracted and moved to: {DATA_FOLDER}")
 
+def main() -> None:
+    process()
 
 if __name__ == "__main__":
     main()
