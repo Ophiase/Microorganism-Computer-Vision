@@ -56,6 +56,9 @@ class BoundingBox:
 
     def centroid(self) -> tuple[float, float]:
         return (self.x + self.w/2, self.y + self.h/2)
+    
+    def icentroid(self) -> tuple[int, int]:
+        return (int(self.x + self.w/2), int(self.y + self.h/2))
 
 
 def restructure_data(tracked_data: List[List[BoundingBox]]) -> List[List[Optional[BoundingBox]]]:
