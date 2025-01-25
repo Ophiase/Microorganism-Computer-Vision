@@ -61,10 +61,11 @@ def main() -> None:
         "trajectories": plot_trajectories(trajectories)
     }
 
+    print(f"Output folder: {ANALYSIS_GRAPHICS_PATH}")
     for name, fig in plots.items():
         img_path = os.path.join(ANALYSIS_GRAPHICS_PATH, f"{name}.png")
         fig.write_image(img_path, engine="kaleido")
-        print(f"Saved {name} to:\t {img_path}")
+        print(f"Saved {name}")
         fig.show()
 
 

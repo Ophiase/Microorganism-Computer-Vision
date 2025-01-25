@@ -9,9 +9,9 @@ from .structure.bounding_box import BoundingBox
 class BacterialTracker:
     def __init__(self,
                  optical_flow_video: np.ndarray,
-                 max_missed_frames: int = 10,
-                 process_noise: float = 1e-3,
-                 measurement_noise: float = 5e-1,
+                 max_missed_frames: int = 2,
+                 process_noise: float = 1e-5,
+                 measurement_noise: float = 1e-5,
                  flow_percentile: float = 75):
         self.optical_flow = optical_flow_video
         self.next_id = 0
