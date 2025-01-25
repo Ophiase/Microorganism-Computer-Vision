@@ -21,7 +21,8 @@ class BacterialTracker:
         self.R = np.eye(2) * measurement_noise
         self.flow_percentile = flow_percentile
 
-    def _get_representative_flow(self, frame_idx: int, x: int, y: int, w: int, h: int) -> Tuple[float, float]:
+    def _get_representative_flow(self, frame_idx: int, rectangle: Rectangle) -> Tuple[float, float]:
+        x, y, w, h = rectangle.to_tuple()
         flow_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].flatten()
         flow_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].flatten()
         speeds = np.sqrt(flow_x**2 + flow_y**2)
@@ -32,15 +33,15 @@ class BacterialTracker:
             return np.median(flow_x[mask]), np.median(flow_y[mask])
         return np.median(flow_x), np.median(flow_y)
 
-    def _initialize_kalman(self, bbox: BoundingBox, frame_idx: int) -> dict:
-        x, y, w, h = bbox.getBbox()
-        of_x, of_y = self._get_representative_flow(frame_idx, x, y, w, h)
+    def _initialize_kalman(self, rectangle: Rectangle, frame_idx: int) -> dict:
+        cx, cy = rectangle.centroid()
+        of_x, of_y = self._get_representative_flow(frame_idx, rectangle)
         return {
             'id': self.next_id,
-            'bbox': bbox.getBbox(),
+            'bbox': rectangle,
             'age': 0,
             'missed': 0,
-            'state': np.array([x + w/2, y + h/2, of_x, of_y]),
+            'state': np.array([cx, cy, of_x, of_y]),
             'covariance': np.eye(4) * 0.1,
             'history': []
         }
@@ -73,7 +74,8 @@ class BacterialTracker:
             for j, bbox in enumerate(detections):
                 det_cx = bbox.x + bbox.w/2
                 det_cy = bbox.y + bbox.h/2
-                cost_matrix[i, j] = np.sqrt((pred_cx - det_cx)**2 + (pred_cy - det_cy)**2)
+                cost_matrix[i, j] = np.sqrt(
+                    (pred_cx - det_cx)**2 + (pred_cy - det_cy)**2)
 
         row_ind, col_ind = linear_sum_assignment(cost_matrix)
         return list(zip(row_ind, col_ind))
@@ -84,15 +86,15 @@ class BacterialTracker:
             self._predict(track)
 
         # Match detections to predictions
-        matches = self._match_bboxes(list(self.tracks.values()), frame_bboxes, frame_idx)
+        matches = self._match_bboxes(
+            list(self.tracks.values()), frame_bboxes, frame_idx)
 
         # Update matched tracks
         used_detections = set()
         for i, j in matches:
             track = list(self.tracks.values())[i]
-            x, y, w, h = frame_bboxes[j].getBbox()
-            self._update(track, (x + w/2, y + h/2))
-            track['bbox'] = (x, y, w, h)
+            self._update(track, frame_bboxes[j].centroid())
+            track['bbox'] = frame_bboxes[j].rectangle
             track['missed'] = 0
             track['age'] += 1
             track['history'].append((frame_idx, track['bbox']))
@@ -101,11 +103,11 @@ class BacterialTracker:
         # Create new tracks for unmatched detections
         for j in range(len(frame_bboxes)):
             if j not in used_detections:
-                new_track = self._initialize_kalman(frame_bboxes[j], frame_idx)
+                new_track = self._initialize_kalman(frame_bboxes[j].rectangle, frame_idx)
                 self.tracks[self.next_id] = new_track
                 self.next_id += 1
 
-        # Cleanup tracks (critical fix for ID management)
+        # Cleanup tracks
         active_tracks = {}
         for track_id, track in self.tracks.items():
             track['missed'] += 1
@@ -114,6 +116,6 @@ class BacterialTracker:
         self.tracks = active_tracks
 
         return [
-            BoundingBox(Rectangle(*t['bbox']), t['id'], t['missed'] > 0)
+            BoundingBox(t['bbox'], t['id'], t['missed'] > 0)
             for t in self.tracks.values()
         ]
