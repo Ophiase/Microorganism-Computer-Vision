@@ -11,7 +11,7 @@ from visualization.trajectories_visualization import plot_trajectories, plot_spe
 TRACKING_FILE = os.path.join(TRACKING_FOLDER, DEFAULT_VIDEO + ".npy")
 
 ONLY_MOVING_BACTERIA = False
-MOVING_BACTERIA_MINIMAL_SPEED = 25
+MOVING_BACTERIA_MINIMAL_SPEED = 3
 ONLY_MOVING_BACTERIA_BY_PERCENT = False
 MOVING_BACTERIA_PERCENT = 0.05
 

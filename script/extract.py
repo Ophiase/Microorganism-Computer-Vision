@@ -9,15 +9,11 @@ from common import DATA_FOLDER
 # source:
 # https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
 DATA_PATHS = [
-    "https://plos.figshare.com/ndownloader/files/342430",
-    "https://plos.figshare.com/ndownloader/files/342517",
-    "https://plos.figshare.com/ndownloader/files/342580",
-    "https://plos.figshare.com/ndownloader/files/342655",
-    "https://plos.figshare.com/ndownloader/files/342737",
-    "https://plos.figshare.com/ndownloader/files/342783",
-    "https://plos.figshare.com/ndownloader/files/342843",
-    "https://plos.figshare.com/ndownloader/files/342910",
-    "https://plos.figshare.com/ndownloader/files/342998",
+    f"https://plos.figshare.com/ndownloader/files/{x}" for x in [
+        "342430", "342517", "342580", 
+        "342655", "342737", "342783", 
+        "342843", "342910", "342998"
+    ]
 ]
 
 ###################################################################################
