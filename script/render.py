@@ -108,7 +108,7 @@ def _save_gif(
 ###################################################################################
 
 
-def main():
+def process():
     output_dir = Path(OUTPUT_FOLDER)
     output_dir.mkdir(exist_ok=True)
 
@@ -119,6 +119,8 @@ def main():
         except Exception as e:
             print(f"Error processing {tracking_path}: {str(e)}")
 
+def main():
+    process()
 
 if __name__ == "__main__":
     main()

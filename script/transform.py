@@ -66,8 +66,6 @@ def process(
 
 def main():
     process()
-    # full_test()
-
 
 if __name__ == "__main__":
     main()
