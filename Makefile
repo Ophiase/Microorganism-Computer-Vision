@@ -25,5 +25,7 @@ report:
 
 #########################################
 
+detection_and_analysis: detection analysis
+
 all: 
 	@echo "Specify a target. Default behavior is disabled."
