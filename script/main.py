@@ -16,7 +16,7 @@ def main():
         default=DEFAULT_VIDEO
     )
     parser.add_argument(
-        "--silent", action="store_false", help="Disable verbose/debug output", default=True)
+        "--verbose", action="store_true", help="Disable verbose/debug output", default=False)
     parser.add_argument(
         "--task", type=str,
         choices=["extract", "transform", "detection", "render", "analysis"], required=True,
@@ -33,20 +33,20 @@ def main():
     elif args.task == "transform":
         transform_process(
             video_path=video_path,
-            debug=not args.silent
+            debug=args.verbose
         )
     elif args.task == "detection":
-        if args.silent:
-            detection_process(file_path=npy_path)
-        else:
+        if args.verbose:
             test_kalman_filter(file_path=npy_path)
+        else:
+            detection_process(file_path=npy_path)
     elif args.task == "render":
         render_process()
     elif args.task == "analysis":
         analysis_process(
             video=args.video,
             tracking_file=tracking_path,
-            debug=not args.silent
+            debug=args.verbose
         )
 
 
