@@ -1,7 +1,7 @@
 import numpy as np
 from logic.diffusion import DiffusionTest
 from logic.trajectories import Trajectory
-
+from scipy.stats import kstest, norm
 
 class GaussianRandomWalkTest(DiffusionTest):
     """
@@ -22,10 +22,20 @@ class GaussianRandomWalkTest(DiffusionTest):
         dy = displacements[:, 1]
 
         # Kolmogorov-Smirnov test for normality
-        from scipy.stats import kstest, norm
-        _, p_x = kstest(dx, 'norm', args=(np.mean(dx), np.std(dx)))
-        _, p_y = kstest(dy, 'norm', args=(np.mean(dy), np.std(dy)))
+        p_x = self._get_p_value(dx) 
+        p_y = self._get_p_value(dy) 
         return p_x > self.p_threshold and p_y > self.p_threshold
+    
+
+    def _get_p_value(self, data: np.ndarray) -> float:
+        if np.std(data) == 0.0 or len(data) < 2:
+            return 0.0
+        try:
+            _, p = kstest(data, 'norm', args=(np.mean(data), np.std(data)))
+            return p
+        except:
+            return 0.0
+
 
     def parameters(self, trajectory: Trajectory) -> dict:
         displacements = np.array(trajectory.displacements())

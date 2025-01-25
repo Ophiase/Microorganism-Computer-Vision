@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict
 
 from logic.structure.rectangle import Rectangle
 from .structure.bounding_box import BoundingBox
@@ -12,47 +12,29 @@ class BacterialTracker:
                  max_missed_frames: int = 2,
                  process_noise: float = 1e-5,
                  measurement_noise: float = 1e-5,
-                 flow_percentile: float = 75):
+                 max_assignment_distance: float = 20.0):
         self.optical_flow = optical_flow_video
         self.next_id = 0
         self.tracks: Dict[int, dict] = {}
         self.max_missed = max_missed_frames
         self.Q = np.eye(4) * process_noise
         self.R = np.eye(2) * measurement_noise
-        self.flow_percentile = flow_percentile
+        self.max_assignment_distance = max_assignment_distance
 
-    def _get_representative_flow(self, frame_idx: int, rectangle: Rectangle) -> Tuple[float, float]:
-        x, y, w, h = rectangle.to_tuple()
-        flow_x = self.optical_flow[frame_idx, y:y+h, x:x+w, 0].flatten()
-        flow_y = self.optical_flow[frame_idx, y:y+h, x:x+w, 1].flatten()
-        speeds = np.sqrt(flow_x**2 + flow_y**2)
-        threshold = np.percentile(speeds, self.flow_percentile)
-        mask = speeds >= threshold
-
-        if np.any(mask):
-            return np.median(flow_x[mask]), np.median(flow_y[mask])
-        return np.median(flow_x), np.median(flow_y)
-
-    def _initialize_kalman(self, rectangle: Rectangle, frame_idx: int) -> dict:
+    def _initialize_kalman(self, rectangle: Rectangle) -> dict:
         cx, cy = rectangle.centroid()
-        of_x, of_y = self._get_representative_flow(frame_idx, rectangle)
         return {
             'id': self.next_id,
             'bbox': rectangle,
             'age': 0,
             'missed': 0,
-            'state': np.array([cx, cy, of_x, of_y]),
+            'state': np.array([cx, cy, 0.0, 0.0]),
             'covariance': np.eye(4) * 0.1,
             'history': []
         }
 
     def _predict(self, track: dict):
-        F = np.array([
-            [1, 0, 1, 0],
-            [0, 1, 0, 1],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1]
-        ])
+        F = np.array([[1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0], [0, 0, 0, 1]])
         track['state'] = F @ track['state']
         track['covariance'] = F @ track['covariance'] @ F.T + self.Q
         return track
@@ -66,56 +48,37 @@ class BacterialTracker:
         track['covariance'] = (np.eye(4) - K @ H) @ track['covariance']
         return track
 
-    def _match_bboxes(self, predicted: List[dict], detections: List[BoundingBox], frame_idx: int) -> List[Tuple[int, int]]:
-        cost_matrix = np.zeros((len(predicted), len(detections)))
-
+    def _match_bboxes(self, predicted: List[dict], detections: List[BoundingBox]) -> List[Tuple[int, int]]:
+        cost_matrix = np.full((len(predicted), len(detections)), 1e9)
         for i, track in enumerate(predicted):
-            pred_cx, pred_cy = track['state'][:2]
+            pred_pos = track['state'][:2]
             for j, bbox in enumerate(detections):
-                det_cx = bbox.x + bbox.w/2
-                det_cy = bbox.y + bbox.h/2
-                cost_matrix[i, j] = np.sqrt(
-                    (pred_cx - det_cx)**2 + (pred_cy - det_cy)**2)
-
+                det_pos = bbox.centroid()
+                distance = np.hypot(*(pred_pos - det_pos))
+                if distance <= self.max_assignment_distance:
+                    cost_matrix[i, j] = distance
         row_ind, col_ind = linear_sum_assignment(cost_matrix)
-        return list(zip(row_ind, col_ind))
+        return [(i, j) for i, j in zip(row_ind, col_ind) if cost_matrix[i, j] <= self.max_assignment_distance]
 
     def update_tracks(self, frame_bboxes: List[BoundingBox], frame_idx: int) -> List[BoundingBox]:
-        # Predict existing tracks
         for track in self.tracks.values():
             self._predict(track)
 
-        # Match detections to predictions
-        matches = self._match_bboxes(
-            list(self.tracks.values()), frame_bboxes, frame_idx)
-
-        # Update matched tracks
+        matches = self._match_bboxes(list(self.tracks.values()), frame_bboxes)
         used_detections = set()
         for i, j in matches:
             track = list(self.tracks.values())[i]
             self._update(track, frame_bboxes[j].centroid())
-            track['bbox'] = frame_bboxes[j].rectangle
-            track['missed'] = 0
-            track['age'] += 1
+            track.update(
+                {'bbox': frame_bboxes[j].rectangle, 'missed': 0, 'age': track['age']+1})
             track['history'].append((frame_idx, track['bbox']))
             used_detections.add(j)
 
-        # Create new tracks for unmatched detections
-        for j in range(len(frame_bboxes)):
-            if j not in used_detections:
-                new_track = self._initialize_kalman(frame_bboxes[j].rectangle, frame_idx)
-                self.tracks[self.next_id] = new_track
-                self.next_id += 1
+        for j in (set(range(len(frame_bboxes))) - used_detections):
+            self.tracks[self.next_id] = self._initialize_kalman(
+                frame_bboxes[j].rectangle)
+            self.next_id += 1
 
-        # Cleanup tracks
-        active_tracks = {}
-        for track_id, track in self.tracks.items():
-            track['missed'] += 1
-            if track['missed'] <= self.max_missed:
-                active_tracks[track_id] = track
-        self.tracks = active_tracks
-
-        return [
-            BoundingBox(t['bbox'], t['id'], t['missed'] > 0)
-            for t in self.tracks.values()
-        ]
+        self.tracks = {tid: t for tid, t in self.tracks.items() if (
+            t.update({'missed': t['missed']+1}) or t['missed'] <= self.max_missed)}
+        return [BoundingBox(t['bbox'], t['id'], t['missed'] > 0) for t in self.tracks.values()]
