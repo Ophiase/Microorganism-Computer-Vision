@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from typing import List, Tuple, Dict, Optional
+
+from logic.structure.rectangle import Rectangle
 from .structure.bounding_box import BoundingBox
 
 
@@ -112,6 +114,6 @@ class BacterialTracker:
         self.tracks = active_tracks
 
         return [
-            BoundingBox(t['id'], *t['bbox'], t['missed'] > 0)
+            BoundingBox(Rectangle(*t['bbox']), t['id'], t['missed'] > 0)
             for t in self.tracks.values()
         ]
