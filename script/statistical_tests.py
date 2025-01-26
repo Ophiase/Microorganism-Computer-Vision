@@ -3,11 +3,14 @@ from typing import Dict, List
 import numpy as np
 from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, TRACKING_FOLDER
 from logic.diffusion.base import DiffusionTest
-from logic.structure.bounding_box import BoundingBox
-from logic.trajectories import Trajectory, restructure_data
+from logic.diffusion.circular_motion_test import CircularMotionTest
+from logic.diffusion.directional_switching_test import DirectionalSwitchTest
+from logic.diffusion.persistent_motion_test import PersistentMotionTest
 from logic.diffusion.gaussian_random_walk_test import GaussianRandomWalkTest
 from logic.diffusion.msd_linear_test import MSDLinearTest
 from logic.diffusion.sub_diffusion_test import SubDiffusionTest
+from logic.structure.bounding_box import BoundingBox
+from logic.trajectories import Trajectory, restructure_data
 from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution, plot_angular_distribution, plot_speed_distribution_per_trajectory
 import csv
 
@@ -24,7 +27,10 @@ DEBUG = True
 DIFFUSION_HYPOTHESIS: Dict[str, DiffusionTest] = {
     'Gaussian': GaussianRandomWalkTest,
     'Linear MSD': MSDLinearTest,
-    'Sub Diffusion': SubDiffusionTest
+    'Sub Diffusion': SubDiffusionTest,
+    'Persistent Motion': PersistentMotionTest,
+    'Circular Motion': CircularMotionTest,
+    'Directional Switch': DirectionalSwitchTest,
 }
 
 ###################################################################################
@@ -73,11 +79,12 @@ def diffusion_analysis(
 
 
 def analyze_trajectories(trajectories: List[Trajectory]) -> Dict[str, List[bool]]:
+    print("Hypothesis:")
     results = {}
     for name, analysis_class in DIFFUSION_HYPOTHESIS.items():
         analyzer = analysis_class()
         result = [analyzer.analyze(trajectory) for trajectory in trajectories]
-        print(f"{name} fit: {sum(result)}/{len(result)}")
+        print(f"- {name} fit: {sum(result)}/{len(result)}")
         results[name] = result
     return results
 
@@ -91,6 +98,7 @@ def write_csv(results_path: str, results: Dict[str, List[bool]]):
         rows = zip(*results.values())
         for i, row in enumerate(rows):
             writer.writerow([i] + list(row))
+
 
 def statistics(
     trajectories: List[Trajectory],
