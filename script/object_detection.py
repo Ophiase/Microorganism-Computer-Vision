@@ -15,24 +15,6 @@ DEFAULT_NPY_FILE = os.path.join(PREPROCESSED_FOLDER, DEFAULT_VIDEO + ".npy")
 ###################################################################################
 
 
-def process(
-    file_path: str = DEFAULT_NPY_FILE,
-    output_folder: str = BOUNDING_BOX_FOLDER
-) -> List[List[BoundingBox]]:
-    video_tensor = np.load(file_path)[:, :, :, 0, 0]
-    bounding_boxes_per_frame = [
-        detect_shapes(frame) for frame in video_tensor
-    ]
-
-    file_name = os.path.basename(file_path)
-    output_file = os.path.join(output_folder, file_name)
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    np.save(output_file, bounding_boxes_per_frame)
-    print(f"Bounding boxes saved to {output_file}")
-    return bounding_boxes_per_frame
-
-
 def process_with_tracking(
     file_path: str = DEFAULT_NPY_FILE,
     output_folder: str = TRACKING_FOLDER,
@@ -77,26 +59,6 @@ def process_with_tracking(
 #########################################
 
 
-def test_detect_shapes(
-        file_path: str = DEFAULT_NPY_FILE,
-        output_folder: str = BOUNDING_BOX_FOLDER
-):
-    video_tensor = np.load(file_path)[:, :, :, 0, 0]
-
-    # show_grayscale(
-    #     [video_tensor[i, :, :, 0, 0] for i in range(video_tensor.shape[0])]
-    # ).show()
-
-    bounding_boxes_per_frame = [
-        detect_shapes(frame, min_size=10, max_size=800)
-        for frame in video_tensor
-    ]
-
-    # print(bounding_boxes_per_frame[0].shape)
-
-    plot_bboxes_video(video_tensor, bounding_boxes_per_frame).show()
-
-
 def test_kalman_filter(
         file_path: str = DEFAULT_NPY_FILE,
         output_folder: str = TRACKING_FOLDER,
@@ -126,9 +88,6 @@ def test_kalman_filter(
 
 
 def main():
-    process()
-    # test_detect_shape()
-    # process_with_tracking()
     test_kalman_filter(interval=(0, 40))
 
 
