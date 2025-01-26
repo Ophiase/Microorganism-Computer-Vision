@@ -3,8 +3,9 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.11.5+](https://img.shields.io/badge/Python-3.11.5%2B-yellow.svg)](https://www.python.org/)
 
-
 A comprehensive computer vision pipeline for analyzing microorganism 🦠 motility patterns and diffusion characteristics.
+
+Deadline: 28th February 2025
 
 <div align="center">
   <img src="./resources/results/342843_original.gif" width="30%">
