@@ -1,47 +1,89 @@
 # Microorganism Computer Vision 🧫
 
-Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.11.5+](https://img.shields.io/badge/Python-3.11.5%2B-yellow.svg)](https://www.python.org/)
 
-- <div style="text-align: center;"> <img src="./resources/results/342843_original.gif" width="300" /> <img src="./resources/results/342843_transformed.gif" width="300" /> </div>
 
-## Installation
+A comprehensive computer vision pipeline for analyzing microorganism 🦠 motility patterns and diffusion characteristics.
+
+<div align="center">
+  <img src="./resources/results/342843_original.gif" width="30%">
+  <img src="./resources/results/342843_transformed.gif" width="30%">
+  <img src="./resources/results/342843.avi/trajectories.png" width="30%">
+</div>
+
+## 🌟 Features
+
+- **Multi-modal Tracking**
+  - Optical flow-based motion estimation
+  - Kalman-filter enhanced object detection
+  - Synthetic trajectory generation
+- **Advanced Diffusion Analysis**
+  - 6 statistical hypothesis tests for motility patterns
+  - Automated trajectory classification
+  - Comprehensive visualization toolkit
+- **Scalable Architecture**
+  - Modular pipeline design
+  - Configurable hypothesis parameters
+  - Batch processing capabilities
+
+## 🧩 Diffusion Hypothesis Tests
+
+Our framework implements sophisticated statistical tests to characterize microbial motion:
+
+| Hypothesis Test | Key Mechanism | Biological Relevance |
+|-----------------|---------------|----------------------|
+| **Circular Motion** <br> `CircularMotionTest` | Curvature analysis + rotation angle detection | Magnetotactic bacteria, spiral-seeking organisms |
+| **Directional Switching** <br> `DirectionalSwitchTest` | Fourier analysis of angular changes | Run-and-tumble motility (e.g., *E. coli*) |
+| **Gaussian Random Walk** <br> `GaussianRandomWalkTest` | Kolmogorov-Smirnov normality test | Passive diffusion in isotropic environments |
+| **MSD Linear Fit** <br> `MSDLinearTest` | R² evaluation of mean squared displacement | Normal diffusion processes |
+| **Persistent Motion** <br> `PersistentMotionTest` | Velocity autocorrelation analysis | Active transport mechanisms |
+| **Subdiffusion** <br> `SubDiffusionTest` | Power law exponent ($\alpha < 1$) detection | Crowded environments, viscoelastic media |
+
+
+
+## 🚀 Installation
 
 ```bash
-# install dependencies
+# Clone repository
+git clone git@github.com:Ophiase/Microorganism-Computer-Vision.git
+cd Microorganism-Computer-Vision
+
+# Install dependencies
 make pip
 
-# download the dataset
+# Download sample dataset
 make extract
-# preprocess the videos
-make transform
 ```
 
-## Execution
+## 🧪 Usage
 
-Extract the trajectories
+Process real videos:
+```bash
+# Full pipeline execution
+make transform      # Preprocess videos
+make detection      # Track microorganisms
+make render         # Generate gifs
+make analysis       # Run statistical tests and graphics
+```
+Generate synthetic data:
 
 ```bash
-# extract trajectories
-make detection
-# create synthetic trajectories
-make synthetic
+make synthetic      # Create trajectory datasets
+python3 -m script.main --task analysis --video synthetic_brownian
+# "brownian" can be replaced by directed, sinusoidal, confined, ctrw, ...
 ```
 
-Analyse the trajectories
+Key Makefile Targets:
 
-```bash
-# render trajectories with bbox gif
-make render
-
-# render trajectories's analysis
-make analysis
-# which is equivalent to:
-python3 -m script.main --task analysis
-# if you want to specify the video:
-python3 -m script.main --task analysis --video synthetic_brownian 
+```makefile
+detection     # Track objects in videos
+render        # Generate trajectory visualizations
+analysis      # Perform statistical testing
+synthetic     # Generate synthetic trajectories
 ```
 
-## Results
+## 📊 Results Interpretation
 
 
 - <div style="text-align: center;">
@@ -54,27 +96,40 @@ python3 -m script.main --task analysis --video synthetic_brownian
   <img src="./resources/results/342843.avi/speed_distribution.png" width="300">
 </div>
 
-## TODO (Deadline: February 30th, 2025)
+## 📂 Data Structure
 
-- ✅ Find videos of microorganisms
-    - ✅ Download and extract them
-- ✅ Optical Flow
-    - ✅ Check the associated vector field
-    - Plot the vector field with a quiver plot
-- Cluster entities
-    - ✅ Compute the image gradient and optical flow gradient for each frame
-        - Deduce clusters
-    - ✅ Object detection on each frame 
-    - ✅ Kalman Filter to ensure tracking (bbox id)
-    - ✅ Visualize the entities in the video
-- Motion analysis
-    - ✅ Create the time series
-        - Depends on the information we can extract from the microorganisms
-            - E.g., Salmonella
-        - Proposition:
-    - ✅ Propose diffusion hypotheses (e.g., Gaussian Random Walk)
-    - ✅ Perform statistical tests
+```bash
+microorganism-cv/
+├── data/                           # Raw and processed data
+│   ├── preprocessed/               # Normalized video tensors
+│   └── tracking/                   # Trajectory datasets
+├── logic/                          # Core algorithms
+│   ├── diffusion/                  # Statistical tests
+│   ├── filters/                    # Image processing
+│   └── structure/                  # Data models
+├── script/                         # Pipeline components
+└── visualization/                  # Plotting utilities
+```
 
-- Experimental:
-    - Simulate videos to train a segmentation model
-    - Simulate trajectories to verify the statistical tests
+## 📚 Methodology
+Our pipeline implements a multi-stage analysis process:
+
+### Preprocessing
+- Optical flow estimation
+- Spatial normalization
+- Noise reduction
+
+### Object Detection
+- Adaptive thresholding (❌ not implemented)
+- Connected component analysis
+- Kalman-filter based tracking
+
+### Trajectory Analysis
+- [MSD](https://en.wikipedia.org/wiki/Mean_squared_displacement) calculations
+- Velocity autocorrelation
+- Directional persistence metrics
+
+### Statistical Classification
+- Hypothesis testing
+- Confidence interval estimation (❌ not implemented)
+- [Motility](https://en.wikipedia.org/wiki/Motility) pattern classification
