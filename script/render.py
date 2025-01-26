@@ -112,7 +112,7 @@ def process():
     output_dir = Path(OUTPUT_FOLDER)
     output_dir.mkdir(exist_ok=True)
 
-    for tracking_path in Path(TRACKING_FOLDER).glob("*.npy"):
+    for tracking_path in Path(TRACKING_FOLDER).glob("*avi.npy"):
         try:
             print(f"Processing {tracking_path.name}...")
             render_gifs(tracking_path, output_dir)
