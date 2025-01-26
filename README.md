@@ -45,13 +45,13 @@ python3 -m script.main --task analysis --video synthetic_brownian
 
 
 - <div style="text-align: center;">
-  <img src="./resources/results/342843_analysis/angular_distribution.png" width="290">
-  <img src="./resources/results/342843_analysis/speed_distribution_per_trajectory.png" width="300">
+  <img src="./resources/results/342843.avi/angular_distribution.png" width="290">
+  <img src="./resources/results/342843.avi/speed_distribution_per_trajectory.png" width="300">
 </div>
 
 - <div style="text-align: center;">
-  <img src="./resources/results/342843_analysis/trajectories.png" width="290">
-  <img src="./resources/results/342843_analysis/speed_distribution.png" width="300">
+  <img src="./resources/results/342843.avi/trajectories.png" width="290">
+  <img src="./resources/results/342843.avi/speed_distribution.png" width="300">
 </div>
 
 ## TODO (Deadline: February 30th, 2025)

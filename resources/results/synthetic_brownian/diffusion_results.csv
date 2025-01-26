@@ -1,0 +1,26 @@
+Trajectory,Gaussian,Linear MSD,Sub Diffusion,Persistent Motion,Circular Motion,Directional Switch
+0,True,True,False,True,True,False
+1,True,True,False,True,True,False
+2,True,True,False,True,False,False
+3,True,False,True,True,False,False
+4,True,True,False,True,False,False
+5,True,True,True,True,False,False
+6,True,True,True,True,False,False
+7,True,True,True,True,False,False
+8,True,False,True,True,False,False
+9,True,True,False,True,True,False
+10,True,True,False,True,False,False
+11,True,True,True,True,False,False
+12,True,True,True,True,False,False
+13,True,True,False,True,False,False
+14,True,True,False,True,True,False
+15,True,True,False,True,False,False
+16,True,True,False,True,False,False
+17,True,True,False,True,False,False
+18,True,True,False,True,False,False
+19,True,True,True,True,True,False
+20,True,True,False,True,False,False
+21,True,True,False,True,False,False
+22,True,True,False,True,False,False
+23,True,True,False,True,True,False
+24,True,True,False,True,False,False
