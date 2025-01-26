@@ -14,6 +14,9 @@ transform:
 detection:
 	python3 -m script.main --task detection
 
+synthetic:
+	python3 -m script.main --task synthetic
+
 render:
 	python3 -m script.main --task render
 
