@@ -12,45 +12,83 @@ class SyntheticGenerator:
         self.height = height
         self.current_id = 0
 
-    def _create_bbox(self, x: float, y: float, size: float = 20.0) -> BoundingBox:
+    def _create_bbox(self, x: float, y: float, size: float = 20.0, visible: bool = True) -> BoundingBox:
         return BoundingBox(
             Rectangle(x - size/2, y - size/2, size, size),
             index=self.current_id,
-            visible=True
+            visible=visible
         )
 
-    def brownian_motion(self, num_frames: int, speed: float) -> List[BoundingBox]:
+    def brownian_motion(self, num_frames: int, speed: float, noise_level: float=5.0) -> List[BoundingBox]:
         x, y = np.random.uniform(100, 924, 2)
         trajectory = []
+        visible = True
         for _ in range(num_frames):
-            trajectory.append(self._create_bbox(x, y))
-            dx, dy = np.random.normal(0, speed, 2)
-            x = np.clip(x + dx, 0, self.width)
-            y = np.clip(y + dy, 0, self.height)
+            if visible:
+                # Generate noise components separately
+                dx = np.random.normal(0, speed) + np.random.normal(0, noise_level)
+                dy = np.random.normal(0, speed) + np.random.normal(0, noise_level)
+                
+                new_x = x + dx
+                new_y = y + dy
+                
+                if 0 <= new_x <= self.width and 0 <= new_y <= self.height:
+                    x = new_x  # Update x coordinate
+                    y = new_y  # Update y coordinate separately
+                    trajectory.append(self._create_bbox(x, y))
+                else:
+                    trajectory.append(self._create_bbox(new_x, new_y, visible=False))
+                    visible = False
+            else:
+                trajectory.append(self._create_bbox(0, 0, visible=False))
         self.current_id += 1
         return trajectory
 
     def directed_motion(self, num_frames: int, speed: float, angle: float) -> List[BoundingBox]:
         x, y = np.random.uniform(100, 924, 2)
         trajectory = []
-        vx = speed * np.cos(np.radians(angle))
-        vy = speed * np.sin(np.radians(angle))
+        visible = True
+        theta = np.radians(angle)
+        vx = speed * np.cos(theta)
+        vy = speed * np.sin(theta)
+        
         for _ in range(num_frames):
-            trajectory.append(self._create_bbox(x, y))
-            x = np.clip(x + vx + np.random.normal(0, 0.1), 0, self.width)
-            y = np.clip(y + vy + np.random.normal(0, 0.1), 0, self.height)
+            if visible:
+                noise = np.random.normal(0, 0.3, 2)  # Increased noise
+                new_x = x + vx + noise[0]
+                new_y = y + vy + noise[1]
+                
+                if 0 <= new_x <= self.width and 0 <= new_y <= self.height:
+                    x, y = new_x, new_y
+                    trajectory.append(self._create_bbox(x, y))
+                else:
+                    trajectory.append(self._create_bbox(new_x, new_y, visible=False))
+                    visible = False
+            else:
+                trajectory.append(self._create_bbox(0, 0, visible=False))
         self.current_id += 1
         return trajectory
 
-    def confined_motion(self, num_frames: int, center: Tuple[float, float],
-                        radius: float) -> List[BoundingBox]:
+    def confined_motion(self, num_frames: int, center: Tuple[float, float], 
+                       radius: float) -> List[BoundingBox]:
         x, y = center
         trajectory = []
+        visible = True
         for _ in range(num_frames):
-            trajectory.append(self._create_bbox(x, y))
-            dx, dy = np.random.uniform(-radius, radius, 2)
-            x = np.clip(center[0] + dx, 0, self.width)
-            y = np.clip(center[1] + dy, 0, self.height)
+            if visible:
+                dx = np.random.uniform(-radius, radius) + np.random.normal(0, 0.5)  # Added noise
+                dy = np.random.uniform(-radius, radius) + np.random.normal(0, 0.5)
+                new_x = center[0] + dx
+                new_y = center[1] + dy
+                
+                if 0 <= new_x <= self.width and 0 <= new_y <= self.height:
+                    x, y = new_x, new_y
+                    trajectory.append(self._create_bbox(x, y))
+                else:
+                    trajectory.append(self._create_bbox(new_x, new_y, visible=False))
+                    visible = False
+            else:
+                trajectory.append(self._create_bbox(0, 0, visible=False))
         self.current_id += 1
         return trajectory
 
@@ -58,29 +96,64 @@ class SyntheticGenerator:
         x, y = np.random.uniform(100, 924, 2)
         trajectory = []
         wait_time = 0
+        visible = True
         for _ in range(num_frames):
-            trajectory.append(self._create_bbox(x, y))
-            if wait_time > 0:
-                wait_time -= 1
-                continue
-            dx, dy = np.random.normal(0, base_speed, 2)
-            x = np.clip(x + dx, 0, self.width)
-            y = np.clip(y + dy, 0, self.height)
-            wait_time = np.random.poisson(5)
+            if visible:
+                if wait_time > 0:
+                    trajectory.append(self._create_bbox(x, y))
+                    wait_time -= 1
+                else:
+                    dx = np.random.normal(0, base_speed) + np.random.normal(0, 0.3)  # Added noise
+                    dy = np.random.normal(0, base_speed) + np.random.normal(0, 0.3)
+                    new_x = x + dx
+                    new_y = y + dy
+                    
+                    if 0 <= new_x <= self.width and 0 <= new_y <= self.height:
+                        x, y = new_x, new_y
+                        trajectory.append(self._create_bbox(x, y))
+                    else:
+                        trajectory.append(self._create_bbox(new_x, new_y, visible=False))
+                        visible = False
+                    wait_time = np.random.poisson(5)
+            else:
+                trajectory.append(self._create_bbox(0, 0, visible=False))
         self.current_id += 1
         return trajectory
 
-    def circular_motion(self, num_frames: int, radius: float,
-                        angular_speed: float) -> List[BoundingBox]:
-        center = np.random.uniform(200, 824, 2)
-        theta = np.random.uniform(0, 2*np.pi)
+    def sinusoidal_motion(self, num_frames: int, speed: float, 
+                         amplitude: float, frequency: float, 
+                         noise_level: float=5.0
+                         ) -> List[BoundingBox]:
+        """New motion type: Sinusoidal swimming pattern"""
+        x, y = np.random.uniform(100, 924, 2)
         trajectory = []
+        visible = True
+        angle = np.random.uniform(0, 2*np.pi)  # Random initial direction
+        phase = 0
+        
         for _ in range(num_frames):
-            x = center[0] + radius * np.cos(theta)
-            y = center[1] + radius * np.sin(theta)
-            trajectory.append(self._create_bbox(x, y))
-            theta += np.radians(angular_speed)
-            radius += np.random.normal(0, 0.1)  # Add slight radius variation
+            if visible:
+                # Base movement with noise
+                dx = speed * np.cos(angle) + np.random.normal(0, noise_level)
+                dy = speed * np.sin(angle) + np.random.normal(0, noise_level)
+                
+                # Sinusoidal component perpendicular to movement
+                perp_angle = angle + np.pi/2
+                dx += amplitude * np.sin(phase) * np.cos(perp_angle)
+                dy += amplitude * np.sin(phase) * np.sin(perp_angle)
+                
+                new_x = x + dx
+                new_y = y + dy
+                phase += frequency * 2*np.pi
+                
+                if 0 <= new_x <= self.width and 0 <= new_y <= self.height:
+                    x, y = new_x, new_y
+                    trajectory.append(self._create_bbox(x, y))
+                else:
+                    trajectory.append(self._create_bbox(new_x, new_y, visible=False))
+                    visible = False
+            else:
+                trajectory.append(self._create_bbox(0, 0, visible=False))
         self.current_id += 1
         return trajectory
 
@@ -112,16 +185,15 @@ def generate_synthetic_data(output_folder: str = TRACKING_FOLDER,
             'params': {'base_speed': 3.0}
         },
         {
-            'name': 'circular',
-            'method': generator.circular_motion,
-            'params': {'radius': 40, 'angular_speed': 5}
+            'name': 'sinusoidal',
+            'method': generator.sinusoidal_motion,
+            'params': {'speed': 2.2, 'amplitude': 10.0, 'frequency': 0.01}
         }
     ]
 
     for motion in motion_types:
         all_trajectories = []
-        print(
-            f"Generating {trajectories_per_type} {motion['name']} trajectories...")
+        print(f"Generating {trajectories_per_type} {motion['name']} trajectories...")
 
         for _ in range(trajectories_per_type):
             resolved_params = {}
@@ -136,8 +208,7 @@ def generate_synthetic_data(output_folder: str = TRACKING_FOLDER,
                 if frame_idx < num_frames:
                     synthetic_data[frame_idx].append(bbox)
 
-        output_path = os.path.join(
-            output_folder, f"synthetic_{motion['name']}.npy")
+        output_path = os.path.join(output_folder, f"synthetic_{motion['name']}.npy")
         np.save(output_path, np.array(synthetic_data, dtype=object))
         print(f"Saved {motion['name']} data to {output_path}")
 
