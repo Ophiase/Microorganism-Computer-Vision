@@ -4,21 +4,41 @@ Deep Computer Vision 🦠 - Analysis of the motion of microorganisms
 
 - <div style="text-align: center;"> <img src="./resources/results/342843_original.gif" width="300" /> <img src="./resources/results/342843_transformed.gif" width="300" /> </div>
 
-## Execution
+## Installation
 
 ```bash
 # install dependencies
 make pip
+
 # download the dataset
 make extract
 # preprocess the videos
 make transform
+```
+
+## Execution
+
+Extract the trajectories
+
+```bash
 # extract trajectories
 make detection
-# render trajectories
+# create synthetic trajectories
+make synthetic
+```
+
+Analyse the trajectories
+
+```bash
+# render trajectories with bbox gif
 make render
+
 # render trajectories's analysis
 make analysis
+# which is equivalent to:
+python3 -m script.main --task analysis
+# if you want to specify the video:
+python3 -m script.main --task analysis --video synthetic_brownian 
 ```
 
 ## Results
