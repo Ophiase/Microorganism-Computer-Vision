@@ -24,7 +24,7 @@ DEBUG = True
 DIFFUSION_HYPOTHESIS: Dict[str, DiffusionTest] = {
     'Gaussian': GaussianRandomWalkTest,
     'Linear MSD': MSDLinearTest,
-    # 'Sub Diffusion': SubDiffusionTest
+    'Sub Diffusion': SubDiffusionTest
 }
 
 ###################################################################################
