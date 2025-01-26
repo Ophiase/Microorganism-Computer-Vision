@@ -1,11 +1,13 @@
 import os
-from typing import List
+from typing import Dict, List
 import numpy as np
 from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, TRACKING_FOLDER
+from logic.diffusion.base import DiffusionTest
 from logic.structure.bounding_box import BoundingBox
 from logic.trajectories import Trajectory, restructure_data
 from logic.diffusion.gaussian_random_walk_test import GaussianRandomWalkTest
 from logic.diffusion.msd_linear_test import MSDLinearTest
+from logic.diffusion.sub_diffusion_test import SubDiffusionTest
 from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution, plot_angular_distribution, plot_speed_distribution_per_trajectory
 import csv
 
@@ -18,6 +20,12 @@ MOVING_BACTERIA_MINIMAL_SPEED = 3
 ONLY_MOVING_BACTERIA_BY_PERCENT = False
 MOVING_BACTERIA_PERCENT = 0.05
 DEBUG = True
+
+DIFFUSION_HYPOTHESIS: Dict[str, DiffusionTest] = {
+    'Gaussian': GaussianRandomWalkTest,
+    'Linear MSD': MSDLinearTest,
+    # 'Sub Diffusion': SubDiffusionTest
+}
 
 ###################################################################################
 
@@ -54,28 +62,35 @@ def diffusion_analysis(
         trajectories: List[Trajectory],
         video: str = DEFAULT_VIDEO
 ):
-    # Analyze diffusion
-    gauss_analyzer = GaussianRandomWalkTest()
-    msd_analyzer = MSDLinearTest()
-
-    gauss_results = [gauss_analyzer.analyze(trajectory)
-                     for trajectory in trajectories]
-    msd_results = [msd_analyzer.analyze(trajectory)
-                   for trajectory in trajectories]
-
-    print(f"Gaussian fit: {sum(gauss_results)}/{len(gauss_results)}")
-    print(f"Linear MSD fit: {sum(msd_results)}/{len(msd_results)}")
-
     os.makedirs(os.path.join(ANALYSIS_GRAPHICS_PATH, video), exist_ok=True)
-
     results_path = os.path.join(
-        ANALYSIS_GRAPHICS_PATH, video, "diffusion_results.csv")
+        ANALYSIS_GRAPHICS_PATH, video, "diffusion_results.csv"
+    )
+
+    results_per_hypothesis = analyze_trajectories(trajectories)
+
+    write_csv(results_path, results_per_hypothesis)
+
+
+def analyze_trajectories(trajectories: List[Trajectory]) -> Dict[str, List[bool]]:
+    results = {}
+    for name, analysis_class in DIFFUSION_HYPOTHESIS.items():
+        analyzer = analysis_class()
+        result = [analyzer.analyze(trajectory) for trajectory in trajectories]
+        print(f"{name} fit: {sum(result)}/{len(result)}")
+        results[name] = result
+    return results
+
+
+def write_csv(results_path: str, results: Dict[str, List[bool]]):
     with open(results_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Trajectory", "Gaussian Fit", "Linear MSD Fit"])
-        for i, (gauss_result, msd_result) in enumerate(zip(gauss_results, msd_results)):
-            writer.writerow([i, gauss_result, msd_result])
+        header = ["Trajectory"] + list(results.keys())
+        writer.writerow(header)
 
+        rows = zip(*results.values())
+        for i, row in enumerate(rows):
+            writer.writerow([i] + list(row))
 
 def statistics(
     trajectories: List[Trajectory],
