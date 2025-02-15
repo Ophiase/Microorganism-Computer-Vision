@@ -1,7 +1,7 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import numpy as np
-from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, TRACKING_FOLDER
+from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, DEFAULT_VIDEO_RESOLUTION, TRACKING_FOLDER
 from logic.diffusion.base import DiffusionTest
 from logic.diffusion.circular_motion_test import CircularMotionTest
 from logic.diffusion.directional_switching_test import DirectionalSwitchTest
@@ -103,13 +103,14 @@ def write_csv(results_path: str, results: Dict[str, List[bool]]):
 def statistics(
     trajectories: List[Trajectory],
     video: str = DEFAULT_VIDEO,
+    video_resolution: Tuple[int, int] = DEFAULT_VIDEO_RESOLUTION,
     debug: bool = DEBUG
 ) -> None:
     plots = {
         "speed_distribution": plot_speed_distribution(trajectories),
         "speed_distribution_per_trajectory": plot_speed_distribution_per_trajectory(trajectories),
         "angular_distribution": plot_angular_distribution(trajectories),
-        "trajectories": plot_trajectories(trajectories)
+        "trajectories": plot_trajectories(trajectories, resolution=video_resolution),
     }
 
     print(f"Output folder: {ANALYSIS_GRAPHICS_PATH}")
@@ -132,7 +133,7 @@ def process(
     trajectories = load_trajectories(tracking_file)
     trajectories = filter_trajectories(trajectories)
     diffusion_analysis(trajectories, video)
-    statistics(trajectories, video, debug)
+    statistics(trajectories, video, debug=debug)
 
 
 def main():

@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Tuple
 import numpy as np
 import plotly.graph_objects as go
 from logic.trajectories import Trajectory
 
 
-def plot_trajectories(trajectories: List[Trajectory]) -> go.Figure:
+def plot_trajectories(trajectories: List[Trajectory], resolution: Tuple[int] = None) -> go.Figure:
     fig = go.Figure()
     for i, traj in enumerate(trajectories):
         if len(traj.valid_entries) < 2:
@@ -16,9 +16,17 @@ def plot_trajectories(trajectories: List[Trajectory]) -> go.Figure:
             name=f'Track {i}',
             opacity=0.7
         ))
-    fig.update_layout(title='Microorganism Trajectories',
-                      xaxis_title='X Position',
-                      yaxis_title='Y Position')
+
+    fig.update_layout(
+        title='Microorganism Trajectories',
+        xaxis_title='X Position',
+        yaxis_title='Y Position'
+    )
+
+    if resolution is not None:
+        fig.update_xaxes(range=(0, resolution[0]))
+        fig.update_yaxes(range=(0, resolution[1]))
+
     return fig
 
 
@@ -54,7 +62,7 @@ def plot_speed_distribution_per_trajectory(trajectories: List[Trajectory]) -> go
         dx = positions[1:, 0] - positions[:-1, 0]
         dy = positions[1:, 1] - positions[:-1, 1]
         dt = traj.time_deltas()[:len(dx)]
-        
+
         speed = np.sqrt(dx**2 + dy**2) / dt
         indices = np.arange(len(speed))
 
@@ -91,7 +99,7 @@ def plot_angular_distribution(trajectories: List[Trajectory]) -> go.Figure:
         positions = np.array(traj.positions())
         dx = positions[1:, 0] - positions[:-1, 0]
         dy = positions[1:, 1] - positions[:-1, 1]
-        
+
         # Use absolute angles for clearer distribution pattern
         angles = np.degrees(np.arctan2(dy, dx)) % 360
         indices = np.arange(len(angles))
