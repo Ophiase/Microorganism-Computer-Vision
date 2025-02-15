@@ -16,7 +16,7 @@ KERNELS = {
 }
 
 
-def apply_kernel(tensor, kernel, i, j, width, height):
+def apply_kernel(tensor: np.ndarray, kernel:np.ndarray, i: int, j: int, width: int, height: int):
     local_sum, weight = 0, 0
     for di in range(-1, 2):
         for dj in range(-1, 2):
