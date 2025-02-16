@@ -5,12 +5,6 @@ from logic.structure.rectangle import Rectangle
 from .structure.bounding_box import BoundingBox
 
 
-def _state_to_bbox(state: np.ndarray, old: Rectangle) -> Rectangle:
-    x, y, vx, vy = state
-    w, h = old.w, old.h
-    return Rectangle(int(x - w/2), int(y - h/2), w, h)
-
-
 class BacterialTracker:
     def __init__(self,
                  optical_flow_video: np.ndarray,
@@ -40,6 +34,12 @@ class BacterialTracker:
             'history': []
         }
 
+    @staticmethod
+    def _state_to_bbox(state: np.ndarray, old: Rectangle) -> Rectangle:
+        x, y, vx, vy = state
+        w, h = old.w, old.h
+        return Rectangle(int(x - w/2), int(y - h/2), w, h)
+
     def _predict(self, track: dict) -> dict:
         F = np.array([[1, 0, 1, 0],
                       [0, 1, 0, 1],
@@ -49,7 +49,7 @@ class BacterialTracker:
         track['state'][2:] = np.clip(
             track['state'][2:], -self.max_velocity, self.max_velocity)
         track['covariance'] = F @ track['covariance'] @ F.T + self.Q
-        track['bbox'] = _state_to_bbox(track['state'], track['bbox'])
+        track['bbox'] = self._state_to_bbox(track['state'], track['bbox'])
         return track
 
     def _update(self, track: dict, measurement: Tuple[float, float]) -> dict:
@@ -62,7 +62,7 @@ class BacterialTracker:
         track['state'][2:] = np.clip(
             track['state'][2:], -self.max_velocity, self.max_velocity)
         track['covariance'] = (np.eye(4) - K @ H) @ track['covariance']
-        track['bbox'] = _state_to_bbox(track['state'], track['bbox'])
+        track['bbox'] = self._state_to_bbox(track['state'], track['bbox'])
         return track
 
     def _match_bboxes(self, predicted: List[dict], detections: List[BoundingBox]) -> List[Tuple[int, int]]:
