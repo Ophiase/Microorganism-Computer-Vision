@@ -1,29 +1,20 @@
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Tuple
 from logic.structure.rectangle import Rectangle
+from numba import jit
 
 DEFAULT_INDEX: int = 0
 
-
 @dataclass
 class BoundingBox:
-
     index: int
     rectangle: Rectangle
     visible: bool
 
-    #########################################
-
     def __init__(
-            self,
-            rectangle: Rectangle | Tuple[int, int, int, int],
-            index: int = DEFAULT_INDEX,
-            visible: bool = False):
-        if isinstance(rectangle, Rectangle):
-            self.rectangle = rectangle
-        else:
-            self.rectangle = Rectangle(*rectangle)
-
+        self, rectangle: Rectangle | Tuple[int, int, int, int], index: int = DEFAULT_INDEX, visible: bool = False
+    ):
+        self.rectangle = rectangle if isinstance(rectangle, Rectangle) else Rectangle(*rectangle)
         self.index = index
         self.visible = visible
 
@@ -52,10 +43,18 @@ class BoundingBox:
     def h(self) -> int:
         return self.rectangle.h
 
-    #########################################
+    @staticmethod
+    @jit(nopython=True)
+    def _centroid(x: int, y: int, w: int, h: int) -> Tuple[float, float]:
+        return x + w / 2, y + h / 2
 
-    def centroid(self) -> tuple[float, float]:
-        return (self.x + self.w/2, self.y + self.h/2)
+    @staticmethod
+    @jit(nopython=True)
+    def _icentroid(x: int, y: int, w: int, h: int) -> Tuple[int, int]:
+        return int(x + w / 2), int(y + h / 2)
 
-    def icentroid(self) -> tuple[int, int]:
-        return (int(self.x + self.w/2), int(self.y + self.h/2))
+    def centroid(self) -> Tuple[float, float]:
+        return self._centroid(self.x, self.y, self.w, self.h)
+
+    def icentroid(self) -> Tuple[int, int]:
+        return self._icentroid(self.x, self.y, self.w, self.h)
