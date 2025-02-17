@@ -1,6 +1,7 @@
 from enum import Enum
 from scipy.ndimage import convolve
 import numpy as np
+from numba import jit
 
 
 class KernelType(Enum):
@@ -16,7 +17,8 @@ KERNELS = {
 }
 
 
-def apply_kernel(tensor: np.ndarray, kernel:np.ndarray, i: int, j: int, width: int, height: int):
+@jit(nopython=True)
+def apply_kernel(tensor: np.ndarray, kernel: np.ndarray, i: int, j: int, width: int, height: int):
     local_sum, weight = 0, 0
     for di in range(-1, 2):
         for dj in range(-1, 2):
@@ -33,10 +35,16 @@ def average_neighbors(tensor: np.ndarray, kernel_type: KernelType = KernelType.D
     if use_library:
         return convolve(tensor, kernel, mode='constant', cval=0)
 
-    result = np.zeros_like(tensor)
+    return _average_neighbors_numba(tensor, kernel)
+
+
+@jit(nopython=True)
+def _average_neighbors_numba(tensor: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     width, height = tensor.shape
+    result = np.zeros_like(tensor)
 
     for i in range(width):
         for j in range(height):
             result[i, j] = apply_kernel(tensor, kernel, i, j, width, height)
+
     return result

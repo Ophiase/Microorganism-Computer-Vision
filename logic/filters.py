@@ -4,10 +4,8 @@ import numpy as np
 from enum import Enum
 from scipy.ndimage import convolve
 from common import DATA_FOLDER, PREPROCESSED_FOLDER
-from logic.load import load_video
-from logic.optical_flow import compute_optical_flow
-from visualization.grayscale_visualization import show_grayscale
 from logic.kernel import KernelType, KERNELS, average_neighbors
+from numba import jit
 
 ###################################################################################
 
@@ -17,6 +15,7 @@ LOW = 0.2
 ###################################################################################
 
 
+@jit(nopython=True)
 def tensor_gradient(tensor: np.ndarray) -> np.ndarray:
     dx = np.zeros_like(tensor)
     dy = np.zeros_like(tensor)
@@ -25,6 +24,7 @@ def tensor_gradient(tensor: np.ndarray) -> np.ndarray:
     return np.stack((dx, dy), axis=-1)
 
 
+@jit(nopython=True)
 def pre_transform(tensor: np.ndarray) -> np.ndarray:
     result = np.clip(tensor, LOW, HIGH)
     result = (result - np.min(result)) / (np.max(result) - np.min(result))
@@ -33,8 +33,8 @@ def pre_transform(tensor: np.ndarray) -> np.ndarray:
     return result
 
 
-def transform(tensor: np.ndarray) -> np.ndarray:
-    trend = average_neighbors(tensor)
+@jit(nopython=True)
+def _transform_jit(tensor: np.ndarray, trend: np.ndarray) -> np.ndarray:
     normalized = tensor - trend
     gradient = tensor_gradient(tensor)
     return np.stack((
@@ -42,6 +42,10 @@ def transform(tensor: np.ndarray) -> np.ndarray:
         normalized,
         gradient[..., 0], gradient[..., 1]
     ), axis=-1)
+
+
+def transform(tensor: np.ndarray) -> np.ndarray:
+    return _transform_jit(tensor, average_neighbors(tensor))
 
 
 def transform_frame(frame: np.ndarray, optical_flow: np.ndarray) -> np.ndarray:
@@ -57,6 +61,7 @@ def transform_frame(frame: np.ndarray, optical_flow: np.ndarray) -> np.ndarray:
     ), axis=-2)
 
 
+# @jit(nopython=True)
 def transform_video(video: np.ndarray, optical_flow_video: np.ndarray) -> np.ndarray:
     return np.stack([
         transform_frame(frame, optical_flow)
