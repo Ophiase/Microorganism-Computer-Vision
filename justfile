@@ -78,5 +78,5 @@ update:
 [doc("VERSION, pyproject.toml and the newest CHANGELOG section, side by side.")]
 version:
     @printf 'VERSION    %s\n' "$(cat VERSION)"
-    @printf 'pyproject  %s\n' "$(grep -m1 '^version' pyproject.toml | cut -d'\"' -f2)"
-    @printf 'changelog  %s\n' "$(grep -m1 '^## ' CHANGELOG.md | cut -d' ' -f2)"
+    @printf 'pyproject  %s\n' "$(awk -F'\"' '/^version = / { print $2; exit }' pyproject.toml)"
+    @printf 'changelog  %s\n' "$(awk '/^## [0-9]/ { print $2; exit }' CHANGELOG.md)"
