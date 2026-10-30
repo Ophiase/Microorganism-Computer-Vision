@@ -1,0 +1,15 @@
+# Per-project references. Copy to `.agents/local/projects.yaml`, which is
+# gitignored: it may hold private context and paths.
+#
+# Each entry says where a project is and why the agent may read it. Take the
+# method, never the content; read the project's guard before reusing anything.
+#
+# `consent` records the user's answer:
+#   ask      — not decided yet; ask before reading (the default when absent)
+#   granted  — the user allowed this project
+#   denied   — the user vetoed it; never read it, whatever the `why` says
+projects:
+  sibling-rust:
+    path: /path/to/sibling
+    consent: ask
+    why: what its newest conventions teach, and what not to copy
