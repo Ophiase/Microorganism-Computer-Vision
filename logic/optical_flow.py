@@ -1,22 +1,26 @@
 import cv2
 import numpy as np
 
-VERBOSE = False
 
+def compute_optical_flow(video: np.ndarray, verbose: bool = False) -> np.ndarray:
+    """Farneback flow between consecutive frames, one flow per frame.
 
-def compute_optical_flow(video: np.ndarray, verbose: bool = VERBOSE) -> np.ndarray:
-    optical_flow = []
-    prev_frame = video[0]
-    for i in range(1, len(video)):
-        next_frame = video[i]
-        flow = cv2.calcOpticalFlowFarneback(
-            prev_frame, next_frame, None, 0.5, 3, 15, 3, 5, 1.2, 0)
-        optical_flow.append(flow)
-        prev_frame = next_frame
-        if verbose and (i % 30 == 0):
-            print(
-                f"Computed optical flow for frame {i}, flow shape: {flow.shape}")
+    The first flow is the one of the second frame: the pair (0, 1) has no
+    predecessor to be compared with, and every later stage expects one flow
+    per frame.
+    """
+    if len(video) < 2:
+        raise ValueError("a video of at least two frames is needed to measure a flow")
 
-    # Duplicate the first flow to match the video length
-    optical_flow.insert(0, optical_flow[0])
-    return np.array(optical_flow)
+    flows = []
+    previous = video[0]
+    for index in range(1, len(video)):
+        current = video[index]
+        flow = np.zeros((*previous.shape, 2), dtype=np.float32)
+        cv2.calcOpticalFlowFarneback(previous, current, flow, 0.5, 3, 15, 3, 5, 1.2, 0)
+        flows.append(flow)
+        previous = current
+        if verbose and index % 30 == 0:
+            print(f"Computed optical flow for frame {index}, flow shape: {flow.shape}")
+
+    return np.array([flows[0], *flows])

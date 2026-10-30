@@ -1,5 +1,6 @@
 line-length = 88
 preview = true
+exclude = [".agents", ".venv", "data", "output"]
 
 [lint]
 extend-select = ["unused-async"]

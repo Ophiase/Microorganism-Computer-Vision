@@ -4,7 +4,7 @@ import '.agents/portable/just/harness.just'
 set positional-arguments := true
 
 default:
-    @just --list --list-submodules
+    @just --list # --list-submodules
 
 [group("user")]
 [doc("Create the environment: Python 3.14 from .python-version, dependencies from uv.lock.")]

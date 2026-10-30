@@ -1,56 +1,83 @@
-
-import unittest
 import numpy as np
-from logic.filters import tensor_gradient, transform_video
+import pytest
+
+from logic.filters import pre_transform, tensor_gradient, transform, transform_video
 from logic.kernel import KernelType, average_neighbors
-from visualization.grayscale_visualization import show_grayscale
+from logic.structure.bounding_box import BoundingBox
+from logic.structure.rectangle import Rectangle
+from logic.trajectories import Trajectory
+
+RESOLUTION = 32
+FRAMES = 3
+CHANNELS = 3
+TRANSFORMS = 4
 
 
-def test_full_on_noise(
-    self,
-    video: np.ndarray = None,
-    optical_flow_video: np.ndarray = None,
-    frame: int = 1
-) -> None:
-    np.random.seed(100)
+@pytest.fixture
+def noise_video() -> tuple[np.ndarray, np.ndarray]:
+    generator = np.random.default_rng(seed=100)
+    video = generator.random((FRAMES, RESOLUTION, RESOLUTION))
+    flow = generator.random((FRAMES, RESOLUTION, RESOLUTION, 2))
+    return video, flow
 
-    RES = 32
-    if video is None:
-        video = np.random.rand(2, RES, RES)
-    if optical_flow_video is None:
-        optical_flow_video = np.random.rand(2, RES, RES, 2)
 
-    processed_video = transform_video(video, optical_flow_video)
+def test_gradient_is_a_forward_difference() -> None:
+    tensor = np.random.default_rng(seed=1).random((RESOLUTION, RESOLUTION))
+    gradient = tensor_gradient(tensor)
 
-    print("\nTransformed Video Shape:")
-    print(processed_video.shape)
+    assert gradient.shape == (RESOLUTION, RESOLUTION, 2)
+    np.testing.assert_allclose(gradient[1:, 1:, 0], tensor[1:, 1:] - tensor[1:, :-1])
+    np.testing.assert_allclose(gradient[1:, 1:, 1], tensor[1:, 1:] - tensor[:-1, 1:])
 
-    to_show = [
-        processed_video[frame, :, :, i, j]
-        for i in range(3)
-        for j in range(4)]
 
-    show_grayscale(to_show).show()
+def test_pre_transform_stays_in_the_unit_interval() -> None:
+    tensor = np.random.default_rng(seed=2).random((RESOLUTION, RESOLUTION)) * 3 - 1
+    result = pre_transform(tensor)
 
-def test_check_gradient(self) -> None:
-    tensor = np.random.rand(40, 60)
-    grad = tensor_gradient(tensor)
+    assert result.min() >= 0.0
+    assert result.max() <= 1.0
 
-    avg = tensor
-    for _ in range(1):
-        avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
-    grad_avg = tensor_gradient(avg)
-    show_grayscale([
-        tensor, grad[:, :, 0], grad[:, :, 0],
-        avg, grad_avg[:, :, 0], grad_avg[:, :, 1]
-    ]).show()
 
-def test_check_kernel(self) -> None:
-    tensor = np.random.rand(40, 60)
-    avg = tensor
-    for _ in range(20):
-        avg = average_neighbors(avg, KernelType.SOFT_MEDIAN)
+def test_every_frame_gets_a_trend_and_two_gradients(noise_video) -> None:
+    video, flow = noise_video
+    processed = transform_video(video, flow)
 
-    show_grayscale([
-        tensor, avg
-    ]).show()
+    assert processed.shape == (FRAMES, RESOLUTION, RESOLUTION, CHANNELS, TRANSFORMS)
+    np.testing.assert_allclose(processed[1], transform_frame(video[1], flow[1]))
+
+
+def transform_frame(frame: np.ndarray, flow: np.ndarray) -> np.ndarray:
+    return np.stack(
+        (transform(frame), transform(flow[:, :, 0]), transform(flow[:, :, 1])), axis=-2
+    )
+
+
+def test_averaging_neighbours_preserves_a_flat_field() -> None:
+    flat = np.full((RESOLUTION, RESOLUTION), 0.5)
+    for kernel_type in KernelType:
+        np.testing.assert_allclose(
+            average_neighbors(flat, kernel_type), flat, atol=1e-6
+        )
+
+
+def test_a_trajectory_reads_the_ranked_boxes_of_its_track() -> None:
+    boxes = [
+        [BoundingBox(Rectangle(frame * 10, 0, 20, 20), index=frame, tracked=True)]
+        for frame in range(FRAMES)
+    ]
+    trajectories = Trajectory.from_frames(boxes)
+
+    assert len(trajectories) == FRAMES
+    assert trajectories[0].frames == (0,)
+    assert trajectories[0].positions == ((10.0, 10.0),)
+
+
+def test_a_position_ranks_by_its_displacement() -> None:
+    boxes = [
+        BoundingBox(Rectangle(step * 4, 0, 2, 2), index=0, tracked=True)
+        for step in range(FRAMES)
+    ]
+    trajectory = Trajectory.from_frames([[box] for box in boxes])[0]
+
+    assert trajectory.displacements == ((4.0, 0.0), (4.0, 0.0))
+    assert trajectory.average_speed == pytest.approx(4.0)
