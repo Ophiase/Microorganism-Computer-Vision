@@ -1,0 +1,15 @@
+line-length = 88
+preview = true
+
+[lint]
+extend-select = ["unused-async"]
+fixable = ["ALL"]
+select = ["E", "F", "UP", "B", "I", "SIM", "S", "RUF", "PTH", "C4", "ARG", "G"]
+ignore = [
+  "ambiguous-unicode-character-string",
+  "ambiguous-unicode-character-docstring",
+  "ambiguous-unicode-character-comment",
+]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = ["assert"]

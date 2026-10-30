@@ -1,0 +1,8 @@
+# The repository root holds tooling, not a concept, so it is never counted.
+# `.agents/` is the author's agent layer, copied as is from his other projects.
+# `logic/` and `logic/diffusion/` are split by concept in the next pass; until
+# then they are listed here, so the check reports only what it can fix.
+/home/astragaliton/Projects/git/project/Microorganism-Computer-Vision
+/home/astragaliton/Projects/git/project/Microorganism-Computer-Vision/.agents/*
+/home/astragaliton/Projects/git/project/Microorganism-Computer-Vision/logic
+/home/astragaliton/Projects/git/project/Microorganism-Computer-Vision/logic/diffusion
