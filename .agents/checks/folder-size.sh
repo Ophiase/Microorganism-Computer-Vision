@@ -18,7 +18,7 @@ for file in "$@"; do
   [[ -n ${seen[$folder]:-} || ! -d $folder ]] && continue
   seen[$folder]=1
   "$checks/../portable/checks/is-ignored.sh" folder-size "$(realpath -m "$folder")" && continue
-  count=$(find "$folder" -mindepth 1 -maxdepth 1 ! -name '.*' | wc -l)
+  count=$(find "$folder" -mindepth 1 -maxdepth 1 ! -name '.*' ! -name '__pycache__' | wc -l)
   if ((count > limit)); then
     printf '%s holds %d entries, more than %d: split it into named concepts.\n' "$folder" "$count" "$limit"
     status=1

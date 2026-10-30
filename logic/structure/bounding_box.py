@@ -1,31 +1,35 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Self
+
 from logic.structure.rectangle import Rectangle
-from numba import jit
 
-DEFAULT_INDEX: int = 0
+DEFAULT_INDEX = 0
 
-@dataclass
+
+@dataclass(frozen=True, slots=True)
 class BoundingBox:
-    index: int
+    """A rectangle carrying the identity the tracker gave it.
+
+    `tracked` tells a box the tracker produced, which enters a trajectory,
+    from a raw detection, which does not: a detection is what the tracker
+    reads, not what it reports.
+    """
+
     rectangle: Rectangle
-    visible: bool
+    index: int = DEFAULT_INDEX
+    tracked: bool = False
 
-    def __init__(
-        self, rectangle: Rectangle | Tuple[int, int, int, int], index: int = DEFAULT_INDEX, visible: bool = False
-    ):
-        self.rectangle = rectangle if isinstance(rectangle, Rectangle) else Rectangle(*rectangle)
-        self.index = index
-        self.visible = visible
-
-    def getBbox(self) -> Tuple[int, int, int, int]:
-        return self.rectangle.to_tuple()
-
-    def toTupple(self) -> Tuple[int, int, int, int, int, bool]:
-        return (self.index, self.x, self.y, self.w, self.h, self.visible)
-
-    def __getitem__(self, item):
-        return self.toTupple()[item]
+    @classmethod
+    def from_tuple(
+        cls,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        index: int = DEFAULT_INDEX,
+        tracked: bool = False,
+    ) -> Self:
+        return cls(Rectangle(x, y, width, height), index, tracked)
 
     @property
     def x(self) -> int:
@@ -36,25 +40,13 @@ class BoundingBox:
         return self.rectangle.y
 
     @property
-    def w(self) -> int:
-        return self.rectangle.w
+    def width(self) -> int:
+        return self.rectangle.width
 
     @property
-    def h(self) -> int:
-        return self.rectangle.h
+    def height(self) -> int:
+        return self.rectangle.height
 
-    @staticmethod
-    @jit(nopython=True)
-    def _centroid(x: int, y: int, w: int, h: int) -> Tuple[float, float]:
-        return x + w / 2, y + h / 2
-
-    @staticmethod
-    @jit(nopython=True)
-    def _icentroid(x: int, y: int, w: int, h: int) -> Tuple[int, int]:
-        return int(x + w / 2), int(y + h / 2)
-
-    def centroid(self) -> Tuple[float, float]:
-        return self._centroid(self.x, self.y, self.w, self.h)
-
-    def icentroid(self) -> Tuple[int, int]:
-        return self._icentroid(self.x, self.y, self.w, self.h)
+    @property
+    def centroid(self) -> tuple[float, float]:
+        return self.rectangle.centroid

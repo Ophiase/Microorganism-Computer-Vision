@@ -1,24 +1,32 @@
+from pathlib import Path
+
 import cv2
 import numpy as np
 
-VERBOSE = False
 
+def load_video(
+    video_path: Path,
+    interval: tuple[int, int] | None = None,
+    verbose: bool = False,
+) -> np.ndarray:
+    """Read the frames of a video as floats in [0, 1], grayscale.
 
-def load_video(video_path: str, color_mode: str = 'grayscale', interval: tuple = None, verbose: bool = VERBOSE) -> np.ndarray:
-    cap = cv2.VideoCapture(video_path)
+    `interval` keeps the half-open frame range `[start, end)`; frames outside it
+    are decoded and dropped, the codec gives no cheap seek per frame.
+    """
+    capture = cv2.VideoCapture(str(video_path))
     frames = []
     frame_count = 0
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
+    while capture.isOpened():
+        read, frame = capture.read()
+        if not read:
             break
-        if interval is None or (frame_count >= interval[0] and frame_count < interval[1]):
-            if color_mode == 'grayscale':
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            frame = frame.astype(np.float32) / 255.0
-            frames.append(frame)
+        if interval is None or interval[0] <= frame_count < interval[1]:
+            grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            frames.append(grayscale.astype(np.float32) / 255.0)
         frame_count += 1
-    cap.release()
+    capture.release()
+
     video = np.array(frames)
     if verbose:
         print(f"Loaded video {video_path} shape: {video.shape}")

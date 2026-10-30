@@ -1,144 +1,134 @@
-import os
-from typing import Dict, List, Tuple
-import numpy as np
-from common import ANALYSIS_GRAPHICS_PATH, DEFAULT_VIDEO, DEFAULT_VIDEO_RESOLUTION, TRACKING_FOLDER
-from logic.diffusion.base import DiffusionTest
-from logic.diffusion.circular_motion_test import CircularMotionTest
-from logic.diffusion.directional_switching_test import DirectionalSwitchTest
-from logic.diffusion.persistent_motion_test import PersistentMotionTest
-from logic.diffusion.gaussian_random_walk_test import GaussianRandomWalkTest
-from logic.diffusion.msd_linear_test import MSDLinearTest
-from logic.diffusion.sub_diffusion_test import SubDiffusionTest
-from logic.structure.bounding_box import BoundingBox
-from logic.trajectories import Trajectory, restructure_data
-from visualization.trajectories_visualization import plot_trajectories, plot_speed_distribution, plot_angular_distribution, plot_speed_distribution_per_trajectory
 import csv
+from pathlib import Path
 
-###################################################################################
+import numpy as np
 
-TRACKING_PATH = os.path.join(TRACKING_FOLDER, DEFAULT_VIDEO + ".npy")
+from common import (
+    ANALYSIS_GRAPHICS_PATH,
+    DEFAULT_VIDEO,
+    DEFAULT_VIDEO_RESOLUTION,
+    TRACKING_FOLDER,
+)
+from logic.diffusion import (
+    CircularMotionTest,
+    DiffusionTest,
+    DirectionalSwitchTest,
+    GaussianRandomWalkTest,
+    MSDLinearTest,
+    PersistentMotionTest,
+    SubDiffusionTest,
+)
+from logic.trajectories import Trajectory
+from visualization.trajectories import (
+    plot_angular_distribution,
+    plot_speed_distribution,
+    plot_speed_distribution_per_trajectory,
+    plot_trajectories,
+)
 
-ONLY_MOVING_BACTERIA = False
-MOVING_BACTERIA_MINIMAL_SPEED = 3
-ONLY_MOVING_BACTERIA_BY_PERCENT = False
-MOVING_BACTERIA_PERCENT = 0.05
-DEBUG = True
-
-DIFFUSION_HYPOTHESIS: Dict[str, DiffusionTest] = {
-    'Gaussian': GaussianRandomWalkTest,
-    'Linear MSD': MSDLinearTest,
-    'Sub Diffusion': SubDiffusionTest,
-    'Persistent Motion': PersistentMotionTest,
-    'Circular Motion': CircularMotionTest,
-    'Directional Switch': DirectionalSwitchTest,
+TRACKING_PATH = TRACKING_FOLDER / f"{DEFAULT_VIDEO}.npy"
+HYPOTHESES: dict[str, type[DiffusionTest]] = {
+    "Gaussian": GaussianRandomWalkTest,
+    "Linear MSD": MSDLinearTest,
+    "Sub Diffusion": SubDiffusionTest,
+    "Persistent Motion": PersistentMotionTest,
+    "Circular Motion": CircularMotionTest,
+    "Directional Switch": DirectionalSwitchTest,
 }
-
-###################################################################################
-
-
-def load_trajectories(
-        tracking_file: str = TRACKING_PATH
-) -> List[Trajectory]:
-    tracked_data: List[List[BoundingBox]] = np.load(
-        tracking_file, allow_pickle=True
-    ).tolist()
-    restructured = restructure_data(tracked_data)
-    return [Trajectory(bboxes) for bboxes in restructured]
+TOP_PERCENT = 0.05
+MINIMAL_SPEED = 3.0
 
 
-def filter_trajectories(trajectories: List[Trajectory]) -> List[Trajectory]:
-    if ONLY_MOVING_BACTERIA_BY_PERCENT:
-        sorted_trajs = sorted(
-            trajectories,
-            key=lambda t: t.average_speed(),
-            reverse=True
-        )
-
-        keep_count = max(1, int(len(sorted_trajs) * MOVING_BACTERIA_PERCENT))
-        return sorted_trajs[:keep_count]
-    elif ONLY_MOVING_BACTERIA:
-        return [
-            t for t in trajectories
-            if t.average_speed() >= MOVING_BACTERIA_MINIMAL_SPEED
-        ]
-    return trajectories
+def load_trajectories(tracking_file: Path = TRACKING_PATH) -> tuple[Trajectory, ...]:
+    tracked_frames = np.load(tracking_file, allow_pickle=True).tolist()
+    return Trajectory.from_frames(tracked_frames)
 
 
-def diffusion_analysis(
-        trajectories: List[Trajectory],
-        video: str = DEFAULT_VIDEO
-):
-    os.makedirs(os.path.join(ANALYSIS_GRAPHICS_PATH, video), exist_ok=True)
-    results_path = os.path.join(
-        ANALYSIS_GRAPHICS_PATH, video, "diffusion_results.csv"
+def fastest(
+    trajectories: tuple[Trajectory, ...], percent: float = TOP_PERCENT
+) -> tuple[Trajectory, ...]:
+    """Keep the fastest share of the tracks, the ones that actually moved."""
+    ranked = sorted(
+        trajectories, key=lambda trajectory: trajectory.average_speed, reverse=True
+    )
+    return tuple(ranked[: max(1, int(len(ranked) * percent))])
+
+
+def moving(trajectories: tuple[Trajectory, ...]) -> tuple[Trajectory, ...]:
+    return tuple(
+        trajectory
+        for trajectory in trajectories
+        if trajectory.average_speed >= MINIMAL_SPEED
     )
 
-    results_per_hypothesis = analyze_trajectories(trajectories)
 
-    write_csv(results_path, results_per_hypothesis)
-
-
-def analyze_trajectories(trajectories: List[Trajectory]) -> Dict[str, List[bool]]:
+def analyze(trajectories: tuple[Trajectory, ...]) -> dict[str, list[bool]]:
+    """Run the six hypotheses and report how many tracks each one fits."""
     print("Hypothesis:")
     results = {}
-    for name, analysis_class in DIFFUSION_HYPOTHESIS.items():
-        analyzer = analysis_class()
-        result = [analyzer.analyze(trajectory) for trajectory in trajectories]
-        print(f"- {name} fit: {sum(result)}/{len(result)}")
-        results[name] = result
+    for name, hypothesis in HYPOTHESES.items():
+        analyzer = hypothesis()
+        verdicts = [analyzer.analyze(trajectory) for trajectory in trajectories]
+        print(f"- {name} fit: {sum(verdicts)}/{len(verdicts)}")
+        results[name] = verdicts
     return results
 
 
-def write_csv(results_path: str, results: Dict[str, List[bool]]):
-    with open(results_path, mode='w', newline='') as file:
+def write_csv(results_path: Path, results: dict[str, list[bool]]) -> Path:
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    with results_path.open(mode="w", newline="") as file:
         writer = csv.writer(file)
-        header = ["Trajectory"] + list(results.keys())
-        writer.writerow(header)
-
-        rows = zip(*results.values())
-        for i, row in enumerate(rows):
-            writer.writerow([i] + list(row))
+        writer.writerow(["Trajectory", *results.keys()])
+        for index, row in enumerate(zip(*results.values(), strict=True)):
+            writer.writerow([index, *row])
+    return results_path
 
 
-def statistics(
-    trajectories: List[Trajectory],
-    video: str = DEFAULT_VIDEO,
-    video_resolution: Tuple[int, int] = DEFAULT_VIDEO_RESOLUTION,
-    debug: bool = DEBUG
-) -> None:
-    plots = {
+def write_figures(
+    trajectories: tuple[Trajectory, ...],
+    output_folder: Path,
+    resolution: tuple[int, int] = DEFAULT_VIDEO_RESOLUTION,
+) -> tuple[Path, ...]:
+    figures = {
         "speed_distribution": plot_speed_distribution(trajectories),
-        "speed_distribution_per_trajectory": plot_speed_distribution_per_trajectory(trajectories),
+        "speed_distribution_per_trajectory": plot_speed_distribution_per_trajectory(
+            trajectories
+        ),
         "angular_distribution": plot_angular_distribution(trajectories),
-        "trajectories": plot_trajectories(trajectories, resolution=video_resolution),
+        "trajectories": plot_trajectories(trajectories, resolution=resolution),
     }
 
-    print(f"Output folder: {ANALYSIS_GRAPHICS_PATH}")
-    for name, fig in plots.items():
-        img_path = os.path.join(ANALYSIS_GRAPHICS_PATH, video, f"{name}.png")
-        fig.write_image(img_path, engine="kaleido")
-        print(f"Saved {name}")
-
-        if debug:
-            fig.show()
-
-###################################################################################
+    output_folder.mkdir(parents=True, exist_ok=True)
+    written = []
+    for name, figure in figures.items():
+        image_path = output_folder / f"{name}.png"
+        figure.write_image(image_path)
+        print(f"Saved {name} to {image_path}")
+        written.append(image_path)
+    return tuple(written)
 
 
 def process(
-        video: str = DEFAULT_VIDEO,
-        tracking_file: str = TRACKING_PATH,
-        debug: bool = DEBUG
-):
+    video: str = DEFAULT_VIDEO,
+    tracking_file: Path = TRACKING_PATH,
+    keep: str = "all",
+    debug: bool = False,
+) -> tuple[Path, ...]:
+    """Test every trajectory against the hypotheses, then draw what was found.
+
+    `keep` is `all`, `moving` or `fastest`: on a real video most tracks are
+    dust that never moved, and they drown the distributions.
+    """
     trajectories = load_trajectories(tracking_file)
-    trajectories = filter_trajectories(trajectories)
-    diffusion_analysis(trajectories, video)
-    statistics(trajectories, video, debug=debug)
+    match keep:
+        case "moving":
+            trajectories = moving(trajectories)
+        case "fastest":
+            trajectories = fastest(trajectories)
 
-
-def main():
-    process()
-
-
-if __name__ == "__main__":
-    main()
+    output_folder = ANALYSIS_GRAPHICS_PATH / Path(video).stem
+    write_csv(output_folder / "diffusion_results.csv", analyze(trajectories))
+    written = write_figures(trajectories, output_folder)
+    if debug:
+        print(f"Output folder: {output_folder}")
+    return written

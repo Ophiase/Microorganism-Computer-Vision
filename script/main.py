@@ -1,59 +1,63 @@
 import argparse
-import os
+from collections.abc import Sequence
+
 from common import DATA_FOLDER, DEFAULT_VIDEO, PREPROCESSED_FOLDER, TRACKING_FOLDER
-from script.extract import process as extract_process
-from script.transform import process as transform_process
-from script.object_detection import process_with_tracking as detection_process, test_kalman_filter
-from script.render import process as render_process
-from script.statistical_tests import process as analysis_process
-from script.synthetic_generation import generate_synthetic_data
+from script.extract import process as extract
+from script.object_detection import process_with_tracking, show_tracks
+from script.render import process as render
+from script.statistical_tests import process as analyze
+from script.transform import process as transform
+from synthetic.dataset import generate_synthetic_data
+
+TASKS = ("extract", "transform", "detection", "render", "analysis", "synthetic")
 
 
-def main():
+def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Microorganism Computer Vision Pipeline")
+        description="Microorganism Computer Vision pipeline"
+    )
+    parser.add_argument("--video", default=DEFAULT_VIDEO, help="video file in data/")
     parser.add_argument(
-        "--video", type=str, help="Path to the video file to process",
-        default=DEFAULT_VIDEO
+        "--task", choices=TASKS, required=True, help="stage of the pipeline to run"
     )
     parser.add_argument(
-        "--verbose", action="store_true", help="Disable verbose/debug output", default=False)
+        "--keep",
+        choices=("all", "moving", "fastest"),
+        default="all",
+        help="which trajectories the analysis keeps",
+    )
     parser.add_argument(
-        "--task", type=str,
-        choices=["extract", "transform", "detection", "render", "analysis", "synthetic"], required=True,
-        help="Task to perform")
+        "--debug", action="store_true", help="open the figures and print the shapes"
+    )
+    return parser.parse_args(argv)
 
-    args = parser.parse_args()
 
-    video_path = os.path.join(DATA_FOLDER, args.video)
-    npy_path = os.path.join(PREPROCESSED_FOLDER, args.video + ".npy")
-    tracking_path = os.path.join(TRACKING_FOLDER, args.video + ".npy")
+def main(argv: Sequence[str] | None = None) -> None:
+    arguments = parse_arguments(argv)
+    video_path = DATA_FOLDER / arguments.video
+    tensor_path = PREPROCESSED_FOLDER / f"{arguments.video}.npy"
+    tracking_path = TRACKING_FOLDER / f"{arguments.video}.npy"
 
-    match args.task:
+    match arguments.task:
         case "extract":
-            extract_process()
+            extract()
         case "transform":
-            transform_process(
-                video_path=video_path,
-                debug=args.verbose
-            )
+            transform(video_path=video_path, debug=arguments.debug)
         case "detection":
-            if args.verbose:
-                test_kalman_filter(file_path=npy_path)
+            if arguments.debug:
+                show_tracks(tensor_path)
             else:
-                detection_process(file_path=npy_path)
+                process_with_tracking(tensor_path)
         case "synthetic":
-            generate_synthetic_data(
-                output_folder=TRACKING_FOLDER,
-                verbose=args.verbose
-            )
+            generate_synthetic_data(verbose=arguments.debug)
         case "render":
-            render_process()
+            render()
         case "analysis":
-            analysis_process(
-                video=args.video,
+            analyze(
+                video=arguments.video,
                 tracking_file=tracking_path,
-                debug=args.verbose
+                keep=arguments.keep,
+                debug=arguments.debug,
             )
 
 
