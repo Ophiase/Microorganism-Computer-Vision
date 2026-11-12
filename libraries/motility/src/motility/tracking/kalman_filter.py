@@ -6,8 +6,8 @@ import numpy as np
 from numba import njit
 from scipy.optimize import linear_sum_assignment
 
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.rectangle import Rectangle
+from motility.tracking.bounding_box import BoundingBox
+from motility.tracking.rectangle import Rectangle
 
 TRANSITION = np.array([
     [1.0, 0.0, 1.0, 0.0],

@@ -32,7 +32,9 @@ test runs `transform`, `detection` and `analysis` on a few synthetic frames.
 
 **[fact]** 2026-11-12: `src/microorganism_computer_vision/`, built by
 hatchling; `common.py` is `pipeline/paths.py`; `logic/` is split into
-`vision/`, `tracking/` and `diffusion/`.
+`vision/`, `tracking/` and `diffusion/`. Then the library
+`libraries/motility/` apart from the application, in a uv workspace, and the
+dataset in `settings/`.
 
 *Acceptance*: `folder-size.ignore` lists only `.agents/`.
 

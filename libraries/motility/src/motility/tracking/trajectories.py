@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from itertools import pairwise
 from typing import Self
 
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
+from motility.tracking.bounding_box import BoundingBox
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,16 +1,16 @@
 from pathlib import Path
 
 import numpy as np
+from motility.vision.filters import pre_transform, transform_video
+from motility.vision.optical_flow import compute_optical_flow
 
-from microorganism_computer_vision.pipeline.paths import (
+from microorganism_computer_vision.paths import (
     DATA_FOLDER,
     DEFAULT_VIDEO,
     DEFAULT_VIDEO_INTERVAL,
     PREPROCESSED_FOLDER,
 )
-from microorganism_computer_vision.vision.filters import pre_transform, transform_video
-from microorganism_computer_vision.vision.load import load_video
-from microorganism_computer_vision.vision.optical_flow import compute_optical_flow
+from microorganism_computer_vision.video import load_video
 from microorganism_computer_vision.visualization.panels import show_grayscale
 
 VIDEO_PATH = DATA_FOLDER / DEFAULT_VIDEO

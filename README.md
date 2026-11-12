@@ -116,14 +116,17 @@ microorganism-cv/
 ├── data/                           # Raw and processed data, out of git
 │   ├── preprocessed/               # The channel tensors of a video
 │   └── tracking/                   # One file of boxes per frame
-├── src/microorganism_computer_vision/
-│   ├── vision/                     # Loading, filters, optical flow, shapes
-│   ├── tracking/                   # Boxes, the Kalman tracker, trajectories
-│   │   └── synthetic/              # The trajectory generator and its datasets
-│   ├── diffusion/                  # The MSD and the six hypotheses
-│   ├── pipeline/                   # One file per task, and the paths
-│   └── visualization/              # The figures, split by concept
-├── tests/                          # The unit tests
+├── libraries/motility/            # The library: arrays in, measures out
+│   └── src/motility/
+│       ├── vision/                 # Filters, optical flow, shapes
+│       ├── tracking/               # Boxes, the Kalman tracker, trajectories
+│       ├── diffusion/              # The MSD and the six hypotheses
+│       └── synthetic.py            # The trajectory generator
+├── src/microorganism_computer_vision/  # The application: the study
+│   ├── pipeline/                   # One file per task
+│   └── visualization/              # The figures
+├── settings/dataset.toml           # The source videos
+├── tests/                          # The tests of the application
 └── ideas/                          # Where the project goes
 ```
 

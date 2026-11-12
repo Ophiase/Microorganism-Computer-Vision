@@ -2,16 +2,16 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from motility.tracking.bounding_box import BoundingBox
 from PIL import Image, ImageDraw, ImageFont
 
-from microorganism_computer_vision.pipeline.paths import (
+from microorganism_computer_vision.paths import (
     DATA_FOLDER,
     DEFAULT_FONT,
     OUTPUT_FOLDER,
     PREPROCESSED_FOLDER,
     TRACKING_FOLDER,
 )
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
 
 FRAMES_PER_SECOND = 10
 FONT_SIZE = 12

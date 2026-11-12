@@ -15,13 +15,12 @@ keywords = [
 dependencies = [
   "kaleido>=1.2.0",
   "matplotlib>=3.11",
-  "numba>=0.68",
+  "motility",
   "numpy>=2.5",
   "opencv-python>=4.13",
   "pillow>=13.0",
   "plotly>=7.1",
   "requests>=2.34",
-  "scipy>=1.18",
 ]
 
 [dependency-groups]
@@ -37,6 +36,12 @@ requires = ["hatchling"]
 [tool.hatch.build.targets.wheel]
 packages = ["src/microorganism_computer_vision"]
 
+[tool.uv.workspace]
+members = ["libraries/*"]
+
+[tool.uv.sources]
+motility = { workspace = true }
+
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = ["--strict-markers", "--strict-config"]
+testpaths = ["tests", "libraries/motility/tests"]
+addopts = ["--strict-markers", "--strict-config", "--import-mode=importlib"]

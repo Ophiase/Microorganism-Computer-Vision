@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.tracking.trajectories import Trajectory
 
 
 @dataclass(frozen=True, slots=True)

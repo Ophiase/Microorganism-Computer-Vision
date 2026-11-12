@@ -1,5 +1,5 @@
-from microorganism_computer_vision.diffusion.base import DiffusionTest, Measurement
-from microorganism_computer_vision.diffusion.hypotheses import (
+from motility.diffusion.base import DiffusionTest, Measurement
+from motility.diffusion.hypotheses import (
     CircularMotionTest,
     DirectionalSwitchTest,
     GaussianRandomWalkTest,
@@ -7,7 +7,7 @@ from microorganism_computer_vision.diffusion.hypotheses import (
     PersistentMotionTest,
     SubDiffusionTest,
 )
-from microorganism_computer_vision.diffusion.msd import (
+from motility.diffusion.msd import (
     DisplacementCurve,
     mean_squared_displacement,
 )

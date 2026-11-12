@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.graph_objects as go
+from motility.tracking.bounding_box import BoundingBox
 
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
 from microorganism_computer_vision.visualization.frames import (
     add_optical_flow,
     box_shape,

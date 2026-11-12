@@ -4,11 +4,13 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+- **The library apart from the application**: `libraries/motility/` holds
+  the algorithms and reads no file; the application in `src/` runs the study.
+  The source videos are `settings/dataset.toml`, no longer a list in the code.
 - **A src layout**: the code is the package
   `src/microorganism_computer_vision/`, built by hatchling, with a
   `microorganism-computer-vision` command; no folder holds more than seven
   entries, so `folder-size.ignore` lists only the tooling.
-
 - **The modernization is planned in `ideas/`**: a measured baseline, the
   dependency audit, the case for staying in Python, and the ordered steps.
 

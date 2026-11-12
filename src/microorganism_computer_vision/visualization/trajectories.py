@@ -1,7 +1,6 @@
 import numpy as np
 import plotly.graph_objects as go
-
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.tracking.trajectories import Trajectory
 
 SPEED_BINS = 50
 OPACITY = 0.2

@@ -13,5 +13,6 @@ Tags: **[fact]** (measured), **[defined]** (fixed by the author),
 - [dependencies.md](dependencies.md) — the audit, package by package
 - [language.md](language.md) — Python, JAX or Rust, and why
 - [science.md](science.md) — where the ambition is
+- [sources.md](sources.md) — other datasets, to look at later
 - [roadmap.md](roadmap.md) — the ordered steps and how to resume
 - [open.md](open.md) — the author's questions

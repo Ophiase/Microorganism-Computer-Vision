@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-
-from microorganism_computer_vision.pipeline.paths import TRACKING_FOLDER
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.synthetic.generator import (
+from motility.synthetic import (
     SyntheticGenerator,
 )
+from motility.tracking.bounding_box import BoundingBox
+
+from microorganism_computer_vision.paths import TRACKING_FOLDER
 
 DEFAULT_CENTER = (512.0, 512.0)
 

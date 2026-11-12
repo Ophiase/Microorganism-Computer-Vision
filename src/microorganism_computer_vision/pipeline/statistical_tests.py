@@ -2,8 +2,7 @@ import csv
 from pathlib import Path
 
 import numpy as np
-
-from microorganism_computer_vision.diffusion import (
+from motility.diffusion import (
     CircularMotionTest,
     DiffusionTest,
     DirectionalSwitchTest,
@@ -12,13 +11,14 @@ from microorganism_computer_vision.diffusion import (
     PersistentMotionTest,
     SubDiffusionTest,
 )
-from microorganism_computer_vision.pipeline.paths import (
+from motility.tracking.trajectories import Trajectory
+
+from microorganism_computer_vision.paths import (
     ANALYSIS_GRAPHICS_PATH,
     DEFAULT_VIDEO,
     DEFAULT_VIDEO_RESOLUTION,
     TRACKING_FOLDER,
 )
-from microorganism_computer_vision.tracking.trajectories import Trajectory
 from microorganism_computer_vision.visualization.trajectories import (
     plot_angular_distribution,
     plot_speed_distribution,

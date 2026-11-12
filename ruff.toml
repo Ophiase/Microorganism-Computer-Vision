@@ -13,4 +13,4 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"tests/**/*.py" = ["assert"]
+"**/tests/**/*.py" = ["assert"]
