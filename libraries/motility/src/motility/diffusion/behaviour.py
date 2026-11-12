@@ -36,7 +36,7 @@ def behaviour(trajectory: Trajectory) -> Behaviour:
     path = float(np.sum(np.hypot(*np.diff(positions, axis=0).T)))
     net = float(np.hypot(*(positions[-1] - positions[0]))) if len(positions) else 0.0
     duration = trajectory.frames[-1] - trajectory.frames[0] if trajectory.frames else 0
-    turns = _turns(positions[::STRIDE])
+    turns = strided_turns(positions)
     angular = float(np.sum(turns)) / (len(turns) * STRIDE) if len(turns) else 0.0
     speed = path / max(duration, 1)
     return Behaviour(
@@ -50,8 +50,9 @@ def behaviour(trajectory: Trajectory) -> Behaviour:
     )
 
 
-def _turns(positions: np.ndarray) -> np.ndarray:
-    """Signed angles between successive moving steps, in (-pi, pi]."""
+def strided_turns(positions: np.ndarray) -> np.ndarray:
+    """Signed angles between moving steps of `STRIDE` frames, in (-pi, pi]."""
+    positions = positions[::STRIDE]
     steps = np.diff(positions, axis=0)
     moving = steps[np.hypot(steps[:, 0], steps[:, 1]) > MIN_STEP * STRIDE]
     if len(moving) < 2:

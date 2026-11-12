@@ -1,0 +1,43 @@
+reason = "the configuration calibrated on 342843, rods measured in pixels, still cells found in the median; 0.333 µm per pixel: 10 µm bar of 30 px, read on the probe's crop"
+
+[acquisition]
+pixel_size = 0.333
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.42
+window_high = 0.5
+gain = 1.0
+smoothing = 3
+exclude_static = 0.15
+exclusion_margin = 4
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+area = "pixels"
+min_area = 4
+max_area = 150
+static_cells = true
+
+[tracking]
+max_assignment_distance = 15.0
+max_missed_frames = 6
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 1000
