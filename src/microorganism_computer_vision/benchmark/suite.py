@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Final, Self
 
 from motility.pipeline import Evaluation, PipelineParameters, ScoredRun, evaluate
-from motility.synthetic import SceneParameters, Simulation, simulate
+from motility.truth.synthetic import SceneParameters, Simulation, simulate
 from pydantic import BaseModel, Field
 
 from microorganism_computer_vision.media.video import UsageError

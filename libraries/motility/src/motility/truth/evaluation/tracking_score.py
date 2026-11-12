@@ -3,8 +3,8 @@ from collections import Counter
 import numpy as np
 from pydantic import BaseModel, Field
 
-from motility.evaluation.matching import FrameMatch
 from motility.tracking.table import TrackTable
+from motility.truth.evaluation.matching import FrameMatch
 
 MOSTLY = 0.8
 

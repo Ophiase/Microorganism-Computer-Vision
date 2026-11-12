@@ -4,7 +4,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from motility.diffusion.models.motion import Motion
-from motility.synthetic.scene import Kinetics
+from motility.truth.synthetic.scene import Kinetics
 from motility.vision.geometry import Position
 
 RESTORING = 0.2

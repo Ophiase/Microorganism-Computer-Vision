@@ -3,10 +3,10 @@ from dataclasses import dataclass
 import numpy as np
 
 from motility.diffusion.models.motion import Motion
-from motility.synthetic.motions import walk
-from motility.synthetic.render import render
-from motility.synthetic.scene import SceneParameters
-from motility.synthetic.truth import GroundTruth
+from motility.truth.synthetic.motions import walk
+from motility.truth.synthetic.render import render
+from motility.truth.synthetic.scene import SceneParameters
+from motility.truth.synthetic.truth import GroundTruth
 from motility.vision.arrays import Video
 
 
