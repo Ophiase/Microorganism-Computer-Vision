@@ -1,4 +1,15 @@
-from motility.tracking.bounding_box import BoundingBox
-from motility.tracking.rectangle import Rectangle
+from motility.tracking.geometry import Position, Rectangle
+from motility.tracking.kalman_filter import KalmanTracker, TrackingParameters
+from motility.tracking.observation import Observation
+from motility.tracking.table import TrackTable
+from motility.tracking.trajectories import Trajectory
 
-__all__ = ["BoundingBox", "Rectangle"]
+__all__ = [
+    "KalmanTracker",
+    "Observation",
+    "Position",
+    "Rectangle",
+    "TrackTable",
+    "TrackingParameters",
+    "Trajectory",
+]

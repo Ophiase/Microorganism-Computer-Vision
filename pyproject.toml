@@ -13,13 +13,12 @@ keywords = [
   "diffusion",
 ]
 dependencies = [
-  "kaleido>=1.2.0",
   "matplotlib>=3.11",
   "motility",
   "numpy>=2.5",
-  "opencv-python>=4.13",
+  "opencv-python-headless>=4.13",
   "pillow>=13.0",
-  "plotly>=7.1",
+  "pydantic>=2.12",
   "requests>=2.34",
 ]
 
