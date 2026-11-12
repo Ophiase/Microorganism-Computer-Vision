@@ -30,6 +30,27 @@ agent's toolkit, one commit per box, the gate green at each.
    on the bench and on the study's videos.
 7. [x] The release: README, CHANGELOG, 0.8.0.
 
+## The plan of `dev/skeleton`
+
+**[defined]** 2026-11-12, asked by the author: a track is a point today; an
+elongated body is a chain of points, and its posture carries what a point
+cannot: the wave along a worm, the axis of a rod.
+
+1. [x] The overlays are seen: drawn after the downscale, on an explicit
+   palette, a box per cell in its verdict's colour.
+2. [ ] `truth/`: `synthetic/` and `evaluation/` under one concept, which
+   makes room for `posture/`.
+3. [ ] The centreline: the geodesic path through a cell's mask, centred by
+   its distance transform, resampled to N points equally spaced, the head
+   kept from frame to frame and set by the direction of travel.
+4. [ ] Synthetic worms: a travelling wave of curvature, rendered with its
+   true skeleton, frequency and direction; a skeleton score.
+5. [ ] The posture: tangent angles, the kymograph of curvature, the
+   eigenworms, the wave's frequency, wavelength and direction per track.
+6. [ ] In `mcv`: a `posture` section, `skeletons.csv`, skeletons in the
+   looks and the GIF, a kymograph; measured on synthetic worms, and a real
+   worm video if one can be fetched.
+
 ## Step 1: remove the waste [done]
 
 **[fact]** 2026-11-12: numba and the channel tensor are gone; the same
