@@ -18,7 +18,8 @@ file a researcher can read, rerun and change.
 
 ## What it is compared with
 
-**[caution]** Without baselines, "the agent tuned it" proves nothing.
+**[caution]** Without baselines, "the agent tuned it" proves nothing. The
+agent runs them itself, on the same sources, as part of the work.
 
 - **The defaults**: the configuration of the original study.
 - **A blind search**: random or Optuna search over the same parameters,
@@ -30,6 +31,14 @@ The agent's edge over a blind search is not in tuning numbers: it is that it
 can **look** when no truth exists, **change the structure** (add a filter,
 drop a hypothesis), and **explain**. The benchmark must show it on the
 sources with a truth, before it is trusted on the others.
+
+## Where the cases come from
+
+The agent builds its own test set: it searches the web for motility videos
+(species, microscopes, frame rates), reads the papers they come with, and
+records each in [the catalogue](../catalogue/sources.yaml). Labelled tracks
+are rare in public; where none exist, the agent can annotate a few tracks by
+hand on a frame, and the synthetic videos give the rest of the truth.
 
 ## The traps
 
