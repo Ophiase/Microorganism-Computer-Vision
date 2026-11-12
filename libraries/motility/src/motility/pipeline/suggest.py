@@ -1,8 +1,13 @@
 from motility.pipeline.parameters import PipelineParameters
-from motility.synthetic.scene import Appearance, Kinetics, Population, SceneParameters
 from motility.tracking.kalman_filter import TrackingParameters
-from motility.vision.appearance import AppearanceReport
-from motility.vision.detection import DetectionParameters
+from motility.truth.synthetic.scene import (
+    Appearance,
+    Kinetics,
+    Population,
+    SceneParameters,
+)
+from motility.vision.detection import AreaMeasure, DetectionParameters
+from motility.vision.measures.appearance import AppearanceReport
 from motility.vision.preprocessing import (
     MID_GREY,
     Background,
@@ -51,7 +56,8 @@ def suggest(appearance: AppearanceReport) -> PipelineParameters:
             smoothing=3,
         ),
         detection=DetectionParameters(
-            min_area=max(int(box * SMALLEST_SHARE), 1),
+            area=AreaMeasure.PIXELS,
+            min_area=max(int(box * SMALLEST_SHARE / 2), 1),
             max_area=max(int(box * LARGEST_FACTOR), 2),
         ),
         tracking=TrackingParameters(

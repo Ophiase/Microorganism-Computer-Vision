@@ -1,7 +1,7 @@
 import pytest
 from motility.diffusion import Motion
-from motility.evaluation import majority_truth, match_frames, score_tracking
-from motility.synthetic import Population, SceneParameters, simulate
+from motility.truth.evaluation import majority_truth, match_frames, score_tracking
+from motility.truth.synthetic import Population, SceneParameters, simulate
 
 
 def scene() -> SceneParameters:

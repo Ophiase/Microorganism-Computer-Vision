@@ -19,6 +19,8 @@ MOTION_HEX = {
 }
 MOTION_COLOURS = {motion: _bgr(value) for motion, value in MOTION_HEX.items()}
 DETECTION = _bgr("#f0efec")
+OVERLAY_COLOURS = MOTION_COLOURS | {Motion.UNDETERMINED: DETECTION}
+"""Over the cells, an undetermined track is light: a grey would vanish in grey."""
 SERIES = "#2a78d6"
 INK = "#0b0b0b"
 MUTED_INK = "#52514e"

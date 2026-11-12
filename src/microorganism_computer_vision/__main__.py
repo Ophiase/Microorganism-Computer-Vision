@@ -12,11 +12,22 @@ from microorganism_computer_vision.commands.inform import (
     HistoryCommand,
     SchemaCommand,
     SourcesCommand,
+    StatsCommand,
 )
 from microorganism_computer_vision.commands.probe import ProbeCommand
-from microorganism_computer_vision.commands.run import RunCommand
-from microorganism_computer_vision.commands.search import SearchCommand
-from microorganism_computer_vision.commands.truth import BenchCommand, SynthCommand
+from microorganism_computer_vision.commands.review import (
+    CorrectCommand,
+    GalleryCommand,
+    InspectCommand,
+    MissesCommand,
+    SuspectsCommand,
+)
+from microorganism_computer_vision.commands.run import RunCommand, SweepCommand
+from microorganism_computer_vision.commands.truth import (
+    BenchCommand,
+    SearchCommand,
+    SynthCommand,
+)
 from microorganism_computer_vision.media.video import UsageError
 
 COMMANDS: Final[tuple[Command, ...]] = (
@@ -25,7 +36,14 @@ COMMANDS: Final[tuple[Command, ...]] = (
     SourcesCommand(),
     ProbeCommand(),
     RunCommand(),
+    SweepCommand(),
     HistoryCommand(),
+    StatsCommand(),
+    SuspectsCommand(),
+    MissesCommand(),
+    InspectCommand(),
+    GalleryCommand(),
+    CorrectCommand(),
     SynthCommand(),
     BenchCommand(),
     SearchCommand(),

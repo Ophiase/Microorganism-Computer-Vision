@@ -30,6 +30,31 @@ agent's toolkit, one commit per box, the gate green at each.
    on the bench and on the study's videos.
 7. [x] The release: README, CHANGELOG, 0.8.0.
 
+## The plan of `dev/skeleton`
+
+**[defined]** 2026-11-12, asked by the author: a track is a point today; an
+elongated body is a chain of points, and its posture carries what a point
+cannot: the wave along a worm, the axis of a rod.
+
+1. [x] The overlays are seen: drawn after the downscale, on an explicit
+   palette, a box per cell in its verdict's colour.
+2. [x] `truth/`: `synthetic/` and `evaluation/` under one concept, which
+   makes room for `posture/`.
+3. [x] Scale bars: `mcv probe` proposes the burnt-in bars and writes a crop of
+   each; the agent reads the number.
+4. [ ] **The review**, the heart: `mcv suspects` ranks what to look at
+   (jumps, fragments to join, unsure verdicts), `mcv inspect` films one track
+   up close, `mcv correct` splits, joins, drops or relabels a track with a
+   reason, kept in the run and reapplied.
+5. [ ] Behaviour: the chirality and radius of circling, the reorientations,
+   the distance to host cells, per track.
+6. [ ] The study's nine videos calibrated and reviewed one by one; the
+   statistics across them, and what they say, checked against the paper's
+   legends read afterwards.
+7. [ ] A page per situation with its film.
+8. [ ] The centreline and the posture of elongated bodies, on synthetic and,
+   if one can be fetched, real worms.
+
 ## Step 1: remove the waste [done]
 
 **[fact]** 2026-11-12: numba and the channel tensor are gone; the same

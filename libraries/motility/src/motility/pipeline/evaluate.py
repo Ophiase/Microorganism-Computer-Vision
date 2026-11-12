@@ -3,15 +3,15 @@ from dataclasses import dataclass
 from pydantic import BaseModel, Field
 
 from motility.diffusion.models.selection import classify
-from motility.evaluation.classification_score import (
+from motility.pipeline.parameters import PipelineParameters
+from motility.pipeline.run import PipelineResult, run_pipeline
+from motility.truth.evaluation.classification_score import (
     ClassificationScore,
     score_classification,
 )
-from motility.evaluation.matching import majority_truth, match_frames
-from motility.evaluation.tracking_score import TrackingScore, score_tracking
-from motility.pipeline.parameters import PipelineParameters
-from motility.pipeline.run import PipelineResult, run_pipeline
-from motility.synthetic import Simulation
+from motility.truth.evaluation.matching import majority_truth, match_frames
+from motility.truth.evaluation.tracking_score import TrackingScore, score_tracking
+from motility.truth.synthetic import Simulation
 
 
 class Evaluation(BaseModel):
