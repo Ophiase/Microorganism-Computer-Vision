@@ -12,7 +12,7 @@ from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.folders import RUNS
 from microorganism_computer_vision.media.video import Clip, read_recording
 from microorganism_computer_vision.media.workspace import source_key
-from microorganism_computer_vision.reporting.looks import probe_look
+from microorganism_computer_vision.reporting.pictures.looks import probe_look
 
 DEFAULT_CLIP: Final = Clip(stop=100)
 

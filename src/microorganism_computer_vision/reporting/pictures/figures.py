@@ -13,7 +13,7 @@ from matplotlib.ticker import MaxNLocator
 from motility.diffusion import Motion, Verdict
 from motility.pipeline import Scale
 
-from microorganism_computer_vision.reporting.palette import (
+from microorganism_computer_vision.reporting.pictures.palette import (
     INK,
     MOTION_HEX,
     MUTED_INK,

@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Final
 
@@ -7,11 +7,11 @@ import numpy as np
 from cv2.typing import MatLike
 from motility.diffusion import Motion
 from motility.pipeline import PipelineResult
-from motility.tracking import TrackTable, Trajectory
+from motility.tracking import TrackTable
 from motility.vision import DetectionParameters, Frame, Video, mask
 from numpy.typing import NDArray
 
-from microorganism_computer_vision.reporting.palette import (
+from microorganism_computer_vision.reporting.pictures.palette import (
     DETECTION,
     MOTION_COLOURS,
 )
@@ -43,9 +43,6 @@ TAIL = 15
 BANNER = 22
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 WHITE = (255, 255, 255)
-LEGEND_ROW = 18
-SMALL_WIDTH = 640
-DIMMED = 0.6
 
 
 def look(
@@ -62,10 +59,10 @@ def look(
     over the raw frame; red boxes are this frame's detections.
     """
     views = {
-        f"raw, frame {frame}": _grey(video[frame]),
-        "foreground": _grey(result.foreground[frame]),
-        "mask": _grey(mask(result.foreground[frame], detection) / 255),
-        "detections and tracks": _tracks(video[frame], result, motions, frame),
+        f"raw, frame {frame}": grey(video[frame]),
+        "foreground": grey(result.foreground[frame]),
+        "mask": grey(mask(result.foreground[frame], detection) / 255),
+        "detections and tracks": tracks_view(video[frame], result, motions, frame),
     }
     tiles = [
         _titled(zoom.apply(image) if zoom else image, title)
@@ -74,7 +71,7 @@ def look(
     return np.vstack((np.hstack(tiles[:2]), np.hstack(tiles[2:])))
 
 
-def _grey(frame: Frame) -> Image:
+def grey(frame: Frame) -> Image:
     bytes_frame = (np.clip(frame, 0, 1) * 255).astype(np.uint8)
     return cv2.cvtColor(bytes_frame, cv2.COLOR_GRAY2BGR)
 
@@ -85,13 +82,13 @@ def _titled(image: Image, title: str) -> Image:
     return np.vstack((banner, image))
 
 
-def _tracks(
+def tracks_view(
     frame_image: Frame,
     result: PipelineResult,
     motions: Mapping[int, Motion],
     frame: int,
 ) -> Image:
-    image = _grey(frame_image)
+    image = grey(frame_image)
     for detection in result.detections[frame]:
         box = detection.rectangle
         corner = (box.x + box.width, box.y + box.height)
@@ -113,43 +110,6 @@ def _tails(tracks: TrackTable, frame: int) -> dict[int, NDArray[np.int32]]:
     return tails
 
 
-def trajectory_map(
-    background: Frame,
-    trajectories: Sequence[Trajectory],
-    motions: Mapping[int, Motion],
-) -> Image:
-    """Every classified track over the dimmed background, coloured by its motion."""
-    grey = (np.clip(background, 0, 1) * 255 * DIMMED).astype(np.uint8)
-    image = cv2.cvtColor(grey, cv2.COLOR_GRAY2BGR)
-    for trajectory in trajectories:
-        motion = motions.get(trajectory.index, Motion.UNDETERMINED)
-        if motion is Motion.UNDETERMINED:
-            continue
-        points = np.round(np.array(trajectory.positions)).astype(np.int32)
-        cv2.polylines(
-            image,
-            [points.reshape(-1, 1, 2)],
-            False,
-            MOTION_COLOURS[motion],
-            1,
-            cv2.LINE_AA,
-        )
-    if image.shape[1] < SMALL_WIDTH:
-        image = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
-    _legend(image, motions)
-    return image
-
-
-def _legend(image: Image, motions: Mapping[int, Motion]) -> None:
-    counts = {motion: list(motions.values()).count(motion) for motion in Motion}
-    shown = [motion for motion in Motion if motion is not Motion.UNDETERMINED]
-    for row, motion in enumerate(shown):
-        y = LEGEND_ROW * (row + 1)
-        cv2.rectangle(image, (6, y - 10), (18, y), MOTION_COLOURS[motion], -1)
-        label = f"{motion.value} ({counts[motion]})"
-        cv2.putText(image, label, (24, y), FONT, 0.45, WHITE, 1, cv2.LINE_AA)
-
-
 def probe_look(video: Video) -> Image:
     """What a video holds before any parameter: a frame, what stays, what moves.
 
@@ -160,10 +120,10 @@ def probe_look(video: Video) -> Image:
     background = np.median(video, axis=0)
     departure = np.max(np.abs(video - background), axis=0)
     views = {
-        "first frame": _grey(video[0]),
-        "median background": _grey(background),
-        "motion: largest departure from the median": _grey(_stretched(departure)),
-        "spread over time": _grey(_stretched(np.std(video, axis=0))),
+        "first frame": grey(video[0]),
+        "median background": grey(background),
+        "motion: largest departure from the median": grey(_stretched(departure)),
+        "spread over time": grey(_stretched(np.std(video, axis=0))),
     }
     tiles = [_titled(image, title) for title, image in views.items()]
     return np.vstack((np.hstack(tiles[:2]), np.hstack(tiles[2:])))

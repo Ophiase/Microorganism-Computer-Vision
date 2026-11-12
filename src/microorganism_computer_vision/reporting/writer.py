@@ -10,9 +10,11 @@ from motility.vision import Video
 
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.tables import write_tracks, write_verdicts
-from microorganism_computer_vision.reporting.figures import distributions
-from microorganism_computer_vision.reporting.looks import Zoom, look, trajectory_map
 from microorganism_computer_vision.reporting.markdown import report
+from microorganism_computer_vision.reporting.pictures.animation import animate
+from microorganism_computer_vision.reporting.pictures.figures import distributions
+from microorganism_computer_vision.reporting.pictures.looks import Zoom, look
+from microorganism_computer_vision.reporting.pictures.map import trajectory_map
 from microorganism_computer_vision.reporting.summary import RunSummary
 
 LOOKS: Final = 3
@@ -63,6 +65,7 @@ class RunWriter:
             distributions(
                 result.verdicts, self._scale, self._folder / "distributions.png"
             ),
+            self._animation(video, result),
         )
         page = report(
             title,
@@ -100,6 +103,10 @@ class RunWriter:
         path = self._folder / "trajectories.png"
         cv2.imwrite(str(path), image)
         return path
+
+    def _animation(self, video: Video, result: PipelineResult) -> Path:
+        motions = {verdict.track: verdict.motion for verdict in result.verdicts}
+        return animate(video, result, motions, self._folder / "tracks.gif")
 
 
 def _spread_frames(count: int) -> tuple[int, ...]:
