@@ -10,7 +10,8 @@ Milestones of the project; the version is in `VERSION`.
 - **A catalogue of sources**: `catalogue/sources.yaml` lists the motility
   videos found, their truth, licence and trust.
 - **The README says what the project is**: a student project of 2025,
-  revisited with agents, in a warning at the top.
+  revisited with agents, in a warning at the top; the features it claimed
+  without a measure give way to what it does today and its known limits.
 - **The library apart from the application**: `libraries/motility/` holds
   the algorithms and reads no file; the application in `src/` runs the study.
   The source videos are `settings/dataset.toml`, no longer a list in the code.
