@@ -31,20 +31,28 @@ of videos are in [catalogue/sources.yaml](catalogue/sources.yaml).
   <img src="./resources/results/342843.avi/trajectories.png" width="30%">
 </div>
 
-## 🌟 Features
+## 🌟 What it does today
 
-- **Multi-modal Tracking**
-  - Optical flow-based motion estimation
-  - Kalman-filter enhanced object detection
-  - Synthetic trajectory generation
-- **Advanced Diffusion Analysis**
-  - 6 statistical hypothesis tests for motility patterns
-  - Automated trajectory classification
-  - Comprehensive visualization toolkit
-- **Scalable Architecture**
-  - Modular pipeline design
-  - Configurable hypothesis parameters
-  - Batch processing capabilities
+- **Detection and tracking**: Farneback optical flow, a threshold and
+  contours for the cells, a Kalman filter with Hungarian matching to link
+  them across frames.
+- **Six diffusion tests** on each trajectory, from the mean squared
+  displacement, the velocity autocorrelation and the turning angles.
+- **A trajectory generator**: brownian, directed, confined, CTRW and
+  sinusoidal motions, with their truth.
+- **Figures**: trajectories, speed and angle distributions, GIFs of the
+  tracked video.
+
+## ⚠️ Known limits
+
+Measured in [ideas/baseline.md](ideas/baseline.md):
+
+- The six tests are thresholds, not a classification: they overlap, and
+  give no uncertainty.
+- Speeds are in pixels per frame; no physical unit yet.
+- The transform step is slow and memory-hungry, so a run stops at 85 frames.
+- `just run analysis` needs Chrome to write its PNG figures.
+- Nothing measures the tracking against a known truth yet.
 
 ## 🧩 Diffusion Hypothesis Tests
 
@@ -146,31 +154,17 @@ microorganism-cv/
 
 ## 📚 Methodology
 
-Our pipeline implements a multi-stage analysis process:
-
-### Preprocessing
-
-- Optical flow estimation
-- Spatial normalization
-- Noise reduction
-
-### Object Detection
-
-- Adaptive thresholding (❌ not implemented)
-- Connected component analysis
-- Kalman-filter based tracking
-
-### Trajectory Analysis
-
-- [MSD](https://en.wikipedia.org/wiki/Mean_squared_displacement) calculations
-- Velocity autocorrelation
-- Directional persistence metrics
-
-### Statistical Classification
-
-- Hypothesis testing
-- Confidence interval estimation (❌ not implemented)
-- [Motility](https://en.wikipedia.org/wiki/Motility) pattern classification
+1. **Preprocessing**: grayscale frames clipped and normalized, the optical
+   flow between consecutive frames, then a trend, a detail and two gradient
+   channels for each of the frame and the two flow components.
+2. **Detection**: a fixed threshold on the trend channel, connected contours
+   kept by area.
+3. **Tracking**: a constant-velocity Kalman filter per cell, matched to the
+   detections by the Hungarian algorithm within a gating distance.
+4. **Analysis**: the [mean squared
+   displacement](https://en.wikipedia.org/wiki/Mean_squared_displacement),
+   the velocity autocorrelation and the turning angles of each trajectory,
+   tested against the six hypotheses above.
 
 ## ✍️ Working on it
 
