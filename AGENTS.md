@@ -17,6 +17,13 @@ six diffusion hypotheses and draw the figures.
 English everywhere: code, comments, markdown, commits. The author may write to
 you in French; answer in French, write files in English.
 
+## Ideas
+
+Where the project goes is in `ideas/`: the measured baseline, the dependency
+audit, the language question and the ordered steps in
+[ideas/roadmap.md](ideas/roadmap.md). A question for the author waits in
+[ideas/open.md](ideas/open.md).
+
 ## Before working
 
 1. Read [.agents/portable/rules/python.md](.agents/portable/rules/python.md)

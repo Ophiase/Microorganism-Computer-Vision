@@ -4,6 +4,9 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+- **The modernization is planned in `ideas/`**: a measured baseline, the
+  dependency audit, the case for staying in Python, and the ordered steps.
+
 ## 0.6.0 — 2026-11-12
 
 The tags `v0.1` to `v0.5` are the original project; this release
