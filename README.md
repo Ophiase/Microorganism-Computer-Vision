@@ -6,10 +6,24 @@
 [![uv](https://img.shields.io/badge/uv-managed-blueviolet.svg)](https://github.com/astral-sh/uv)
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
-A comprehensive computer vision pipeline for analyzing microorganism 🦠
-motility patterns and diffusion characteristics.
+> [!WARNING]
+> **An old student project, revisited.** I first wrote it as a student, for a
+> deadline on 28 February 2025. I am now modernizing it with my agents, as an
+> experiment. Expect a small research pipeline, not a finished tool: where it
+> goes is in [ideas/](ideas/README.md).
 
-Deadline: 28th February 2025
+A computer vision pipeline that tracks microorganisms 🦠 in video and tests
+their trajectories against diffusion hypotheses.
+
+## Direction
+
+The student version was tuned by hand on one study's videos; the usual way
+to go further would have been machine learning — label data, train a
+network. **The project now takes another direction**: a toolkit of classical
+filters, tracking and diffusion tests that an agent calibrates on a
+researcher's own videos, measured against a known truth. The reasons, the
+method and its traps are in [ideas/vision.md](ideas/vision.md); the sources
+of videos are in [catalogue/sources.yaml](catalogue/sources.yaml).
 
 <div align="center">
   <img src="./resources/results/342843_original.gif" width="30%">
@@ -17,20 +31,28 @@ Deadline: 28th February 2025
   <img src="./resources/results/342843.avi/trajectories.png" width="30%">
 </div>
 
-## 🌟 Features
+## 🌟 What it does today
 
-- **Multi-modal Tracking**
-  - Optical flow-based motion estimation
-  - Kalman-filter enhanced object detection
-  - Synthetic trajectory generation
-- **Advanced Diffusion Analysis**
-  - 6 statistical hypothesis tests for motility patterns
-  - Automated trajectory classification
-  - Comprehensive visualization toolkit
-- **Scalable Architecture**
-  - Modular pipeline design
-  - Configurable hypothesis parameters
-  - Batch processing capabilities
+- **Detection and tracking**: Farneback optical flow, a threshold and
+  contours for the cells, a Kalman filter with Hungarian matching to link
+  them across frames.
+- **Six diffusion tests** on each trajectory, from the mean squared
+  displacement, the velocity autocorrelation and the turning angles.
+- **A trajectory generator**: brownian, directed, confined, CTRW and
+  sinusoidal motions, with their truth.
+- **Figures**: trajectories, speed and angle distributions, GIFs of the
+  tracked video.
+
+## ⚠️ Known limits
+
+Measured in [ideas/baseline.md](ideas/baseline.md):
+
+- The six tests are thresholds, not a classification: they overlap, and
+  give no uncertainty.
+- Speeds are in pixels per frame; no physical unit yet.
+- The transform step is slow and memory-hungry, so a run stops at 85 frames.
+- `just run analysis` needs Chrome to write its PNG figures.
+- Nothing measures the tracking against a known truth yet.
 
 ## 🧩 Diffusion Hypothesis Tests
 
@@ -116,45 +138,33 @@ microorganism-cv/
 ├── data/                           # Raw and processed data, out of git
 │   ├── preprocessed/               # The channel tensors of a video
 │   └── tracking/                   # One file of boxes per frame
-├── logic/                          # Core algorithms
-│   ├── diffusion/                  # The six hypothesis tests and the MSD
-│   ├── structure/                  # Rectangle and BoundingBox
-│   ├── filters.py                  # Trend, detail and gradient channels
-│   ├── kalman_filter.py            # The tracker
-│   └── trajectories.py             # A track through time
-├── script/                         # One file per pipeline task
-├── synthetic/                      # The trajectory generator and its datasets
-├── tests/                          # The unit tests
-└── visualization/                   # The figures, split by concept
+├── libraries/motility/            # The library: arrays in, measures out
+│   └── src/motility/
+│       ├── vision/                 # Filters, optical flow, shapes
+│       ├── tracking/               # Boxes, the Kalman tracker, trajectories
+│       ├── diffusion/              # The MSD and the six hypotheses
+│       └── synthetic.py            # The trajectory generator
+├── src/microorganism_computer_vision/  # The application: the study
+│   ├── pipeline/                   # One file per task
+│   └── visualization/              # The figures
+├── settings/dataset.toml           # The source videos
+├── tests/                          # The tests of the application
+└── ideas/                          # Where the project goes
 ```
 
 ## 📚 Methodology
 
-Our pipeline implements a multi-stage analysis process:
-
-### Preprocessing
-
-- Optical flow estimation
-- Spatial normalization
-- Noise reduction
-
-### Object Detection
-
-- Adaptive thresholding (❌ not implemented)
-- Connected component analysis
-- Kalman-filter based tracking
-
-### Trajectory Analysis
-
-- [MSD](https://en.wikipedia.org/wiki/Mean_squared_displacement) calculations
-- Velocity autocorrelation
-- Directional persistence metrics
-
-### Statistical Classification
-
-- Hypothesis testing
-- Confidence interval estimation (❌ not implemented)
-- [Motility](https://en.wikipedia.org/wiki/Motility) pattern classification
+1. **Preprocessing**: grayscale frames clipped and normalized, the optical
+   flow between consecutive frames, then a trend, a detail and two gradient
+   channels for each of the frame and the two flow components.
+2. **Detection**: a fixed threshold on the trend channel, connected contours
+   kept by area.
+3. **Tracking**: a constant-velocity Kalman filter per cell, matched to the
+   detections by the Hungarian algorithm within a gating distance.
+4. **Analysis**: the [mean squared
+   displacement](https://en.wikipedia.org/wiki/Mean_squared_displacement),
+   the velocity autocorrelation and the turning angles of each trajectory,
+   tested against the six hypotheses above.
 
 ## ✍️ Working on it
 

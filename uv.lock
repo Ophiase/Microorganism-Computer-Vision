@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
+[manifest]
+members = [
+    "microorganism-computer-vision",
+    "motility",
+]
+
 [[package]]
 name = "certifi"
 version = "2026.10.23"
@@ -428,18 +434,17 @@ wheels = [
 
 [[package]]
 name = "microorganism-computer-vision"
-version = "0.6.0"
-source = { virtual = "." }
+version = "0.7.0"
+source = { editable = "." }
 dependencies = [
     { name = "kaleido" },
     { name = "matplotlib" },
-    { name = "numba" },
+    { name = "motility" },
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "pillow" },
     { name = "plotly" },
     { name = "requests" },
-    { name = "scipy" },
 ]
 
 [package.dev-dependencies]
@@ -453,13 +458,12 @@ dev = [
 requires-dist = [
     { name = "kaleido", specifier = ">=1.2.0" },
     { name = "matplotlib", specifier = ">=3.11" },
-    { name = "numba", specifier = ">=0.68" },
+    { name = "motility", editable = "libraries/motility" },
     { name = "numpy", specifier = ">=2.5" },
     { name = "opencv-python", specifier = ">=4.13" },
     { name = "pillow", specifier = ">=13.0" },
     { name = "plotly", specifier = ">=7.1" },
     { name = "requests", specifier = ">=2.34" },
-    { name = "scipy", specifier = ">=1.18" },
 ]
 
 [package.metadata.requires-dev]
@@ -467,6 +471,25 @@ dev = [
     { name = "pytest", specifier = ">=9.1" },
     { name = "ruff", specifier = ">=0.15" },
     { name = "ty", specifier = ">=0.0.39" },
+]
+
+[[package]]
+name = "motility"
+version = "0.7.0"
+source = { editable = "libraries/motility" }
+dependencies = [
+    { name = "numba" },
+    { name = "numpy" },
+    { name = "opencv-python" },
+    { name = "scipy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "numba", specifier = ">=0.68" },
+    { name = "numpy", specifier = ">=2.5" },
+    { name = "opencv-python", specifier = ">=4.13" },
+    { name = "scipy", specifier = ">=1.18" },
 ]
 
 [[package]]

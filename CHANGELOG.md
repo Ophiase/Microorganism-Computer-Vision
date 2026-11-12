@@ -4,6 +4,26 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+## 0.7.0 — 2026-11-12
+
+- **A change of direction**: the project becomes a toolkit an agent
+  calibrates on a researcher's videos, instead of a pipeline tuned by hand or
+  a network to train; the README and `ideas/vision.md` say why.
+- **A catalogue of sources**: `catalogue/sources.yaml` lists the motility
+  videos found, their truth, licence and trust.
+- **The README says what the project is**: a student project of 2025,
+  revisited with agents, in a warning at the top; the features it claimed
+  without a measure give way to what it does today and its known limits.
+- **The library apart from the application**: `libraries/motility/` holds
+  the algorithms and reads no file; the application in `src/` runs the study.
+  The source videos are `settings/dataset.toml`, no longer a list in the code.
+- **A src layout**: the code is the package
+  `src/microorganism_computer_vision/`, built by hatchling, with a
+  `microorganism-computer-vision` command; no folder holds more than seven
+  entries, so `folder-size.ignore` lists only the tooling.
+- **The modernization is planned in `ideas/`**: a measured baseline, the
+  dependency audit, the case for staying in Python, and the ordered steps.
+
 ## 0.6.0 — 2026-11-12
 
 The tags `v0.1` to `v0.5` are the original project; this release
