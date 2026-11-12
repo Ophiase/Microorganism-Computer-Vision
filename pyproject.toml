@@ -1,6 +1,6 @@
 [project]
 name = "microorganism-computer-vision"
-version = "0.1.0"
+version = "0.6.0"
 description = "Track Salmonella Typhimurium in video and decide its motility pattern from the trajectories."
 readme = "README.md"
 requires-python = ">=3.14"

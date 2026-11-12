@@ -1,13 +1,5 @@
 import '.agents/portable/just/harness.just'
 
-[group("gate")]
-[doc("Markdown, lint, types and tests in one command, with a real exit code.")]
-checks:
-    rumdl check .
-    uv run ruff check . --fix
-    uv run ty check .
-    uv run pytest -q
-
 [group("code")]
 [doc("The longest Python files, tests left out: green to 100 lines, yellow to 200.")]
 [script("bash")]
