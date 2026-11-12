@@ -3,14 +3,13 @@ from pathlib import Path
 
 import requests
 
-from microorganism_computer_vision.paths import DATA_FOLDER, SETTINGS_FOLDER
+from microorganism_computer_vision.media.folders import DATA, DATASET
 
 DOWNLOAD_TIMEOUT = 60
 CHUNK = 8192
-DATASET_SETTINGS = SETTINGS_FOLDER / "dataset.toml"
 
 
-def video_urls(settings_path: Path = DATASET_SETTINGS) -> tuple[str, ...]:
+def video_urls(settings_path: Path = DATASET) -> tuple[str, ...]:
     """The videos of the source dataset, one URL per file id of the settings."""
     with settings_path.open("rb") as file:
         dataset = tomllib.load(file)
@@ -35,7 +34,7 @@ def download_videos(urls: tuple[str, ...], output_folder: Path) -> tuple[Path, .
 
 
 def process() -> tuple[Path, ...]:
-    DATA_FOLDER.mkdir(parents=True, exist_ok=True)
-    downloaded = download_videos(video_urls(), DATA_FOLDER)
-    print(f"Extracted {len(downloaded)} videos to {DATA_FOLDER}")
+    DATA.mkdir(parents=True, exist_ok=True)
+    downloaded = download_videos(video_urls(), DATA)
+    print(f"Extracted {len(downloaded)} videos to {DATA}")
     return downloaded

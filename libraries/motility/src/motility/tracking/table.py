@@ -73,6 +73,8 @@ class TrackTable:
 
     def trajectories(self, min_length: int = 1) -> tuple[Trajectory, ...]:
         """One trajectory per track with at least `min_length` observations."""
+        if len(self) == 0:
+            return ()
         ordered = self._sorted()
         tracks, starts = np.unique(ordered.track, return_index=True)
         ends = [*starts[1:], len(ordered)]

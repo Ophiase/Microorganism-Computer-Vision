@@ -1,0 +1,22 @@
+# The evaluation twin of the tuning scene: another seed, faster cells.
+seed = 21
+frames = 80
+
+[population]
+stationary = 6
+diffusive = 6
+directed = 14
+confined = 4
+circular = 6
+
+[kinetics]
+speed = 3.2
+rotational_diffusion = 0.01
+
+[appearance]
+polarity = "dark"
+background = 0.55
+contrast = 0.22
+dust = 25
+dust_contrast = 0.3
+gradient = 0.15

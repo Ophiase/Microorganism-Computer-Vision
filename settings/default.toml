@@ -1,0 +1,37 @@
+reason = "the 2025 study: a raw-intensity window tuned by eye on the Salmonella videos, a fixed threshold, a long-memory tracker"
+
+[acquisition]
+
+[preprocessing]
+background = "none"
+polarity = "dark"
+window_low = 0.2
+window_high = 0.49
+gain = 4.0
+smoothing = 3
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+min_area = 10
+max_area = 800
+
+[tracking]
+max_assignment_distance = 30.0
+max_missed_frames = 15
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
