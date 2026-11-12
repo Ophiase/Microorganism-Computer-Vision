@@ -6,10 +6,14 @@
 [![uv](https://img.shields.io/badge/uv-managed-blueviolet.svg)](https://github.com/astral-sh/uv)
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
-A comprehensive computer vision pipeline for analyzing microorganism 🦠
-motility patterns and diffusion characteristics.
+> [!WARNING]
+> **An old student project, revisited.** I first wrote it as a student, for a
+> deadline on 28 February 2025. I am now modernizing it with my agents, as an
+> experiment. Expect a small research pipeline, not a finished tool: where it
+> goes is in [ideas/](ideas/README.md).
 
-Deadline: 28th February 2025
+A computer vision pipeline that tracks microorganisms 🦠 in video and tests
+their trajectories against diffusion hypotheses.
 
 <div align="center">
   <img src="./resources/results/342843_original.gif" width="30%">

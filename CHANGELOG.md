@@ -4,6 +4,8 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+- **The README says what the project is**: a student project of 2025,
+  revisited with agents, in a warning at the top.
 - **The library apart from the application**: `libraries/motility/` holds
   the algorithms and reads no file; the application in `src/` runs the study.
   The source videos are `settings/dataset.toml`, no longer a list in the code.
