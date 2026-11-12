@@ -28,10 +28,11 @@ test runs `transform`, `detection` and `analysis` on a few synthetic frames.
 
 *Acceptance*: `just run analysis` passes on a fresh clone without Chrome.
 
-## Step 3 — the package
+## Step 3 — the package [done]
 
-A `src/` package that holds `common.py`; `logic/` split into vision,
-tracking and diffusion; the `folder-size.ignore` entries removed.
+**[fact]** 2026-11-12: `src/microorganism_computer_vision/`, built by
+hatchling; `common.py` is `pipeline/paths.py`; `logic/` is split into
+`vision/`, `tracking/` and `diffusion/`.
 
 *Acceptance*: `folder-size.ignore` lists only `.agents/`.
 

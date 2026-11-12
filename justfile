@@ -14,12 +14,12 @@ install:
 [group("user")]
 [doc("Download the nine source videos into data/, which stays out of git.")]
 extract:
-    uv run -m script.main --task extract
+    uv run python -m microorganism_computer_vision --task extract
 
 [group("user")]
 [doc("Run one pipeline task: just run transform|detection|render|analysis|synthetic")]
 run task *args:
-    uv run -m script.main --task {{ task }} {{ args }}
+    uv run python -m microorganism_computer_vision --task {{ task }} {{ args }}
 
 [group("dev")]
 [doc("Format the code and apply the safe lint fixes.")]

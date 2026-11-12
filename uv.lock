@@ -429,7 +429,7 @@ wheels = [
 [[package]]
 name = "microorganism-computer-vision"
 version = "0.6.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "kaleido" },
     { name = "matplotlib" },
