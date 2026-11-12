@@ -1,7 +1,8 @@
 # Vision: a change of direction
 
-**[defined]** 2026-11-12. The project will change direction in a future
-PR; until then, the code is the student version.
+**[defined]** 2026-11-12, **[fact]** done in 0.8.0 the same day: the toolkit,
+its command line and the measure of an agent calibrating it
+([benchmark](../docs/benchmark/calibration.md)).
 
 ## What it was
 
@@ -10,7 +11,7 @@ filters, optical flow, Kalman tracking and six diffusion tests, tuned by eye
 on nine videos of one study. The way to make such a pipeline advanced was
 the machine-learning way: label data, train a network, ship the weights.
 
-## What it will become
+## What it became
 
 **A toolkit an agent calibrates.** The researcher brings their own videos;
 an agent, Claude or any other, reads them, chooses the filters, sets the

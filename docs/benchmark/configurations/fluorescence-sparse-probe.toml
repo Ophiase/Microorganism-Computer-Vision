@@ -1,0 +1,38 @@
+reason = "suggested by the probe: bright objects of about 11 x 7 px, contrast 0.32 over noise 0.020, static share 0.14"
+
+[acquisition]
+
+[preprocessing]
+background = "none"
+polarity = "bright"
+window_low = 0.08039215952157974
+window_high = 0.4019607976078987
+gain = 1.0
+smoothing = 3
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+min_area = 23
+max_area = 308
+
+[tracking]
+max_assignment_distance = 27.5
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 100

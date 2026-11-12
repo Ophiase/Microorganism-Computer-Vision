@@ -1,7 +1,7 @@
 [project]
 name = "microorganism-computer-vision"
-version = "0.7.0"
-description = "Track Salmonella Typhimurium in video and decide its motility pattern from the trajectories."
+version = "0.8.0"
+description = "A motility toolkit an agent calibrates on a researcher's videos, checked against a known truth."
 readme = "README.md"
 requires-python = ">=3.14"
 license = "Apache-2.0"

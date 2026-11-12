@@ -6,174 +6,148 @@
 [![uv](https://img.shields.io/badge/uv-managed-blueviolet.svg)](https://github.com/astral-sh/uv)
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
-> [!WARNING]
-> **An old student project.** I wrote it as a student, for a deadline on
-> 28 February 2025. Only its tooling has been brought up to date; the code and
-> the method are still the student version. I will soon modernize it with my
-> agents, as an experiment, in a future PR: the plan is in
-> [ideas/](ideas/README.md).
-
-A computer vision pipeline that tracks microorganisms 🦠 in video and tests
-their trajectories against diffusion hypotheses.
-
-## Direction
-
-The student version was tuned by hand, in two months of spare time, on one
-study's videos; going further would usually mean machine learning: label
-data, train a network. **In a future PR, the project will take another
-direction**: a toolkit of classical filters, tracking and diffusion tests that
-an agent calibrates on a researcher's own videos, against typical baselines.
-That work has not started yet: what follows describes the student version.
-The plan is in [ideas/vision.md](ideas/vision.md); the sources of videos are
-in [catalogue/sources.yaml](catalogue/sources.yaml).
+**You have videos of swimming cells. An agent tunes a classical pipeline on
+them, checks itself against a synthetic twin with a known truth, and tells you
+how your cells move, in micrometres per second, with the reason for every
+setting.** No labels, no training, no GPU: filters, a Kalman tracker and a
+model selection that run on a laptop in seconds.
 
 <div align="center">
-  <img src="./resources/results/342843_original.gif" width="30%">
-  <img src="./resources/results/342843_transformed.gif" width="30%">
-  <img src="./resources/results/342843.avi/trajectories.png" width="30%">
+  <img src="docs/figures/salmonella-tracks.gif" width="80%">
+  <br>
+  <em>Salmonella from the 2025 study: swimmers in blue, diffusing cells in orange,
+  the beads and host cells excluded. Calibrated by Claude in six runs.</em>
 </div>
 
-## 🌟 What it does today
+## Why an agent
 
-- **Detection and tracking**: Farneback optical flow, a threshold and
-  contours for the cells, a Kalman filter with Hungarian matching to link
-  them across frames.
-- **Six diffusion tests** on each trajectory, from the mean squared
-  displacement, the velocity autocorrelation and the turning angles.
-- **A trajectory generator**: brownian, directed, confined, CTRW and
-  sinusoidal motions, with their truth.
-- **Figures**: trajectories, speed and angle distributions, GIFs of the
-  tracked video.
+Reading motility from a microscope video used to mean one of two things: a
+pipeline tuned by hand by an expert for one microscope, or a network trained
+on labels a researcher with one Petri dish does not have. An agent can be the
+expert: it **looks** at the frames, **measures**, changes one knob and says
+why, and **checks** itself on a truth before it is trusted.
 
-## ⚠️ Known limits
+This repository is the toolkit made for that agent: every parameter is
+documented and bounded, every command answers in JSON, every run is a folder
+of pictures the agent opens and a report a researcher reads.
 
-Measured in [ideas/baseline.md](ideas/baseline.md):
+## What an agent did with it
 
-- The six tests are thresholds, not a classification: they overlap, and
-  give no uncertainty.
-- Speeds are in pixels per frame; no physical unit yet.
-- The transform step is slow and memory-hungry, so a run stops at 85 frames.
-- `just run analysis` needs Chrome to write its PNG figures.
-- Nothing measures the tracking against a known truth yet.
+### 1. Beat a blind search, on scenes it never tuned on
 
-## 🧩 Diffusion Hypothesis Tests
+Three microscope situations, each a researcher's video: dark swimmers among
+dust, bright fluorescent cells, a dim crowded drop. Every method had up to ten
+runs scored against the truth of a tuning video; the score is on a second
+video of the same kind, unseen: the mean of the tracking (MOTA) and of the
+classification accuracy.
 
-Our framework implements statistical tests to characterize microbial motion:
+| Scene | 2025 | Blind ×3 | Local from the probe | **Agent** (runs) |
+| --- | ---: | ---: | ---: | ---: |
+| Dark swimmers and dust | −0.59 | 0.52 | 0.76 | **0.80** (5) |
+| Fluorescence, sparse | 0.00 | 0.81 | 0.78 | **0.86** (3) |
+| Dim and crowded | 0.00 | 0.22 | −0.15 | **0.59** (8) |
 
-| Hypothesis Test | Key Mechanism | Biological Relevance |
-|-----------------|---------------|----------------------|
-| **Circular Motion** <br> `CircularMotionTest` | Curvature analysis + rotation angle detection | Magnetotactic bacteria, spiral-seeking organisms |
-| **Directional Switching** <br> `DirectionalSwitchTest` | Fourier analysis of angular changes | Run-and-tumble motility (e.g., *E. coli*) |
-| **Gaussian Random Walk** <br> `GaussianRandomWalkTest` | Kolmogorov-Smirnov normality test | Passive diffusion in isotropic environments |
-| **MSD Linear Fit** <br> `MSDLinearTest` | R² evaluation of mean squared displacement | Normal diffusion processes |
-| **Persistent Motion** <br> `PersistentMotionTest` | Velocity autocorrelation analysis | Active transport mechanisms |
-| **Subdiffusion** <br> `SubDiffusionTest` | Power law exponent ($\alpha < 1$) detection | Crowded environments, viscoelastic media |
+Where a search finds the answer, the agent matches its best seed in fewer
+runs. Where the answer is a change seen in the image, the dim drop's uneven
+background, it is far ahead. The protocol, every baseline and each step of
+the agent with its reason: [docs/benchmark/calibration.md](docs/benchmark/calibration.md).
 
-## 🚀 Installation
+| The dim drop, as the probe suggested | After the agent's five steps |
+| --- | --- |
+| ![before](docs/figures/dense-dim-look-probe.png) | ![after](docs/figures/dense-dim-look-agent.png) |
 
-```bash
-# Clone repository
-git clone git@github.com:Ophiase/Microorganism-Computer-Vision.git
-cd Microorganism-Computer-Vision
+### 2. Read the study's own video, in physical units
 
-# Install the environment: Python 3.14 and the dependencies of uv.lock
-just install
+The probe said the objects were bright; the motion map showed dark rods. The
+agent switched the polarity, read **0.323 µm per pixel off the burnt-in scale
+bar**, and found that no threshold separates the rods from the halos of the
+beads: it **added a tool to the library**, the exclusion of static objects.
 
-# Download the nine source videos into data/, which stays out of git
-just extract
-```
+![distributions](docs/figures/salmonella-distributions.png)
 
-Python runs through `uv`, never through a hand-made virtualenv: `just` wraps
-every command, and `just --list` shows them all.
+107 swimmers at a median of **18.3 µm/s** (α ≈ 2) and 42 diffusing cells
+(α ≈ 1). On a twin of the video with a known truth: 0.84, against 0.19 for
+the 2025 settings. The whole story, its limits included:
+[docs/cases/salmonella.md](docs/cases/salmonella.md).
 
-## 🧪 Usage
+### 3. Refuse to transfer a setting blindly
 
-Process real videos:
+Another video of the same study gave mostly "diffusive" cells. The agent
+probed it before believing it: host cells, another scale, burnt-in cursors
+and a hand-drawn track. Another experiment, to be calibrated on its own.
 
-```bash
-# Full pipeline execution
-just run transform      # Preprocess videos
-just run detection      # Track microorganisms
-just run render         # Generate gifs
-just run analysis       # Run statistical tests and graphics
-```
-
-Generate synthetic data:
+## Use it
 
 ```bash
-just run synthetic      # Create trajectory datasets
-just run analysis --video synthetic_brownian
-# "brownian" can be replaced by directed, sinusoidal, confined, ctrw, ...
+just install                 # Python 3.14 and the locked dependencies, by uv
+just extract                 # the nine videos of the 2025 study, into data/
+just mcv guide               # the method, for you or your agent
 ```
-
-The recipes:
 
 ```bash
-just run <task>     # transform, detection, render, analysis, synthetic
-just test           # The unit tests
-just check          # Lint, types and tests
-just agent gate     # What must pass before declaring work done
+mcv probe data/342843.avi             # measure, suggest, draw
+mcv run data/342843.avi --clip :80 \
+    --config output/runs/342843/probe/suggested.toml
+mcv run data/342843.avi --config c.toml \
+    --set detection.threshold=0.4 --reason "faint cells absent from the mask"
+mcv history data/342843.avi           # the journal
+mcv synth twin --like output/runs/342843/probe/appearance.json
+mcv bench --scene output/synthetic/twin/scene.toml --config c.toml
+mcv search --budget 10                # the blind baseline
+mcv schema                            # every parameter
+mcv sources                           # where to find videos
 ```
 
-The analysis keeps every trajectory by default; `--keep moving` or
-`--keep fastest` drops the dust that never moved, which otherwise drowns the
-distributions. `--debug` opens the figures as they are computed.
+`mcv` is `uv run mcv` from the clone, or `just mcv`. It reads a video, a TIFF
+stack or a folder of images. With Claude Code,
+the skill [calibrate-motility](.claude/skills/calibrate-motility/SKILL.md)
+starts the loop when you bring a video; any agent reads
+[docs/guide.md](docs/guide.md).
 
-## 📊 Results Interpretation
+A run writes, in `output/runs/<video>/<n>/`: four-view looks of chosen
+frames (raw, foreground, mask, tracks), the trajectory map, the
+distributions, `tracks.gif`, `tracks.csv`, `verdicts.csv`, `summary.json`
+with hints, the configuration with its reason, and `report.md`.
 
-- <div style="text-align: center;">
-  <img src="./resources/results/342843.avi/angular_distribution.png" width="290">
-  <img src="./resources/results/342843.avi/speed_distribution_per_trajectory.png" width="300">
+## How it works
 
-</div>
-
-- <div style="text-align: center;">
-  <img src="./resources/results/342843.avi/trajectories.png" width="290">
-  <img src="./resources/results/342843.avi/speed_distribution.png" width="300">
-
-</div>
-
-## 📂 Data Structure
-
-```bash
-microorganism-cv/
-├── data/                           # Raw and processed data, out of git
-│   ├── preprocessed/               # The channel tensors of a video
-│   └── tracking/                   # One file of boxes per frame
-├── libraries/motility/            # The library: arrays in, measures out
-│   └── src/motility/
-│       ├── vision/                 # Filters, optical flow, shapes
-│       ├── tracking/               # Boxes, the Kalman tracker, trajectories
-│       ├── diffusion/              # The MSD and the six hypotheses
-│       └── synthetic.py            # The trajectory generator
-├── src/microorganism_computer_vision/  # The application: the study
-│   ├── pipeline/                   # One file per task
-│   └── visualization/              # The figures
-├── settings/dataset.toml           # The source videos
-├── tests/                          # The tests of the application
-└── ideas/                          # Where the project goes
-```
-
-## 📚 Methodology
-
-1. **Preprocessing**: grayscale frames clipped and normalized, the optical
-   flow between consecutive frames, then a trend, a detail and two gradient
-   channels for each of the frame and the two flow components.
-2. **Detection**: a fixed threshold on the trend channel, connected contours
-   kept by area.
+1. **Foreground**: an optional temporal-median background, the polarity, an
+   intensity window, a box filter, the exclusion of large static objects.
+2. **Detection**: a threshold and connected regions kept by their size.
 3. **Tracking**: a constant-velocity Kalman filter per cell, matched to the
-   detections by the Hungarian algorithm within a gating distance.
-4. **Analysis**: the [mean squared
-   displacement](https://en.wikipedia.org/wiki/Mean_squared_displacement),
-   the velocity autocorrelation and the turning angles of each trajectory,
-   tested against the six hypotheses above.
+   detections by the Hungarian algorithm within a gate.
+4. **Verdicts**: four laws of the mean squared displacement (stationary,
+   diffusive, directed, confined) weighted by Qian's variance and compared by
+   their AICc, a turning test for circling, and α with its interval.
+5. **Truth**: synthetic scenes of rod-shaped cells, dust and uneven light,
+   rendered with every position known; the tracks scored by MOTA, the
+   verdicts by accuracy.
 
-## ✍️ Working on it
+The sources of real videos, their truth, licence and trust are in
+[catalogue/sources.yaml](catalogue/sources.yaml), twenty of them, from
+sperm tracks with identities to worms on Petri plates.
 
-The toolchain is `just` and `uv` on Python 3.14: `just install` creates the
-environment, `just check` runs the lint, the types and the tests, and
-`just agent gate` adds the file checks. What a contributor may write (file
-size, comments, types, tests) is in [AGENTS.md](AGENTS.md); the rules
-themselves are in [.agents/portable/](.agents/portable/).
+## Limits
 
-The canon is [.agents/kanon.md](.agents/kanon.md); `<>` is its sign.
+- The verdicts need tracks of 20 observations; a cell that leaves the focal
+  plane quickly stays undetermined.
+- The α interval comes from the regression alone; the MSD lags are
+  correlated, so it is a lower bound on the uncertainty.
+- The synthetic scenes are 2D and rods only: no swimming out of focus, no
+  dividing or touching cells. A score on them is a check, not a proof.
+- The agent's results above are one agent's runs, on three scenes; the
+  baselines ran on three seeds.
+
+## Where it comes from
+
+A student project of February 2025: a pipeline tuned by hand in two months on
+one study's videos ([the 2025 README](https://github.com/Ophiase/Microorganism-Computer-Vision/tree/v0.5)).
+Rebuilt in November 2026 as an agent's toolkit: the plan and its reasons are
+in [ideas/](ideas/README.md), the history in [CHANGELOG.md](CHANGELOG.md).
+
+## Working on it
+
+`just check` runs the lint, the types and the tests; `just agent gate` adds
+the file checks and declares work done. The rules any contributor follows,
+human or agent, are in [AGENTS.md](AGENTS.md). The canon is
+[.agents/kanon.md](.agents/kanon.md); `<>` is its sign.

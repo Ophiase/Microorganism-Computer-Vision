@@ -1,0 +1,38 @@
+reason = "precision still 1.0: room to cut lower for the faintest swimmers, threshold 0.4"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.3078431189060211
+window_high = 0.5
+gain = 1.0
+smoothing = 3
+
+[detection]
+method = "fixed"
+threshold = 0.4
+opening = 0
+min_area = 4
+max_area = 160
+
+[tracking]
+max_assignment_distance = 20.0
+max_missed_frames = 6
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 100
