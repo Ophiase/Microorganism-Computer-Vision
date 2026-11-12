@@ -38,3 +38,10 @@ Peak memory 3.9 GB; one run is about a minute.
   180 fit a linear MSD, 202 a persistent motion and 47 a subdiffusion.
 - **[fact]** No test runs the pipeline end to end, so neither failure above
   was caught.
+
+## After the change of direction
+
+**[fact]** 2026-11-12, v0.8.0, the same laptop and video: the four stages of
+85 frames take 0.3 s; a whole `mcv run`, every picture and the GIF written,
+4.5 s and 0.8 GB, against about a minute and 3.9 GB. The foreground is the
+2025 one to 3e-7 once its window is the one the 2025 code actually used.

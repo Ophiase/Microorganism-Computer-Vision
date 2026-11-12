@@ -1,0 +1,38 @@
+reason = "0.22 let the noise in as 1 px specks; a cell's box is at least 3 x 2: cut at 0.25 and keep boxes of 6 px and more"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.376
+window_high = 0.5
+gain = 1.0
+smoothing = 5
+
+[detection]
+method = "fixed"
+threshold = 0.25
+opening = 0
+min_area = 6
+max_area = 48
+
+[tracking]
+max_assignment_distance = 10.0
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 100

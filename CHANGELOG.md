@@ -4,6 +4,25 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+## 0.8.0 (2026-11-12)
+
+- **An agent's toolkit**: `mcv` answers in JSON; `probe` measures a video and
+  suggests a configuration, `run` writes a folder of looks, maps, a GIF, CSV
+  tables and a report, `history` is the journal of the reasons, `synth`
+  renders a twin with a known truth, `bench` and `search` score against it.
+  The skill `calibrate-motility` and `mcv guide` tell an agent the method.
+- **Measured**: on three scenes unseen while tuning, the agent scores 0.80,
+  0.86 and 0.59 against 0.76, 0.81 and 0.22 for the best search with the
+  truth; the study's video read in µm/s, 107 swimmers at 18.3 µm/s.
+- **One verdict per track**: four MSD laws compared by AICc, a turning test,
+  α with its interval, in place of six overlapping booleans.
+- **Every parameter documented** in the schema, with its bounds; the 2025
+  defaults are the 2025 code's, its foreground reproduced to 3e-7, a run in
+  seconds instead of a minute, without numba, plotly or a browser.
+- **Fixed**: the tracker reported every coasting prediction as observed; the
+  study's download wrote nine empty files and called it a success.
+- **The catalogue** lists twenty sources with their truth and licence.
+
 ## 0.7.0 (2026-11-12)
 
 - **A change of direction, planned**: in a future PR, the project will become
