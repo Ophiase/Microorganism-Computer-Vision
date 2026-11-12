@@ -1,3 +1,5 @@
+set positional-arguments := true
+
 import '.agents/portable/just/harness.just'
 
 [group("code")]
@@ -12,3 +14,38 @@ longest count="30":
         if ((lines > 200)); then colour=31; elif ((lines > 100)); then colour=33; else colour=32; fi
         printf '\e[%sm%5d\e[0m  %s\n' "$colour" "$lines" "$file"
     done
+
+[group("motility")]
+[doc("How an agent calibrates the toolkit: read it before the first run.")]
+guide:
+    @uv run mcv guide
+
+[group("motility")]
+[doc("Measure a video and suggest a configuration: just agent::probe data/342843.avi")]
+probe source *arguments:
+    uv run mcv probe "$@"
+
+[group("motility")]
+[doc("Run a configuration: just agent::run data/342843.avi --config c.toml --reason '...'")]
+run source *arguments:
+    uv run mcv run "$@"
+
+[group("motility")]
+[doc("The journal of the runs of a source, each with its reason.")]
+history source:
+    uv run mcv history "$1"
+
+[group("motility")]
+[doc("Score a configuration on the tuning scenes: just agent::bench --config c.toml")]
+bench *arguments:
+    uv run mcv bench "$@"
+
+[group("motility")]
+[doc("The blind baseline: just agent::search --budget 30 --seed 0")]
+search *arguments:
+    uv run mcv search "$@"
+
+[group("motility")]
+[doc("A synthetic twin with its truth: just agent::synth twin --like appearance.json")]
+synth name *arguments:
+    uv run mcv synth "$@"
