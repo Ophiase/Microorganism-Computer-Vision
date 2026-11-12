@@ -7,23 +7,25 @@
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
 > [!WARNING]
-> **An old student project, revisited.** I first wrote it as a student, for a
-> deadline on 28 February 2025. I am now modernizing it with my agents, as an
-> experiment. Expect a small research pipeline, not a finished tool: where it
-> goes is in [ideas/](ideas/README.md).
+> **An old student project.** I wrote it as a student, for a deadline on
+> 28 February 2025. Only its tooling has been brought up to date; the code and
+> the method are still the student version. I will soon modernize it with my
+> agents, as an experiment, in a future PR: the plan is in
+> [ideas/](ideas/README.md).
 
 A computer vision pipeline that tracks microorganisms 🦠 in video and tests
 their trajectories against diffusion hypotheses.
 
 ## Direction
 
-The student version was tuned by hand on one study's videos; the usual way
-to go further would have been machine learning — label data, train a
-network. **The project now takes another direction**: a toolkit of classical
-filters, tracking and diffusion tests that an agent calibrates on a
-researcher's own videos, measured against a known truth. The reasons, the
-method and its traps are in [ideas/vision.md](ideas/vision.md); the sources
-of videos are in [catalogue/sources.yaml](catalogue/sources.yaml).
+The student version was tuned by hand, in two months of spare time, on one
+study's videos; going further would usually mean machine learning: label
+data, train a network. **In a future PR, the project will take another
+direction**: a toolkit of classical filters, tracking and diffusion tests that
+an agent calibrates on a researcher's own videos, against typical baselines.
+That work has not started yet: what follows describes the student version.
+The plan is in [ideas/vision.md](ideas/vision.md); the sources of videos are
+in [catalogue/sources.yaml](catalogue/sources.yaml).
 
 <div align="center">
   <img src="./resources/results/342843_original.gif" width="30%">
@@ -170,8 +172,8 @@ microorganism-cv/
 
 The toolchain is `just` and `uv` on Python 3.14: `just install` creates the
 environment, `just check` runs the lint, the types and the tests, and
-`just agent gate` adds the file checks. What a contributor may write — file
-size, comments, types, tests — is in [AGENTS.md](AGENTS.md); the rules
+`just agent gate` adds the file checks. What a contributor may write (file
+size, comments, types, tests) is in [AGENTS.md](AGENTS.md); the rules
 themselves are in [.agents/portable/](.agents/portable/).
 
 The canon is [.agents/kanon.md](.agents/kanon.md); `<>` is its sign.

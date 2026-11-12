@@ -42,18 +42,18 @@ audit, the language question and the ordered steps in
 
 ## Toolchain
 
-- **just** — the entry point. `just --list` shows the recipes; never call a
+- **just**: the entry point. `just --list` shows the recipes; never call a
   tool directly when a recipe wraps it.
-  - `just install` — `uv sync --all-groups`, Python 3.14 from `.python-version`.
-  - `just check` — lint, types, tests. `just guards` — the file checks.
-  - `just agent gate` — `check` then `guards`: the one command that declares
+  - `just install`: `uv sync --all-groups`, Python 3.14 from `.python-version`.
+  - `just check`: lint, types, tests. `just guards`: the file checks.
+  - `just agent gate`: `check` then `guards`: the one command that declares
     work done.
-- **uv** — packages and virtualenv. Never `pip install`, never create a venv
+- **uv**: packages and virtualenv. Never `pip install`, never create a venv
   by hand, never `uv add` without a lockfile in the commit.
-- **ruff** — lint and format; the rules are in `ruff.toml`.
-- **ty** — the type checker. A `# type: ignore` is a debt: fix the signature,
+- **ruff**: lint and format; the rules are in `ruff.toml`.
+- **ty**: the type checker. A `# type: ignore` is a debt: fix the signature,
   or say why it cannot be fixed.
-- **pytest** — `just test`. A test checks a property of the algorithm, never a
+- **pytest**: `just test`. A test checks a property of the algorithm, never a
   number copied from one run; a demo that draws a window is not a test.
 
 Read third-party sources through the in-repo venv
@@ -64,24 +64,24 @@ Read third-party sources through the in-repo venv
 A uv workspace, built by hatchling, with **the library apart from the
 application**:
 
-- `libraries/motility/` — the library, imported as `motility`: what can be
+- `libraries/motility/`: the library, imported as `motility`: what can be
   measured from a video. No file, no print, no figure, no setting; it takes
   arrays and returns values. Its tests are in `libraries/motility/tests/`.
-  - `vision/` — the filters, the optical flow, the shapes.
-  - `tracking/` — the boxes, the Kalman tracker, the trajectories.
-  - `diffusion/` — the MSD and `hypotheses/`, the six tests.
-  - `synthetic.py` — the trajectory generator.
-- `src/microorganism_computer_vision/` — the application: the study of the
+  - `vision/`: the filters, the optical flow, the shapes.
+  - `tracking/`: the boxes, the Kalman tracker, the trajectories.
+  - `diffusion/`: the MSD and `hypotheses/`, the six tests.
+  - `synthetic.py`: the trajectory generator.
+- `src/microorganism_computer_vision/`: the application: the study of the
   source videos. It reads the videos and the settings, runs the tasks, writes
   the files and draws the figures.
-  - `pipeline/` — one file per task, entered through `__main__.py`.
-  - `video.py`, `dataset.py`, `paths.py` — the reads, the writes, the folders.
-  - `visualization/` — the Plotly figures.
-- `settings/` — the data the application reads, never written in code: the
+  - `pipeline/`: one file per task, entered through `__main__.py`.
+  - `video.py`, `dataset.py`, `paths.py`: the reads, the writes, the folders.
+  - `visualization/`: the Plotly figures.
+- `settings/`: the data the application reads, never written in code: the
   source videos are `settings/dataset.toml`.
-- `tests/` — the tests of the application.
+- `tests/`: the tests of the application.
 
-A value that names the world — an address, a file id, a frame rate — is a
+A value that names the world (an address, a file id, a frame rate) is a
 setting. A function that touches a file is the application's.
 
 ## Rules and checks
@@ -101,7 +101,7 @@ README is its sign.
 A topic is done when `just agent gate` passes and the documentation it makes
 wrong is updated in the same change: `README.md` for what a user runs,
 `CHANGELOG.md` for what they notice, `VERSION` and `pyproject.toml` for the
-number — `just version` shows the three side by side.
+number; `just version` shows the three side by side.
 
 ## Branches and commits
 
