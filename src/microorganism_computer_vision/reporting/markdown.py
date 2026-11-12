@@ -1,3 +1,4 @@
+import textwrap
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -7,6 +8,7 @@ from motility.pipeline import Scale
 from microorganism_computer_vision.reporting.summary import RunSummary, Spread
 
 SHOWN_TRACKS = 25
+WIDTH = 80
 
 
 def report(
@@ -20,17 +22,23 @@ def report(
     """The run as a page a researcher reads and checks: numbers, pictures, tracks."""
     sections = (
         f"# {title}",
-        f"**Why this configuration**: {reason or 'not given'}",
+        _paragraph(f"**Why this configuration**: {reason or 'not given'}"),
         _numbers(summary),
         _hypotheses(summary),
         "\n".join(f"- {hint}" for hint in summary.hints)
         or "No hint: the numbers look sane.",
         "\n\n".join(f"![{picture.stem}]({picture.name})" for picture in pictures),
         _tracks(verdicts, scale),
-        "The configuration is `configuration.toml`; the tracks, `tracks.csv`;"
-        " every verdict, `verdicts.csv`.",
+        _paragraph(
+            "The configuration is `configuration.toml`; the tracks, `tracks.csv`;"
+            " every verdict, `verdicts.csv`; every test, `evidence.csv`."
+        ),
     )
     return "\n\n".join(sections) + "\n"
+
+
+def _paragraph(text: str) -> str:
+    return textwrap.fill(text, width=WIDTH, break_on_hyphens=False)
 
 
 def _numbers(summary: RunSummary) -> str:

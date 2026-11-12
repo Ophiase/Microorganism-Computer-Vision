@@ -5,3 +5,6 @@ exclude = [".git", ".venv", "data", "output"]
 respect_gitignore = true
 
 disable = ["MD033"]
+
+[MD013]
+tables = false

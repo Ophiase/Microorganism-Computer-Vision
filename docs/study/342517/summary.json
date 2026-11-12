@@ -1,0 +1,72 @@
+{
+  "source": "data/342517.avi",
+  "frames": 161,
+  "detections_per_frame": {
+    "median": 131.0,
+    "low": 119.0,
+    "high": 147.0
+  },
+  "tracks": 1738,
+  "track_length": {
+    "median": 2.0,
+    "low": 1.0,
+    "high": 66.59999999999991
+  },
+  "classified": 380,
+  "motions": {
+    "stationary": 98,
+    "diffusive": 146,
+    "directed": 96,
+    "confined": 36,
+    "circular": 4,
+    "undetermined": 1358
+  },
+  "speed": {
+    "median": 4.647514422865591,
+    "low": 0.0,
+    "high": 8.476548129024051
+  },
+  "speed_unit": "µm/s",
+  "alpha": {
+    "median": 0.9448977927002444,
+    "low": 0.454778842702446,
+    "high": 1.5810643452293804
+  },
+  "diffusion": {
+    "median": 0.7139131057020778,
+    "low": 0.24495156093449066,
+    "high": 2.989056517456959
+  },
+  "diffusion_unit": "µm²/s",
+  "hypotheses": {
+    "anomalous": [
+      278,
+      145
+    ],
+    "persistent": [
+      111,
+      26
+    ],
+    "chiral": [
+      111,
+      0
+    ],
+    "non-gaussian": [
+      290,
+      129
+    ],
+    "tumbling": [
+      26,
+      7
+    ],
+    "periodic": [
+      326,
+      0
+    ],
+    "confined": [
+      278,
+      95
+    ]
+  },
+  "hints": []
+}
