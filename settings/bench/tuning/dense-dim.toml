@@ -1,0 +1,23 @@
+# Many faint cells, blurred and noisy: a crowded drop at low magnification.
+seed = 13
+frames = 80
+
+[population]
+stationary = 10
+diffusive = 12
+directed = 24
+confined = 6
+circular = 4
+
+[kinetics]
+speed = 2.0
+
+[appearance]
+polarity = "dark"
+background = 0.6
+contrast = 0.13
+noise = 0.035
+blur = 1.1
+length = 6.0
+width = 2.5
+dust = 12

@@ -1,0 +1,34 @@
+width = 672
+height = 512
+frames = 80
+seed = 5
+
+[population]
+stationary = 0
+diffusive = 20
+directed = 50
+confined = 2
+circular = 2
+
+[kinetics]
+jitter = 0.3
+diffusion = 0.3
+speed = 6.2
+speed_spread = 0.35
+rotational_diffusion = 0.01
+confinement = 3.0
+angular_speed = 0.12
+
+[appearance]
+polarity = "dark"
+background = 0.5137255191802979
+contrast = 0.1
+contrast_spread = 0.35
+length = 8.0
+width = 3.0
+noise = 0.011628234758973122
+blur = 0.7
+gradient = 0.0
+texture = 0.03
+dust = 0
+dust_contrast = 0.3

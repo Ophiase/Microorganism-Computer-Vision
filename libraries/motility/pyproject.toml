@@ -1,13 +1,13 @@
 [project]
 name = "motility"
-version = "0.7.0"
+version = "0.8.0"
 description = "Read bacterial motility from video: filters, tracking and diffusion tests."
 requires-python = ">=3.14"
 license = "Apache-2.0"
 dependencies = [
-  "numba>=0.68",
   "numpy>=2.5",
-  "opencv-python>=4.13",
+  "opencv-python-headless>=4.13",
+  "pydantic>=2.12",
   "scipy>=1.18",
 ]
 

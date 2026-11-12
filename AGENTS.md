@@ -69,14 +69,17 @@ application**:
   arrays and returns values. Its tests are in `libraries/motility/tests/`.
   - `vision/`: the filters, the optical flow, the shapes.
   - `tracking/`: the boxes, the Kalman tracker, the trajectories.
-  - `diffusion/`: the MSD and `hypotheses/`, the six tests.
-  - `synthetic.py`: the trajectory generator.
-- `src/microorganism_computer_vision/`: the application: the study of the
-  source videos. It reads the videos and the settings, runs the tasks, writes
-  the files and draws the figures.
-  - `pipeline/`: one file per task, entered through `__main__.py`.
-  - `video.py`, `dataset.py`, `paths.py`: the reads, the writes, the folders.
-  - `visualization/`: the Plotly figures.
+  - `diffusion/`: the MSD, `models/` (the verdicts) and `hypotheses/`, the
+    six tests of 2025.
+  - `synthetic/`: scenes rendered into videos with their truth.
+  - `evaluation/`: the tracking and classification scores against a truth.
+  - `pipeline/`: the stages composed, the probe's suggestion, the twin.
+- `src/microorganism_computer_vision/`: the application, the `mcv` command:
+  it reads the videos and the settings, writes the run folders and draws.
+  - `commands/`: one class per subcommand, entered through `__main__.py`.
+  - `media/`: the reads, the tables, the run folders.
+  - `reporting/`: the looks, the figures, the summary and the report.
+  - `benchmark/`: the scenes of `settings/bench/` and the blind search.
 - `settings/`: the data the application reads, never written in code: the
   source videos are `settings/dataset.toml`.
 - `tests/`: the tests of the application.
@@ -95,6 +98,16 @@ over the changed files.
 `just agent install-hooks` once per clone, then every commit runs `just
 guards`. The Kanon is [.agents/kanon.md](.agents/kanon.md); the `<>` in the
 README is its sign.
+
+## For agents: the command line
+
+`mcv` (or `just mcv`, `just agent::<command>`) is the agent's surface: every
+command prints JSON, every run is a folder of PNG looks, CSV tables and a
+report. `mcv guide` is the method, printed from [docs/guide.md](docs/guide.md);
+`mcv schema` lists every parameter with its description and bounds. The skill
+[calibrate-motility](.claude/skills/calibrate-motility/SKILL.md) says when to
+use it. A parameter added to the library is a pydantic `Field` with a
+description: the schema, the guide's table and the agent all read it there.
 
 ## Done
 

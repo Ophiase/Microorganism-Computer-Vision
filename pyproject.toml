@@ -1,7 +1,7 @@
 [project]
 name = "microorganism-computer-vision"
-version = "0.7.0"
-description = "Track Salmonella Typhimurium in video and decide its motility pattern from the trajectories."
+version = "0.8.0"
+description = "A motility toolkit an agent calibrates on a researcher's videos, checked against a known truth."
 readme = "README.md"
 requires-python = ">=3.14"
 license = "Apache-2.0"
@@ -13,14 +13,15 @@ keywords = [
   "diffusion",
 ]
 dependencies = [
-  "kaleido>=1.2.0",
   "matplotlib>=3.11",
   "motility",
   "numpy>=2.5",
-  "opencv-python>=4.13",
+  "opencv-python-headless>=4.13",
   "pillow>=13.0",
-  "plotly>=7.1",
+  "pydantic>=2.12",
+  "pyyaml>=6.0.3",
   "requests>=2.34",
+  "tomli-w>=1.2.0",
 ]
 
 [dependency-groups]
@@ -28,6 +29,7 @@ dev = ["pytest>=9.1", "ruff>=0.15", "ty>=0.0.39"]
 
 [project.scripts]
 microorganism-computer-vision = "microorganism_computer_vision.__main__:main"
+mcv = "microorganism_computer_vision.__main__:main"
 
 [build-system]
 build-backend = "hatchling.build"

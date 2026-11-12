@@ -1,0 +1,18 @@
+# Dark swimmers on grey, dust stuck to the glass, uneven light: the study's case.
+seed = 11
+frames = 80
+
+[population]
+stationary = 6
+diffusive = 6
+directed = 14
+confined = 4
+circular = 6
+
+[appearance]
+polarity = "dark"
+background = 0.55
+contrast = 0.22
+dust = 25
+dust_contrast = 0.3
+gradient = 0.15

@@ -19,7 +19,7 @@ class GaussianRandomWalkTest(DiffusionTest):
         self.p_threshold = p_threshold
 
     def analyze(self, trajectory: Trajectory) -> bool:
-        if len(trajectory.seen) < MIN_DISPLACEMENTS:
+        if len(trajectory) < MIN_DISPLACEMENTS:
             return False
 
         displacements = np.array(trajectory.displacements)
