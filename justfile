@@ -12,14 +12,20 @@ install:
     uv sync --all-groups
 
 [group("user")]
-[doc("Download the nine source videos into data/, which stays out of git.")]
+[doc("Download the nine source videos of the 2025 study into data/, out of git.")]
 extract:
-    uv run python -m microorganism_computer_vision --task extract
+    uv run mcv fetch
 
 [group("user")]
-[doc("Run one pipeline task: just run transform|detection|render|analysis|synthetic")]
-run task *args:
-    uv run python -m microorganism_computer_vision --task {{ task }} {{ args }}
+[doc("The toolkit's command line: just mcv probe|run|bench|search|synth|guide ...")]
+mcv *arguments:
+    uv run mcv "$@"
+
+[group("user")]
+[doc("Score the default configuration on the tuning and evaluation scenes.")]
+bench:
+    uv run mcv bench --config settings/default.toml --split tuning
+    uv run mcv bench --config settings/default.toml --split evaluation
 
 [group("dev")]
 [doc("Format the code and apply the safe lint fixes.")]
