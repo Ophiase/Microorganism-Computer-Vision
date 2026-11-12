@@ -85,7 +85,7 @@ class Inspector:
         ]
         tiles = np.hstack([self._tile(tracks, item) for item in frames])
         text = f"{suspect.kind.value} {' + '.join(map(str, tracks))}: {suspect.note}"
-        return np.vstack((self._caption(text, tiles.shape[1]), tiles))
+        return np.vstack((_caption(text, tiles.shape[1]), tiles))
 
     def _place_row(self, suspect: Suspect, place: tuple[float, float]) -> np.ndarray:
         """A fixed window on a place, for something no track follows."""
@@ -96,14 +96,9 @@ class Inspector:
         ]
         tiles = np.hstack([self._tile([], item, place) for item in frames])
         return np.vstack((
-            self._caption(f"missed: {suspect.note}", tiles.shape[1]),
+            _caption(f"missed: {suspect.note}", tiles.shape[1]),
             tiles,
         ))
-
-    def _caption(self, text: str, width: int) -> np.ndarray:
-        caption = np.zeros((CAPTION, width, 3), dtype=np.uint8)
-        cv2.putText(caption, text, (4, 12), FONT, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
-        return caption
 
     def _tile(
         self,
@@ -138,3 +133,22 @@ class Inspector:
     def _middle(self, track: int) -> int:
         frames = self._tracks.frame[self._tracks.track == track]
         return int(np.median(frames))
+
+
+def side_by_side(images: Sequence[np.ndarray], captions: Sequence[str]) -> np.ndarray:
+    """Pictures of one size in a row, each under its caption."""
+    columns = [
+        np.vstack((_caption(caption, image.shape[1]), image))
+        for image, caption in zip(images, captions, strict=True)
+    ]
+    gap = np.full((columns[0].shape[0], 4, 3), 255, dtype=np.uint8)
+    row = [columns[0]]
+    for column in columns[1:]:
+        row += [gap, column]
+    return np.hstack(row)
+
+
+def _caption(text: str, width: int) -> np.ndarray:
+    caption = np.zeros((CAPTION, width, 3), dtype=np.uint8)
+    cv2.putText(caption, text, (4, 12), FONT, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
+    return caption
