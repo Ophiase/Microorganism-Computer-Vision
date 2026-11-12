@@ -28,9 +28,10 @@ fmt:
     uv run ruff check . --fix
 
 [group("dev")]
-[doc("Report the lint violations ruff cannot fix by itself.")]
+[doc("Report the lint and format violations without changing the code.")]
 lint:
     uv run ruff check .
+    uv run ruff format --check .
 
 [group("dev")]
 [doc("Type-check the modules and the tests.")]
@@ -52,8 +53,8 @@ test:
     uv run pytest -q
 
 [group("gate")]
-[doc("Everything that must pass before declaring work done: lint, types, tests.")]
-check: lint types test
+[doc("Everything that must pass before declaring work done: lint, types, tests, markdown.")]
+check: lint types test rumdl
 
 [group("gate")]
 [doc("Run the project's and the portable checks over every changed file.")]

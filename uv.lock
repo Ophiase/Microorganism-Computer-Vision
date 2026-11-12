@@ -428,7 +428,7 @@ wheels = [
 
 [[package]]
 name = "microorganism-computer-vision"
-version = "0.1.0"
+version = "0.6.0"
 source = { virtual = "." }
 dependencies = [
     { name = "kaleido" },
