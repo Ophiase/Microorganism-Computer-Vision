@@ -14,13 +14,16 @@ from microorganism_computer_vision.reporting.pictures.palette import (
 )
 
 TAIL: Final = 15
+TAIL_OPACITY: Final = 0.45
 
 
 class TrackOverlay:
     """Draws the cells of a frame over it: a box and a tail per track, by verdict.
 
     Drawing happens at the output scale, after the frame is resized, so a one
-    pixel line stays one sharp pixel however small the picture.
+    pixel line stays one sharp pixel however small the picture. The tails are
+    translucent, so the cell under them stays visible; the boxes are thin and
+    opaque, a little larger than the cell.
     """
 
     def __init__(
@@ -42,10 +45,12 @@ class TrackOverlay:
     def draw(self, frame_image: Frame, frame: int) -> np.ndarray:
         image = self._background(frame_image)
         here = np.flatnonzero(self._tracks.frame == frame).tolist()
+        tails = image.copy()
+        for track in set(self._tracks.track[here].tolist()):
+            self._tail(tails, track, frame)
+        image = cv2.addWeighted(tails, TAIL_OPACITY, image, 1 - TAIL_OPACITY, 0)
         for row in here:
             self._box(image, row)
-        for track in set(self._tracks.track[here].tolist()):
-            self._tail(image, track, frame)
         return image
 
     def _background(self, frame_image: Frame) -> np.ndarray:
