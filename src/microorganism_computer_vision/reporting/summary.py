@@ -44,6 +44,10 @@ class RunSummary(BaseModel):
         description="Diffusion coefficient of the diffusive tracks."
     )
     diffusion_unit: str
+    hypotheses: dict[str, tuple[int, int]] = Field(
+        default_factory=dict,
+        description="Per hypothesis: tracks tested, tracks rejecting it, q < 0.05.",
+    )
     hints: tuple[str, ...] = Field(
         description="What the numbers suggest to look at; a hint, never a verdict."
     )
