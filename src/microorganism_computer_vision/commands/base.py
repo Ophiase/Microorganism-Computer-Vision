@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.video import Clip
-from microorganism_computer_vision.reporting.looks import Zoom
+from microorganism_computer_vision.reporting.pictures.looks import Zoom
 
 type Output = BaseModel | str
 """A model is printed as JSON for the agent; a text is printed as it is."""

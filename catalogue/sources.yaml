@@ -11,7 +11,7 @@
   checked: 2026-11-12
   by: agent
 - name: Salmonella Typhimurium near-surface swimming
-  url: https://plos.figshare.com/ndownloader/files/342843
+  url: https://ndownloader.figshare.com/files/342843
   holds: [nine phase-contrast videos of Salmonella swimming near a surface]
   formats: [AVI, 150 to 385 frames, 8 to 20 fps]
   truth: none

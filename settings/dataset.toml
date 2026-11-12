@@ -1,6 +1,6 @@
-# The nine videos of the source study: figshare serves each file at the base
-# address followed by its id.
-base-url = "https://plos.figshare.com/ndownloader/files/"
+# The nine videos of the source study, each at the base address and its id.
+# plos.figshare.com answers scripts with a WAF challenge; this host does not.
+base-url = "https://ndownloader.figshare.com/files/"
 files = [
   "342430",
   "342517",
