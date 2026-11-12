@@ -42,10 +42,13 @@ class PreprocessingParameters(BaseModel):
         ),
     )
     window_low: float = Field(
-        default=0.2,
+        default=0.388,
         ge=0.0,
         le=1.0,
-        description="Intensity mapped to 0 before the polarity; darker is clipped.",
+        description=(
+            "Intensity mapped to 0 before the polarity; darker is clipped. 0.388 is"
+            " what the 2025 code's renormalisation amounted to on its reference video."
+        ),
     )
     window_high: float = Field(
         default=0.49,
