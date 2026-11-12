@@ -4,6 +4,8 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+## 0.7.0 — 2026-11-12
+
 - **A change of direction**: the project becomes a toolkit an agent
   calibrates on a researcher's videos, instead of a pipeline tuned by hand or
   a network to train; the README and `ideas/vision.md` say why.

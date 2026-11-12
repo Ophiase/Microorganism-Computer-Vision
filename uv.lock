@@ -434,7 +434,7 @@ wheels = [
 
 [[package]]
 name = "microorganism-computer-vision"
-version = "0.6.0"
+version = "0.7.0"
 source = { editable = "." }
 dependencies = [
     { name = "kaleido" },
@@ -475,7 +475,7 @@ dev = [
 
 [[package]]
 name = "motility"
-version = "0.6.0"
+version = "0.7.0"
 source = { editable = "libraries/motility" }
 dependencies = [
     { name = "numba" },
