@@ -40,16 +40,20 @@ cannot: the wave along a worm, the axis of a rod.
    palette, a box per cell in its verdict's colour.
 2. [x] `truth/`: `synthetic/` and `evaluation/` under one concept, which
    makes room for `posture/`.
-3. [ ] The centreline: the geodesic path through a cell's mask, centred by
-   its distance transform, resampled to N points equally spaced, the head
-   kept from frame to frame and set by the direction of travel.
-4. [ ] Synthetic worms: a travelling wave of curvature, rendered with its
-   true skeleton, frequency and direction; a skeleton score.
-5. [ ] The posture: tangent angles, the kymograph of curvature, the
-   eigenworms, the wave's frequency, wavelength and direction per track.
-6. [ ] In `mcv`: a `posture` section, `skeletons.csv`, skeletons in the
-   looks and the GIF, a kymograph; measured on synthetic worms, and a real
-   worm video if one can be fetched.
+3. [x] Scale bars: `mcv probe` proposes the burnt-in bars and writes a crop of
+   each; the agent reads the number.
+4. [ ] **The review**, the heart: `mcv suspects` ranks what to look at
+   (jumps, fragments to join, unsure verdicts), `mcv inspect` films one track
+   up close, `mcv correct` splits, joins, drops or relabels a track with a
+   reason, kept in the run and reapplied.
+5. [ ] Behaviour: the chirality and radius of circling, the reorientations,
+   the distance to host cells, per track.
+6. [ ] The study's nine videos calibrated and reviewed one by one; the
+   statistics across them, and what they say, checked against the paper's
+   legends read afterwards.
+7. [ ] A page per situation with its film.
+8. [ ] The centreline and the posture of elongated bodies, on synthetic and,
+   if one can be fetched, real worms.
 
 ## Step 1: remove the waste [done]
 
