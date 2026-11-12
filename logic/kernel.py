@@ -1,10 +1,11 @@
-from enum import Enum
-from scipy.ndimage import convolve
+from enum import StrEnum
+
 import numpy as np
-from numba import jit
+from numba import njit
+from scipy.ndimage import convolve
 
 
-class KernelType(Enum):
+class KernelType(StrEnum):
     DEFAULT = "default"
     GAUSSIAN = "gaussian"
     SOFT_MEDIAN = "soft_median"
@@ -17,28 +18,35 @@ KERNELS = {
 }
 
 
-@jit(nopython=True)
-def apply_kernel(tensor: np.ndarray, kernel: np.ndarray, i: int, j: int, width: int, height: int):
-    local_sum, weight = 0, 0
+@njit
+def apply_kernel(
+    tensor: np.ndarray, kernel: np.ndarray, i: int, j: int, width: int, height: int
+) -> float:
+    local_sum, weight = 0.0, 0.0
     for di in range(-1, 2):
         for dj in range(-1, 2):
             ni, nj = i + di, j + dj
             if 0 <= ni < width and 0 <= nj < height:
                 local_sum += kernel[di + 1, dj + 1] * tensor[ni, nj]
                 weight += kernel[di + 1, dj + 1]
-    return local_sum / weight if weight > 0 else 0
+    return local_sum / weight if weight > 0 else 0.0
 
 
-def average_neighbors(tensor: np.ndarray, kernel_type: KernelType = KernelType.DEFAULT, use_library: bool = False) -> np.ndarray:
+def average_neighbors(
+    tensor: np.ndarray,
+    kernel_type: KernelType = KernelType.DEFAULT,
+    use_library: bool = False,
+) -> np.ndarray:
+    """Smooth a tensor with a 3x3 kernel, the border weight-normalized."""
     kernel = KERNELS[kernel_type]
 
     if use_library:
-        return convolve(tensor, kernel, mode='constant', cval=0)
+        return convolve(tensor, kernel, mode="constant", cval=0)
 
     return _average_neighbors_numba(tensor, kernel)
 
 
-@jit(nopython=True)
+@njit
 def _average_neighbors_numba(tensor: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     width, height = tensor.shape
     result = np.zeros_like(tensor)

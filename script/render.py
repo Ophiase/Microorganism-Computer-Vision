@@ -1,128 +1,129 @@
-from typing import List
-import numpy as np
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+
 import cv2
-from common import DATA_FOLDER, PREPROCESSED_FOLDER, TRACKING_FOLDER, OUTPUT_FOLDER, DEFAULT_FONT
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+from common import (
+    DATA_FOLDER,
+    DEFAULT_FONT,
+    OUTPUT_FOLDER,
+    PREPROCESSED_FOLDER,
+    TRACKING_FOLDER,
+)
 from logic.structure.bounding_box import BoundingBox
 
-#########################################
+FRAMES_PER_SECOND = 10
+FONT_SIZE = 12
+BYTE_MAX = 255
+TREND_ROW = 0
+FIRST_COLUMN = 0
+BOX_COLOUR = "red"
 
 
-def render_gifs(tracking_path: Path, output_dir: Path, fps: int = 10):
-    """Render both original and transformed GIFs"""
-    tracked_data = np.load(tracking_path, allow_pickle=True).tolist()
+def render_gifs(
+    tracking_path: Path, output_folder: Path, frames_per_second: int = FRAMES_PER_SECOND
+) -> tuple[Path, ...]:
+    """Write the original and the transformed video as GIFs, boxes drawn."""
+    tracked_frames: list[list[BoundingBox]] = np.load(
+        tracking_path, allow_pickle=True
+    ).tolist()
+    stem = tracking_path.stem.removesuffix(".avi")
 
-    video_stem = tracking_path.stem.replace(
-        '.avi', '')  # "342843.avi.npy" -> "342843"
+    original = output_folder / f"{stem}_original.gif"
+    transformed = output_folder / f"{stem}_transformed.gif"
 
-    orig_video_path = Path(DATA_FOLDER) / f"{video_stem}.avi"
-    preprocessed_path = Path(PREPROCESSED_FOLDER) / tracking_path.name
+    _render_video(
+        DATA_FOLDER / f"{stem}.avi", tracked_frames, original, frames_per_second
+    )
+    _render_tensor(
+        PREPROCESSED_FOLDER / tracking_path.name,
+        tracked_frames,
+        transformed,
+        frames_per_second,
+    )
+    return (original, transformed)
 
-    orig_gif = output_dir / f"{video_stem}_original.gif"
-    transformed_gif = output_dir / f"{video_stem}_transformed.gif"
 
-    _render_video_gif(orig_video_path, tracked_data, orig_gif, fps)
-    _render_transformed_gif(
-        preprocessed_path, tracked_data, transformed_gif, fps)
-
-
-def _render_video_gif(
-        video_path: Path,
-        tracked_data: List[List[BoundingBox]],
-        output_path: Path,
-        fps: int):
-    """Render GIF from original video file"""
-    cap = cv2.VideoCapture(str(video_path))
+def _render_video(
+    video_path: Path,
+    tracked_frames: list[list[BoundingBox]],
+    output_path: Path,
+    frames_per_second: int,
+) -> None:
+    capture = cv2.VideoCapture(str(video_path))
     frames = []
-    frame_count = 0
-
-    while frame_count < len(tracked_data):
-        ret, frame = cap.read()
-        if not ret:
+    for _ in range(len(tracked_frames)):
+        read, frame = capture.read()
+        if not read:
             break
         frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-        frame_count += 1
-
-    cap.release()
-    _save_gif(frames, tracked_data, output_path, fps)
+    capture.release()
+    _save_gif(frames, tracked_frames, output_path, frames_per_second)
 
 
-def _render_transformed_gif(
-        npy_path: Path,
-        tracked_data: List[List[BoundingBox]],
-        output_path: Path,
-        fps: int):
-    """Render GIF from preprocessed numpy array"""
-    preprocessed = np.load(npy_path)
-    video_tensor = preprocessed[:len(
-        tracked_data), :, :, 0, 0]  # Trend channel
-
-    frames = []
-    for frame in (video_tensor * 255).astype(np.uint8):
-        frames.append(np.stack([frame]*3, axis=-1))  # Convert to RGB
-
-    _save_gif(frames, tracked_data, output_path, fps)
+def _render_tensor(
+    tensor_path: Path,
+    tracked_frames: list[list[BoundingBox]],
+    output_path: Path,
+    frames_per_second: int,
+) -> None:
+    tensor = np.load(tensor_path)
+    frames = [
+        np.stack([frame] * 3, axis=-1)
+        for frame in (
+            tensor[: len(tracked_frames), :, :, TREND_ROW, FIRST_COLUMN] * BYTE_MAX
+        ).astype(np.uint8)
+    ]
+    _save_gif(frames, tracked_frames, output_path, frames_per_second)
 
 
 def _save_gif(
-        frames: list,
-        tracked_data: List[List[BoundingBox]],
-        output_path: Path,
-        fps: int):
-    """Common GIF saving logic"""
+    frames: list[np.ndarray],
+    tracked_frames: list[list[BoundingBox]],
+    output_path: Path,
+    frames_per_second: int,
+) -> None:
     if not frames:
         return
 
-    # Prepare font
     try:
-        font = ImageFont.truetype(DEFAULT_FONT, 12)
-    except:
+        font = ImageFont.truetype(DEFAULT_FONT, FONT_SIZE)
+    except OSError:
         font = ImageFont.load_default()
 
-    pil_frames = []
-    for frame_idx, frame in enumerate(frames):
-        img = Image.fromarray(frame)
-        draw = ImageDraw.Draw(img)
+    images = []
+    for frame_index, frame in enumerate(frames):
+        image = Image.fromarray(frame)
+        draw = ImageDraw.Draw(image)
+        for box in tracked_frames[frame_index]:
+            draw.rectangle(
+                [box.x, box.y, box.x + box.width, box.y + box.height],
+                outline=BOX_COLOUR,
+                width=1,
+            )
+            draw.text(
+                (box.x + box.width // 2, box.y + box.height // 2),
+                str(box.index),
+                fill=BOX_COLOUR,
+                font=font,
+            )
+        images.append(image)
 
-        if frame_idx < len(tracked_data):
-            for bbox in tracked_data[frame_idx]:
-                draw.rectangle([bbox.x, bbox.y, bbox.x+bbox.w,
-                               bbox.y+bbox.h], outline="red", width=1)
-                draw.text((bbox.x + bbox.w//2, bbox.y + bbox.h//2), str(bbox.index),
-                          fill="red", font=font)
-
-        pil_frames.append(img)
-
-    pil_frames[0].save(
+    images[0].save(
         output_path,
         save_all=True,
-        append_images=pil_frames[1:],
-        duration=1000//fps,
+        append_images=images[1:],
+        duration=1000 // frames_per_second,
         loop=0,
-        optimize=True
+        optimize=True,
     )
     print(f"Saved GIF to {output_path}")
 
 
-###################################################################################
-
-
-def process():
-    output_dir = Path(OUTPUT_FOLDER)
-    output_dir.mkdir(exist_ok=True)
-
-    for tracking_path in Path(TRACKING_FOLDER).glob("*avi.npy"):
-        try:
-            print(f"Processing {tracking_path.name}...")
-            render_gifs(tracking_path, output_dir)
-        except Exception as e:
-            print(f"Error processing {tracking_path}: {str(e)}")
-
-
-def main():
-    process()
-
-
-if __name__ == "__main__":
-    main()
+def process(output_folder: Path = OUTPUT_FOLDER) -> tuple[Path, ...]:
+    output_folder.mkdir(parents=True, exist_ok=True)
+    written = []
+    for tracking_path in sorted(TRACKING_FOLDER.glob("*avi.npy")):
+        written.extend(render_gifs(tracking_path, output_folder))
+    return tuple(written)

@@ -1,0 +1,27 @@
+spec: 1
+
+identity:
+  name: microorganism-computer-vision
+  author: Phorcys
+  holder: Phorcys
+  nature: open-source
+  visibility: public
+
+audience:
+  - biophysicists reading bacterial motility from video
+  - computer-vision engineers
+
+lifecycle:
+  stage: research
+  registries:
+    pypi: never
+  ci:
+    mode: manual
+    activation: consent
+
+agent:
+  autonomy:
+    commit: main
+    push: never
+    version-bump: allowed
+    commit-when: gate-passes

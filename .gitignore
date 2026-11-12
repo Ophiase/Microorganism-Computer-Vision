@@ -165,3 +165,4 @@ data
 prototype
 output
 tmp
+.envrc

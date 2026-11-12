@@ -1,0 +1,37 @@
+[project]
+name = "microorganism-computer-vision"
+version = "0.6.0"
+description = "Track Salmonella Typhimurium in video and decide its motility pattern from the trajectories."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "Apache-2.0"
+keywords = [
+  "computer-vision",
+  "motility",
+  "optical-flow",
+  "trajectory-analysis",
+  "diffusion",
+]
+dependencies = [
+  "kaleido>=1.2.0",
+  "matplotlib>=3.11",
+  "numba>=0.68",
+  "numpy>=2.5",
+  "opencv-python>=4.13",
+  "pillow>=13.0",
+  "plotly>=7.1",
+  "requests>=2.34",
+  "scipy>=1.18",
+]
+
+[dependency-groups]
+dev = ["pytest>=9.1", "ruff>=0.15", "ty>=0.0.39"]
+
+# An experiment pipeline, not a library: the modules run from the repository
+# root, nothing is published, so there is no wheel to build.
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

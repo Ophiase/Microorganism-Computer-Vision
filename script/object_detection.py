@@ -1,95 +1,71 @@
+from pathlib import Path
+
 import numpy as np
-import os
-from typing import List, Tuple
-from logic.structure.bounding_box import BoundingBox
-from common import BOUNDING_BOX_FOLDER, DEFAULT_VIDEO, PREPROCESSED_FOLDER, TRACKING_FOLDER
+
+from common import DEFAULT_VIDEO, PREPROCESSED_FOLDER, TRACKING_FOLDER
 from logic.kalman_filter import BacterialTracker
 from logic.shape_detection import detect_shapes
-from visualization.bbox_visualization import plot_bboxes_video, plot_tracked_video
+from logic.structure.bounding_box import BoundingBox
+from visualization.videos import plot_tracked_video
 
-###################################################################################
+DEFAULT_NPY_FILE = PREPROCESSED_FOLDER / f"{DEFAULT_VIDEO}.npy"
+MIN_AREA = 10
+MAX_AREA = 800
+TREND_ROW = 0
+FLOW_X_ROW = 1
+FLOW_Y_ROW = 2
+FIRST_COLUMN = 0
 
 
-DEFAULT_NPY_FILE = os.path.join(PREPROCESSED_FOLDER, DEFAULT_VIDEO + ".npy")
-
-###################################################################################
+def split_channels(
+    full_data: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Read the channel tensor as frame, flow x and flow y."""
+    frames = full_data[:, :, :, TREND_ROW, FIRST_COLUMN]
+    flow_x = full_data[:, :, :, FLOW_X_ROW, FIRST_COLUMN]
+    flow_y = full_data[:, :, :, FLOW_Y_ROW, FIRST_COLUMN]
+    return frames, flow_x, flow_y
 
 
 def process_with_tracking(
-    file_path: str = DEFAULT_NPY_FILE,
-    output_folder: str = TRACKING_FOLDER,
-    interval: Tuple[int, int] = None
-) -> List[List[BoundingBox]]:
-    """
-    Process video with tracking and save results
-    """
-
-    # Load full data cube
+    file_path: Path = DEFAULT_NPY_FILE,
+    output_folder: Path = TRACKING_FOLDER,
+    interval: tuple[int, int] | None = None,
+) -> list[list[BoundingBox]]:
+    """Track the cells of a transformed video and save the boxes per frame."""
     full_data = np.load(file_path)
     if interval is not None:
-        full_data = full_data[interval[0]:interval[1]]
+        full_data = full_data[interval[0] : interval[1]]
+    frames, _, _ = split_channels(full_data)
 
-    video_tensor = full_data[:, :, :, 0, 0]  # Trend channel
-    optical_flow = np.stack([
-        full_data[:, :, :, 1, 0],  # Optical flow x (transformed)
-        full_data[:, :, :, 2, 0]   # Optical flow y (transformed)
-    ], axis=-1)
+    tracker = BacterialTracker()
+    tracked_frames = []
+    for frame_index in range(len(frames)):
+        detections = detect_shapes(frames[frame_index], MIN_AREA, MAX_AREA)
+        tracked_frames.append(list(tracker.update_tracks(detections, frame_index)))
 
-    # Initialize tracker
-    tracker = BacterialTracker(optical_flow)
-    tracked_boxes: List[List[BoundingBox]] = []
-
-    # Process frames
-    for frame_idx in range(len(video_tensor)):
-        frame = video_tensor[frame_idx]
-        bboxes = detect_shapes(frame, 10, 800)
-        tracked = tracker.update_tracks(bboxes, frame_idx)
-        tracked_boxes.append(tracked)
-
-    # Save results
-    file_name = os.path.basename(file_path)
-    output_file = os.path.join(output_folder, f"{file_name}")
-
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    np.save(output_file, np.array(tracked_boxes, dtype=object))
-
+    output_folder.mkdir(parents=True, exist_ok=True)
+    output_file = output_folder / file_path.name
+    np.save(output_file, np.array(tracked_frames, dtype=object))
     print(f"Tracked boxes saved to {output_file}")
-    return tracked_boxes
-
-#########################################
+    return tracked_frames
 
 
-def test_kalman_filter(
-        file_path: str = DEFAULT_NPY_FILE,
-        output_folder: str = TRACKING_FOLDER,
-        interval: Tuple[int, int] = None,
-):
-    tracked_boxes = process_with_tracking(file_path, output_folder, interval)
-
-    #########################################
+def show_tracks(
+    file_path: Path = DEFAULT_NPY_FILE,
+    interval: tuple[int, int] | None = None,
+) -> None:
+    """Draw the tracks over the frames, with the flow of each frame."""
+    tracked_frames = process_with_tracking(file_path, interval=interval)
 
     full_data = np.load(file_path)
     if interval is not None:
-        full_data = full_data[interval[0]:interval[1]]
+        full_data = full_data[interval[0] : interval[1]]
+    frames, flow_x, flow_y = split_channels(full_data)
 
-    video_tensor = full_data[:, :, :, 0, 0]
-    optical_flow = np.stack(
-        [full_data[:, :, :, 1, 0], full_data[:, :, :, 2, 0]], -1)
-
-    fig = plot_tracked_video(
-        video=video_tensor,
-        tracked_boxes=tracked_boxes,
-        optical_flow_video=optical_flow,
-        show_flow=True
-    )
-    fig.show()
-
-#########################################
-
-
-def main():
-    test_kalman_filter(interval=(0, 40))
-
-
-if __name__ == "__main__":
-    main()
+    plot_tracked_video(
+        video=frames,
+        tracked_boxes=tracked_frames,
+        optical_flow_video=np.stack([flow_x, flow_y], axis=-1),
+        show_flow=True,
+    ).show()
