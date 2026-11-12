@@ -10,6 +10,26 @@ desktop, not the laptop: re-measure [baseline](baseline.md) there first.
 2. `git switch dev/modernization`, `just install`, `just agent gate`.
 3. One step per `dev/<topic>` branch, merged on `main` when it passes.
 
+## The plan of `dev/agentic`
+
+**[defined]** 2026-11-12: the branch that turns the student pipeline into the
+agent's toolkit, one commit per box, the gate green at each.
+
+1. [x] The library takes documented parameters: pydantic models for each stage,
+   OpenCV and NumPy in place of numba, the tracker's bookkeeping fixed, a track
+   table, synthetic scenes rendered with their truth, tracking and
+   classification scores, a model selection in place of the six booleans.
+2. [ ] The agent's command line: `mcv guide`, `schema`, `probe`, `run`,
+   `synth`, `bench`, `search`, `history`, every answer in JSON, every run a
+   folder of PNG looks, a table of tracks and a report.
+3. [ ] The bench: scenes in `settings/bench/`, a tuning and an evaluation
+   split, `just bench`.
+4. [ ] The catalogue: every source found, its truth, licence and trust.
+5. [ ] The skill, `agent.just` recipes, the guide the command prints.
+6. [ ] The calibration measured: the defaults, a blind search and the agent,
+   on the bench and on the study's videos.
+7. [ ] The release: README, CHANGELOG, 0.8.0.
+
 ## Step 1: remove the waste
 
 Drop numba and matplotlib: the blur through `cv2.filter2D`, normalized by the

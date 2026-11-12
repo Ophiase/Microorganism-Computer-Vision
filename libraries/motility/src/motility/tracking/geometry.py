@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+Position = tuple[float, float]
+
 
 @dataclass(frozen=True, slots=True)
 class Rectangle:
@@ -11,12 +13,9 @@ class Rectangle:
     height: int
 
     @property
-    def centroid(self) -> tuple[float, float]:
+    def centroid(self) -> Position:
         return (self.x + self.width / 2, self.y + self.height / 2)
 
     @property
     def area(self) -> int:
         return self.width * self.height
-
-    def to_tuple(self) -> tuple[int, int, int, int]:
-        return (self.x, self.y, self.width, self.height)
