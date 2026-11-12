@@ -12,8 +12,8 @@ from microorganism_computer_vision.commands.base import (
     zoom_of,
 )
 from microorganism_computer_vision.media.folders import RUNS
+from microorganism_computer_vision.media.run_folder import Workspace, source_key
 from microorganism_computer_vision.media.video import read_recording
-from microorganism_computer_vision.media.workspace import Workspace, source_key
 from microorganism_computer_vision.reporting.summary import RunSummary
 from microorganism_computer_vision.reporting.writer import RunWriter
 

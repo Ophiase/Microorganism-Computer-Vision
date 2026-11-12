@@ -16,6 +16,7 @@ class Action(StrEnum):
     SPLIT = "split"
     JOIN = "join"
     LABEL = "label"
+    FORCE = "force"
 
 
 class Correction(BaseModel):
@@ -23,7 +24,8 @@ class Correction(BaseModel):
 
     drop removes the track; split starts a new track at `frame`; join appends
     `other` to `track`, the first keeping any frame both hold; label overrides
-    the verdict with `motion`.
+    the verdict with `motion`; force adopts the cell a looser detection follows
+    through (`x`, `y`) at `frame`, which the pipeline missed (`track` unused).
     """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -37,6 +39,8 @@ class Correction(BaseModel):
         default=None, ge=0, description="split: first frame of the new track."
     )
     motion: Motion | None = Field(default=None, description="label: the motion seen.")
+    x: float | None = Field(default=None, description="force: where the cell is, px.")
+    y: float | None = Field(default=None, description="force: where the cell is, px.")
     reason: str = Field(
         min_length=1, description="What was seen that the pipeline missed."
     )
@@ -62,6 +66,19 @@ def correct_tracks(tracks: TrackTable, corrections: Sequence[Correction]) -> Tra
     for correction in corrections:
         columns = _apply(columns, correction)
     return TrackTable.from_columns(columns)
+
+
+def forced_points(
+    corrections: Sequence[Correction],
+) -> tuple[tuple[int, float, float], ...]:
+    return tuple(
+        (item.frame, item.x, item.y)
+        for item in corrections
+        if item.action is Action.FORCE
+        and item.frame is not None
+        and item.x is not None
+        and item.y is not None
+    )
 
 
 def relabel(
@@ -100,7 +117,7 @@ def _apply(
             duplicate = theirs & np.isin(columns["frame"], list(mine))
             columns["track"] = np.where(theirs, correction.track, track)
             return _keep(columns, ~duplicate)
-        case Action.LABEL:
+        case Action.LABEL | Action.FORCE:
             return columns
 
 

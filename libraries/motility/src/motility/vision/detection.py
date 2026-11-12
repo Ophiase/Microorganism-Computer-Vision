@@ -56,6 +56,15 @@ class DetectionParameters(BaseModel):
         description="Largest bounding box kept: above, cells touch or it is debris.",
     )
 
+    static_cells: bool = Field(
+        default=False,
+        description=(
+            "Also find the cells that never move, in the clip's median: a"
+            " temporal-median background erases dead, stuck or sleeping cells"
+            " from every frame. They join as stationary tracks."
+        ),
+    )
+
     @model_validator(mode="after")
     def _areas_are_ordered(self) -> Self:
         if self.min_area > self.max_area:

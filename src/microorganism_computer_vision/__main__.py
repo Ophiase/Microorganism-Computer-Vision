@@ -16,7 +16,9 @@ from microorganism_computer_vision.commands.inform import (
 from microorganism_computer_vision.commands.probe import ProbeCommand
 from microorganism_computer_vision.commands.review import (
     CorrectCommand,
+    GalleryCommand,
     InspectCommand,
+    MissesCommand,
     SuspectsCommand,
 )
 from microorganism_computer_vision.commands.run import RunCommand
@@ -35,7 +37,9 @@ COMMANDS: Final[tuple[Command, ...]] = (
     RunCommand(),
     HistoryCommand(),
     SuspectsCommand(),
+    MissesCommand(),
     InspectCommand(),
+    GalleryCommand(),
     CorrectCommand(),
     SynthCommand(),
     BenchCommand(),

@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.extract import process as download_study
 from microorganism_computer_vision.media.folders import CATALOGUE, RUNS
-from microorganism_computer_vision.media.workspace import (
+from microorganism_computer_vision.media.run_folder import (
     HistoryEntry,
     Workspace,
     source_key,

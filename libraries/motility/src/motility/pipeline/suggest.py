@@ -6,8 +6,8 @@ from motility.truth.synthetic.scene import (
     Population,
     SceneParameters,
 )
-from motility.vision.appearance import AppearanceReport
 from motility.vision.detection import DetectionParameters
+from motility.vision.measures.appearance import AppearanceReport
 from motility.vision.preprocessing import (
     MID_GREY,
     Background,

@@ -16,7 +16,7 @@ model selection that run on a laptop in seconds.
   <img src="docs/figures/salmonella-tracks.gif" width="80%">
   <br>
   <em>Salmonella from the 2025 study: swimmers in blue, diffusing cells in orange,
-  the beads and host cells excluded. Calibrated by Claude in six runs.</em>
+  the beads and host cells excluded. Calibrated by Claude.</em>
 </div>
 
 ## Why an agent

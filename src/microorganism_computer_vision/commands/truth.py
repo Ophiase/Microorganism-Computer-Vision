@@ -7,7 +7,7 @@ import numpy as np
 import tomli_w
 from motility.pipeline import Scale, twin
 from motility.truth.synthetic import Kinetics, Population, SceneParameters, simulate
-from motility.vision.appearance import AppearanceReport
+from motility.vision.measures.appearance import AppearanceReport
 from pydantic import BaseModel
 
 from microorganism_computer_vision.benchmark.search import (

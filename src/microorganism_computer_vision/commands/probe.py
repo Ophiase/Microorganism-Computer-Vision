@@ -6,15 +6,15 @@ import cv2
 import numpy as np
 from motility.pipeline import suggest
 from motility.vision import Video
-from motility.vision.appearance import AppearanceReport, measure_appearance
-from motility.vision.scale_bar import find_scale_bars
+from motility.vision.measures.appearance import AppearanceReport, measure_appearance
+from motility.vision.measures.scale_bar import find_scale_bars
 from pydantic import BaseModel
 
 from microorganism_computer_vision.commands.base import clip_of
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.folders import RUNS
+from microorganism_computer_vision.media.run_folder import source_key
 from microorganism_computer_vision.media.video import Clip, read_recording
-from microorganism_computer_vision.media.workspace import source_key
 from microorganism_computer_vision.reporting.pictures.looks import probe_look
 
 DEFAULT_CLIP: Final = Clip(stop=100)

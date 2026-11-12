@@ -19,6 +19,8 @@ LARGEST: Final = 200
 SHEET_ROWS: Final = 12
 CAPTION: Final = 16
 FONT: Final = cv2.FONT_HERSHEY_SIMPLEX
+GALLERY_TILE: Final = 120
+GALLERY_COLUMNS: Final = 8
 
 
 class Inspector:
@@ -45,12 +47,32 @@ class Inspector:
         chosen = np.unique(np.linspace(first, last, frames).round().astype(int))
         return np.hstack([self._tile(tracks, int(frame)) for frame in chosen])
 
+    def gallery(
+        self, tracks: Sequence[int], columns: int = GALLERY_COLUMNS
+    ) -> np.ndarray:
+        """One small view per track at the middle of its life, many to judge at once."""
+        tiles = [
+            cv2.resize(
+                self._tile([track], self._middle(track)), (GALLERY_TILE, GALLERY_TILE)
+            )
+            for track in tracks
+        ]
+        blank = np.zeros_like(tiles[0])
+        tiles += [blank] * (-len(tiles) % columns)
+        rows = [
+            np.hstack(tiles[index : index + columns])
+            for index in range(0, len(tiles), columns)
+        ]
+        return np.vstack(rows)
+
     def sheet(self, suspects: Sequence[Suspect]) -> np.ndarray:
         """One row per suspect: four frames around where it is suspected."""
         rows = [self._suspect_row(suspect) for suspect in suspects[:SHEET_ROWS]]
         return np.vstack(rows)
 
     def _suspect_row(self, suspect: Suspect) -> np.ndarray:
+        if suspect.x is not None and suspect.y is not None:
+            return self._place_row(suspect, (suspect.x, suspect.y))
         tracks = [suspect.track] + (
             [suspect.other] if suspect.other is not None else []
         )
@@ -62,14 +84,35 @@ class Inspector:
             for offset in (-3, -1, 0, 2)
         ]
         tiles = np.hstack([self._tile(tracks, item) for item in frames])
-        caption = np.zeros((CAPTION, tiles.shape[1], 3), dtype=np.uint8)
         text = f"{suspect.kind.value} {' + '.join(map(str, tracks))}: {suspect.note}"
-        cv2.putText(caption, text, (4, 12), FONT, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
-        return np.vstack((caption, tiles))
+        return np.vstack((self._caption(text, tiles.shape[1]), tiles))
 
-    def _tile(self, tracks: Sequence[int], frame: int) -> np.ndarray:
-        x, y = self._centre(tracks, frame)
-        size = self._size(tracks)
+    def _place_row(self, suspect: Suspect, place: tuple[float, float]) -> np.ndarray:
+        """A fixed window on a place, for something no track follows."""
+        frame = suspect.frame or 0
+        frames = [
+            min(max(frame + offset, 0), len(self._video) - 1)
+            for offset in (-4, -2, 0, 2)
+        ]
+        tiles = np.hstack([self._tile([], item, place) for item in frames])
+        return np.vstack((
+            self._caption(f"missed: {suspect.note}", tiles.shape[1]),
+            tiles,
+        ))
+
+    def _caption(self, text: str, width: int) -> np.ndarray:
+        caption = np.zeros((CAPTION, width, 3), dtype=np.uint8)
+        cv2.putText(caption, text, (4, 12), FONT, 0.4, (255, 255, 255), 1, cv2.LINE_AA)
+        return caption
+
+    def _tile(
+        self,
+        tracks: Sequence[int],
+        frame: int,
+        place: tuple[float, float] | None = None,
+    ) -> np.ndarray:
+        x, y = place if place is not None else self._centre(tracks, frame)
+        size = self._size(tracks) if tracks else SMALLEST * 2
         image = self._overlay.draw(self._video[frame], frame)
         half = size // 2
         padded = cv2.copyMakeBorder(image, half, half, half, half, cv2.BORDER_CONSTANT)
