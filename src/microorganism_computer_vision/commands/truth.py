@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 import tomli_w
 from motility.pipeline import Scale, twin
-from motility.synthetic import Kinetics, Population, SceneParameters, simulate
+from motility.truth.synthetic import Kinetics, Population, SceneParameters, simulate
 from motility.vision.appearance import AppearanceReport
 from pydantic import BaseModel
 

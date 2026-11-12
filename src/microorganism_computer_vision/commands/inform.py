@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Final
 
 import yaml
-from motility.synthetic import SceneParameters
+from motility.truth.synthetic import SceneParameters
 from pydantic import BaseModel
 
 from microorganism_computer_vision.configuration import Configuration

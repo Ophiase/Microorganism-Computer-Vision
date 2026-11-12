@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from motility.synthetic.motions import Path
-from motility.synthetic.scene import Appearance, SceneParameters
+from motility.truth.synthetic.motions import Path
+from motility.truth.synthetic.scene import Appearance, SceneParameters
 from motility.vision.arrays import Frame, Video
 from motility.vision.preprocessing import Polarity
 

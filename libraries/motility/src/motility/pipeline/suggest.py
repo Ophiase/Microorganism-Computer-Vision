@@ -1,6 +1,11 @@
 from motility.pipeline.parameters import PipelineParameters
-from motility.synthetic.scene import Appearance, Kinetics, Population, SceneParameters
 from motility.tracking.kalman_filter import TrackingParameters
+from motility.truth.synthetic.scene import (
+    Appearance,
+    Kinetics,
+    Population,
+    SceneParameters,
+)
 from motility.vision.appearance import AppearanceReport
 from motility.vision.detection import DetectionParameters
 from motility.vision.preprocessing import (

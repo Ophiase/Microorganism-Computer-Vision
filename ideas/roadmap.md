@@ -38,7 +38,7 @@ cannot: the wave along a worm, the axis of a rod.
 
 1. [x] The overlays are seen: drawn after the downscale, on an explicit
    palette, a box per cell in its verdict's colour.
-2. [ ] `truth/`: `synthetic/` and `evaluation/` under one concept, which
+2. [x] `truth/`: `synthetic/` and `evaluation/` under one concept, which
    makes room for `posture/`.
 3. [ ] The centreline: the geodesic path through a cell's mask, centred by
    its distance transform, resampled to N points equally spaced, the head
