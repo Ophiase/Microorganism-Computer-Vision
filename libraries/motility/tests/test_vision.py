@@ -68,3 +68,22 @@ def test_the_area_bounds_drop_specks_and_debris() -> None:
     foreground[20:40, 20:40] = 1.0
 
     assert detect(foreground, DetectionParameters(min_area=4, max_area=100)) == ()
+
+
+def test_a_static_object_and_its_halo_are_excluded() -> None:
+    video = dark_cell_video(frames=5)
+    video[:, 30:38, 30:38] = 0.95
+    parameters = PreprocessingParameters(
+        background=Background.TEMPORAL_MEDIAN,
+        window_low=0.2,
+        window_high=0.5,
+        gain=1.0,
+        smoothing=1,
+        exclude_static=0.2,
+        exclusion_margin=2,
+    )
+    video[2, 28, 33] = 0.1
+    foreground = preprocess(video, parameters)
+
+    assert foreground[2, 28, 33] == pytest.approx(0.0)
+    assert foreground[0, 21, 12] > 0.9

@@ -87,6 +87,7 @@ def tracks_view(
     result: PipelineResult,
     motions: Mapping[int, Motion],
     frame: int,
+    thickness: int = 1,
 ) -> Image:
     image = grey(frame_image)
     for detection in result.detections[frame]:
@@ -95,7 +96,7 @@ def tracks_view(
         cv2.rectangle(image, (box.x, box.y), corner, DETECTION, 1)
     for track, points in _tails(result.tracks, frame).items():
         colour = MOTION_COLOURS[motions.get(track, Motion.UNDETERMINED)]
-        cv2.polylines(image, [points], False, colour, 1, cv2.LINE_AA)
+        cv2.polylines(image, [points], False, colour, thickness, cv2.LINE_AA)
     return image
 
 

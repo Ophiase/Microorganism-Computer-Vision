@@ -74,6 +74,23 @@ class PreprocessingParameters(BaseModel):
         ),
     )
 
+    exclude_static: float | None = Field(
+        default=None,
+        gt=0.0,
+        description=(
+            "Zero the foreground wherever the clip's median departs from its own"
+            " median level by more than this: large static objects (beads, host"
+            " cells, debris, a scale bar) whose edges jitter into false cells."
+            " Unset keeps everything."
+        ),
+    )
+    exclusion_margin: int = Field(
+        default=3,
+        ge=0,
+        le=30,
+        description="Pixels added around each excluded object, to cover its halo.",
+    )
+
     @model_validator(mode="after")
     def _window_is_ordered(self) -> Self:
         if self.window_low >= self.window_high:
@@ -94,13 +111,29 @@ def preprocess(video: Video, parameters: PreprocessingParameters) -> Video:
     if parameters.polarity is Polarity.DARK:
         foreground = 1.0 - foreground
     foreground = np.clip(foreground * parameters.gain, 0.0, 1.0).astype(np.float32)
-    return np.stack([smooth(frame, parameters.smoothing) for frame in foreground])
+    smoothed = np.stack([smooth(frame, parameters.smoothing) for frame in foreground])
+    if parameters.exclude_static is None:
+        return smoothed
+    return smoothed * ~static_objects(
+        video, parameters.exclude_static, parameters.exclusion_margin
+    )
 
 
 def _subtract_background(video: Video, background: Background) -> Video:
     if background is Background.NONE:
         return video
     return (video - np.median(video, axis=0) + MID_GREY).astype(np.float32)
+
+
+def static_objects(video: Video, level: float, margin: int) -> np.ndarray:
+    """Where the median frame departs from its median level, grown by `margin` px."""
+    median = np.median(video, axis=0)
+    objects = (np.abs(median - np.median(median)) > level).astype(np.uint8)
+    if margin > 0:
+        side = 2 * margin + 1
+        element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (side, side))
+        objects = cv2.dilate(objects, element)
+    return objects.astype(bool)
 
 
 def smooth(frame: np.ndarray, side: int) -> np.ndarray:
