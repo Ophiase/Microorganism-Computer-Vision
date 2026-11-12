@@ -1,11 +1,16 @@
 import numpy as np
 import pytest
 
-from logic.filters import pre_transform, tensor_gradient, transform, transform_video
-from logic.kernel import KernelType, average_neighbors
-from logic.structure.bounding_box import BoundingBox
-from logic.structure.rectangle import Rectangle
-from logic.trajectories import Trajectory
+from microorganism_computer_vision.tracking.bounding_box import BoundingBox
+from microorganism_computer_vision.tracking.rectangle import Rectangle
+from microorganism_computer_vision.tracking.trajectories import Trajectory
+from microorganism_computer_vision.vision.filters import (
+    pre_transform,
+    tensor_gradient,
+    transform,
+    transform_video,
+)
+from microorganism_computer_vision.vision.kernel import KernelType, average_neighbors
 
 RESOLUTION = 32
 FRAMES = 3

@@ -27,11 +27,16 @@ dependencies = [
 [dependency-groups]
 dev = ["pytest>=9.1", "ruff>=0.15", "ty>=0.0.39"]
 
-# An experiment pipeline, not a library: the modules run from the repository
-# root, nothing is published, so there is no wheel to build.
-[tool.uv]
-package = false
+[project.scripts]
+microorganism-computer-vision = "microorganism_computer_vision.__main__:main"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/microorganism_computer_vision"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+addopts = ["--strict-markers", "--strict-config"]

@@ -116,16 +116,15 @@ microorganism-cv/
 ├── data/                           # Raw and processed data, out of git
 │   ├── preprocessed/               # The channel tensors of a video
 │   └── tracking/                   # One file of boxes per frame
-├── logic/                          # Core algorithms
-│   ├── diffusion/                  # The six hypothesis tests and the MSD
-│   ├── structure/                  # Rectangle and BoundingBox
-│   ├── filters.py                  # Trend, detail and gradient channels
-│   ├── kalman_filter.py            # The tracker
-│   └── trajectories.py             # A track through time
-├── script/                         # One file per pipeline task
-├── synthetic/                      # The trajectory generator and its datasets
+├── src/microorganism_computer_vision/
+│   ├── vision/                     # Loading, filters, optical flow, shapes
+│   ├── tracking/                   # Boxes, the Kalman tracker, trajectories
+│   │   └── synthetic/              # The trajectory generator and its datasets
+│   ├── diffusion/                  # The MSD and the six hypotheses
+│   ├── pipeline/                   # One file per task, and the paths
+│   └── visualization/              # The figures, split by concept
 ├── tests/                          # The unit tests
-└── visualization/                   # The figures, split by concept
+└── ideas/                          # Where the project goes
 ```
 
 ## 📚 Methodology

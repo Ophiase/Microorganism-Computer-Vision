@@ -55,18 +55,18 @@ Read third-party sources through the in-repo venv
 
 ## Layout
 
-Four concepts, one folder each; the modules import from the repository root,
-which `pyproject.toml` puts on `sys.path`:
+A src layout, built by hatchling: the package is
+`src/microorganism_computer_vision/`, imported by its full name, installed
+editable by `uv sync`. `just run <task>` enters through its `__main__.py`.
 
-- `logic/` — the algorithms: filters, kernels, optical flow, shapes, the
-  Kalman tracker, the trajectories and `logic/diffusion/` with the six tests.
-- `script/` — the pipeline tasks, one file each, entered through
-  `script/main.py`.
-- `visualization/` — the Plotly and matplotlib figures.
+- `vision/` — loading, the filters, the optical flow, the shapes.
+- `tracking/` — the boxes, the Kalman tracker, the trajectories, and
+  `synthetic/`, the trajectory generator.
+- `diffusion/` — the MSD and `hypotheses/`, the six tests.
+- `pipeline/` — one file per task, and `paths.py`, the folders and defaults
+  every task reads.
+- `visualization/` — the Plotly figures.
 - `tests/` — the unit tests.
-
-`common.py` holds the paths and the defaults every task reads. It moves to a
-package in the next pass: until then, import it, do not copy its values.
 
 ## Rules and checks
 
