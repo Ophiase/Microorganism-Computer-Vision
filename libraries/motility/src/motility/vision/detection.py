@@ -18,6 +18,11 @@ class ThresholdMethod(StrEnum):
     OTSU = "otsu"
 
 
+class AreaMeasure(StrEnum):
+    BOX = "box"
+    PIXELS = "pixels"
+
+
 class DetectionParameters(BaseModel):
     """Which bright regions of the foreground map count as cells."""
 
@@ -45,15 +50,23 @@ class DetectionParameters(BaseModel):
             " specks and thin bridges smaller than itself. 0 turns it off."
         ),
     )
+    area: AreaMeasure = Field(
+        default=AreaMeasure.BOX,
+        description=(
+            "What min_area and max_area measure: box, the bounding box as in 2025,"
+            " which grows when a rod lies diagonally and drops it; pixels, the"
+            " cell itself, whatever its orientation."
+        ),
+    )
     min_area: int = Field(
         default=10,
         ge=1,
-        description="Smallest bounding box kept, width times height in pixels.",
+        description="Smallest region kept, in pixels, as `area` measures it.",
     )
     max_area: int = Field(
         default=800,
         ge=1,
-        description="Largest bounding box kept: above, cells touch or it is debris.",
+        description="Largest region kept, in pixels: above, cells touch or debris.",
     )
 
     static_cells: bool = Field(
@@ -106,7 +119,8 @@ def detect(foreground: Frame, parameters: DetectionParameters) -> tuple[Detectio
     detections = []
     for label in range(1, count):
         x, y, width, height, pixels = (int(value) for value in statistics[label])
-        if parameters.min_area <= width * height <= parameters.max_area:
+        size = pixels if parameters.area is AreaMeasure.PIXELS else width * height
+        if parameters.min_area <= size <= parameters.max_area:
             centre = (float(centroids[label][0]), float(centroids[label][1]))
             detections.append(Detection(centre, Rectangle(x, y, width, height), pixels))
     return tuple(detections)

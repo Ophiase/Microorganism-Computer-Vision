@@ -21,7 +21,7 @@ from microorganism_computer_vision.commands.review import (
     MissesCommand,
     SuspectsCommand,
 )
-from microorganism_computer_vision.commands.run import RunCommand
+from microorganism_computer_vision.commands.run import RunCommand, SweepCommand
 from microorganism_computer_vision.commands.truth import (
     BenchCommand,
     SearchCommand,
@@ -35,6 +35,7 @@ COMMANDS: Final[tuple[Command, ...]] = (
     SourcesCommand(),
     ProbeCommand(),
     RunCommand(),
+    SweepCommand(),
     HistoryCommand(),
     SuspectsCommand(),
     MissesCommand(),

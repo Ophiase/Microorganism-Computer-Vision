@@ -1,5 +1,6 @@
 from motility.vision.arrays import Frame, Video, as_video
 from motility.vision.detection import (
+    AreaMeasure,
     Detection,
     DetectionParameters,
     ThresholdMethod,
@@ -15,6 +16,7 @@ from motility.vision.preprocessing import (
 )
 
 __all__ = [
+    "AreaMeasure",
     "Background",
     "Detection",
     "DetectionParameters",
