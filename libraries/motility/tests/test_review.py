@@ -56,3 +56,15 @@ def test_a_broken_track_is_suspected_of_continuing() -> None:
         item for item in find_suspects(tracks, []) if item.kind is SuspectKind.GAP
     )
     assert (gap.track, gap.other) == (0, 1)
+
+
+def test_a_forced_cell_is_adopted_without_duplicating_a_kept_one() -> None:
+    from motility.review import adopt
+
+    kept = table(straight(0, range(6), 0.0))
+    relaxed = table(straight(5, range(6), 0.0) + straight(6, range(6), 0.0, step=-2.0))
+
+    adopted = adopt(kept, relaxed, [(3, -6.0, 10.0)], radius=2.0)
+
+    assert set(adopted.track.tolist()) == {0, 1}
+    assert (adopted.track == 1).sum() == 5

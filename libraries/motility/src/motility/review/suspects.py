@@ -24,6 +24,7 @@ class SuspectKind(StrEnum):
     GAP = "gap"
     UNSURE = "unsure"
     FAST = "fast"
+    MISSED = "missed"
 
 
 class Suspect(BaseModel):
@@ -35,6 +36,8 @@ class Suspect(BaseModel):
         default=None, description="gap: the track that may continue it."
     )
     frame: int | None = Field(default=None, description="Where to look.")
+    x: float | None = Field(default=None, description="missed: where, in the frame.")
+    y: float | None = Field(default=None, description="missed: where, in the frame.")
     score: float = Field(description="How suspicious, comparable within a kind.")
     note: str
     suggestion: str = Field(description="The correction to try if the film agrees.")

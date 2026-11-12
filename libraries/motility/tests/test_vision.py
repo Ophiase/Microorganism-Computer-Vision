@@ -90,7 +90,7 @@ def test_a_static_object_and_its_halo_are_excluded() -> None:
 
 
 def test_a_white_bar_in_a_corner_is_found_with_its_length() -> None:
-    from motility.vision.scale_bar import find_scale_bars
+    from motility.vision.measures.scale_bar import find_scale_bars
 
     frame = np.full((200, 300), 0.5, dtype=np.float32)
     frame[180:182, 240:270] = 1.0
