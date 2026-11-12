@@ -1,0 +1,19 @@
+[project]
+name = "motility"
+version = "0.7.0"
+description = "Read bacterial motility from video: filters, tracking and diffusion tests."
+requires-python = ">=3.14"
+license = "Apache-2.0"
+dependencies = [
+  "numba>=0.68",
+  "numpy>=2.5",
+  "opencv-python>=4.13",
+  "scipy>=1.18",
+]
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/motility"]

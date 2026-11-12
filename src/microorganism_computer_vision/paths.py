@@ -1,0 +1,16 @@
+from pathlib import Path
+
+DATA_FOLDER = Path("data")
+OUTPUT_FOLDER = Path("output")
+SETTINGS_FOLDER = Path("settings")
+ANALYSIS_GRAPHICS_PATH = OUTPUT_FOLDER / "analysis"
+
+PREPROCESSED_FOLDER = DATA_FOLDER / "preprocessed"
+BOUNDING_BOX_FOLDER = DATA_FOLDER / "bounding_box"
+TRACKING_FOLDER = DATA_FOLDER / "tracking"
+
+DEFAULT_VIDEO = "342843.avi"
+DEFAULT_VIDEO_INTERVAL = (0, 85)
+DEFAULT_VIDEO_RESOLUTION = (685, 512)
+
+DEFAULT_FONT = "Arial.ttf"

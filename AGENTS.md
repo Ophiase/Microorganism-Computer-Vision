@@ -6,9 +6,15 @@ read this file; every other tool reads it too, it is the one source.
 ## What this project is
 
 A research pipeline that reads bacterial motility from raw video: extract the
-frames, compute the optical flow, transform each frame into a fourteen-channel
-tensor, track the cells with a Kalman filter, then test each trajectory against
-six diffusion hypotheses and draw the figures.
+frames, compute the optical flow, transform each frame into a channel tensor,
+track the cells with a Kalman filter, then test each trajectory against six
+diffusion hypotheses and draw the figures.
+
+**The direction** ([ideas/vision.md](ideas/vision.md)): a toolkit an agent
+calibrates on a researcher's videos, instead of a network trained on labelled
+data. A parameter is exposed and documented, never buried; the test cases are
+the sources of [catalogue/sources.yaml](catalogue/sources.yaml), which an agent
+keeps current: add what you learn, say who judged and when.
 
 `README.md` says how to run it; the tests and the code say how it works.
 
@@ -16,6 +22,13 @@ six diffusion hypotheses and draw the figures.
 
 English everywhere: code, comments, markdown, commits. The author may write to
 you in French; answer in French, write files in English.
+
+## Ideas
+
+Where the project goes is in `ideas/`: the measured baseline, the dependency
+audit, the language question and the ordered steps in
+[ideas/roadmap.md](ideas/roadmap.md). A question for the author waits in
+[ideas/open.md](ideas/open.md).
 
 ## Before working
 
@@ -48,18 +61,28 @@ Read third-party sources through the in-repo venv
 
 ## Layout
 
-Four concepts, one folder each; the modules import from the repository root,
-which `pyproject.toml` puts on `sys.path`:
+A uv workspace, built by hatchling, with **the library apart from the
+application**:
 
-- `logic/` — the algorithms: filters, kernels, optical flow, shapes, the
-  Kalman tracker, the trajectories and `logic/diffusion/` with the six tests.
-- `script/` — the pipeline tasks, one file each, entered through
-  `script/main.py`.
-- `visualization/` — the Plotly and matplotlib figures.
-- `tests/` — the unit tests.
+- `libraries/motility/` — the library, imported as `motility`: what can be
+  measured from a video. No file, no print, no figure, no setting; it takes
+  arrays and returns values. Its tests are in `libraries/motility/tests/`.
+  - `vision/` — the filters, the optical flow, the shapes.
+  - `tracking/` — the boxes, the Kalman tracker, the trajectories.
+  - `diffusion/` — the MSD and `hypotheses/`, the six tests.
+  - `synthetic.py` — the trajectory generator.
+- `src/microorganism_computer_vision/` — the application: the study of the
+  source videos. It reads the videos and the settings, runs the tasks, writes
+  the files and draws the figures.
+  - `pipeline/` — one file per task, entered through `__main__.py`.
+  - `video.py`, `dataset.py`, `paths.py` — the reads, the writes, the folders.
+  - `visualization/` — the Plotly figures.
+- `settings/` — the data the application reads, never written in code: the
+  source videos are `settings/dataset.toml`.
+- `tests/` — the tests of the application.
 
-`common.py` holds the paths and the defaults every task reads. It moves to a
-package in the next pass: until then, import it, do not copy its values.
+A value that names the world — an address, a file id, a frame rate — is a
+setting. A function that touches a file is the application's.
 
 ## Rules and checks
 
