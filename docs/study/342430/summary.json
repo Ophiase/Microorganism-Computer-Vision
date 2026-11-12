@@ -1,0 +1,75 @@
+{
+  "source": "data/342430.avi",
+  "frames": 150,
+  "detections_per_frame": {
+    "median": 19.0,
+    "low": 9.0,
+    "high": 37.0
+  },
+  "tracks": 1494,
+  "track_length": {
+    "median": 150.0,
+    "low": 1.0,
+    "high": 150.0
+  },
+  "classified": 1006,
+  "motions": {
+    "stationary": 973,
+    "diffusive": 20,
+    "directed": 10,
+    "confined": 2,
+    "circular": 1,
+    "undetermined": 488
+  },
+  "speed": {
+    "median": 0.0,
+    "low": 0.0,
+    "high": 0.0
+  },
+  "speed_unit": "µm/s",
+  "alpha": {
+    "median": 0.6029307501727709,
+    "low": 0.13798206983181893,
+    "high": 1.5686639835068592
+  },
+  "diffusion": {
+    "median": 0.0344264504216401,
+    "low": 0.0036444068126618577,
+    "high": 0.37483174764632865
+  },
+  "diffusion_unit": "µm²/s",
+  "hypotheses": {
+    "anomalous": [
+      991,
+      972
+    ],
+    "persistent": [
+      3,
+      3
+    ],
+    "chiral": [
+      3,
+      0
+    ],
+    "non-gaussian": [
+      38,
+      17
+    ],
+    "tumbling": [
+      3,
+      0
+    ],
+    "periodic": [
+      998,
+      0
+    ],
+    "confined": [
+      991,
+      967
+    ]
+  },
+  "hints": [
+    "the detections per frame vary a lot: cells cross the threshold in and out; smooth more, or lower detection.threshold",
+    "most classified tracks are stationary: dust or stuck cells; try preprocessing.background = temporal-median"
+  ]
+}
