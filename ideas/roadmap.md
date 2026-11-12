@@ -24,7 +24,7 @@ agent's toolkit, one commit per box, the gate green at each.
    folder of PNG looks, a table of tracks and a report.
 3. [x] The bench: scenes in `settings/bench/`, a tuning and an evaluation
    split, `just bench`.
-4. [ ] The catalogue: every source found, its truth, licence and trust.
+4. [x] The catalogue: every source found, its truth, licence and trust.
 5. [ ] The skill, `agent.just` recipes, the guide the command prints.
 6. [ ] The calibration measured: the defaults, a blind search and the agent,
    on the bench and on the study's videos.

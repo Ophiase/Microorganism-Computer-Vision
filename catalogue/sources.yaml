@@ -70,3 +70,133 @@
   use: the reference format for tracks with a truth; few bacteria
   checked: 2026-11-12
   by: agent
+- name: VISEM-Tracking, human spermatozoa
+  url: https://zenodo.org/records/7293726
+  holds: [20 videos of 30 s from 20 patients, 336 unlabelled clips of 30 s]
+  formats: [MP4, YOLO boxes with track ids per frame]
+  truth: bounding boxes with track identities, annotated by hand
+  licence: CC-BY 4.0, per the Scientific Data paper; read it on the record before reuse
+  trust: high
+  use: the closest public match to the project's question, swimmers with tracks; a test of the tracking and of the directed and circular verdicts; not for diagnosis
+  checked: 2026-11-12
+  by: agent
+- name: ISBI 2012 Particle Tracking Challenge
+  url: https://icy.bioimageanalysis.org/plugin/isbi-tracking-challenge-batch-scoring/
+  holds: [simulated fluorescence of vesicles, viruses, receptors and microtubule tips, at three densities and four SNR]
+  formats: [TIFF sequences, XML tracks]
+  truth: every track, by simulation
+  licence: to check on the challenge's distribution
+  trust: high
+  use: the reference benchmark of spot tracking (Chenouard et al., Nature Methods 2014); bright points rather than rods, so a test of the detection at low SNR and of the linking at high density
+  checked: 2026-11-12
+  by: agent
+- name: AnDi 2 benchmark dataset
+  url: https://zenodo.org/records/14281479
+  holds: [trajectories with changes of diffusion, trapping, confinement and dimerization, and the videos they were rendered into]
+  formats: [ZIP of trajectories and videos, about 750 MB]
+  truth: the model, exponent and diffusion coefficient of every segment
+  licence: CC-BY 4.0, per the record
+  trust: high
+  use: the benchmark of the classification, apart from the tracking; the andi-datasets package generates more on demand
+  checked: 2026-11-12
+  by: agent
+- name: TD2, two-dimensional tracking dataset
+  url: http://data.ljp.upmc.fr/datasets/TD2/
+  holds: [41 sequences of moving objects, among them bacteria and paramecia]
+  formats: [image sequences, trajectories]
+  truth: trajectories from the FastTrack paper's pipeline, checked by its authors; whether by hand is to check
+  licence: CC-BY-NC-SA, per the FastTrack paper
+  trust: medium
+  use: varied species, densities and contrasts; the bacteria and paramecia sequences fit the toolkit; non-commercial only
+  checked: 2026-11-12
+  by: agent
+- name: MEMTrack supplementary videos, bacteria in collagen
+  url: https://zenodo.org/records/10001477
+  holds: [bacteria in collagen and in liquid, with manual tracks overlaid]
+  formats: [videos]
+  truth: manual tracks, drawn on the videos rather than given as files
+  licence: to check on the record
+  trust: medium
+  use: the hard case, low contrast in a fibrous medium; a check by eye, not a score
+  checked: 2026-11-12
+  by: agent
+- name: Bacterial Trajectory Videos, simulated bacteria in a channel
+  url: https://doi.org/10.18419/DARUS-1187
+  holds: [three videos of simulated run-and-tumble or straight swimmers in a channel]
+  formats: [MP4]
+  truth: by simulation, the scripts in DARUS-1188
+  licence: CC-BY 4.0, per the record
+  trust: medium
+  use: a second synthetic truth, drawn by someone else's renderer, against overfitting to ours
+  checked: 2026-11-12
+  by: agent
+- name: Illinois Data Bank, E. coli swimming in a microfluidic chamber
+  url: https://databank.illinois.edu/datasets/IDB-4912922
+  holds: [a 5 minute video of one E. coli, with MATLAB tracking code]
+  formats: [video, MATLAB]
+  truth: none
+  licence: CC-BY 4.0, per the search result; to check on the record
+  trust: medium
+  use: a long single track, for the verdicts on run-and-tumble over many runs
+  checked: 2026-11-12
+  by: agent
+- name: Open Worm Movement Database, C. elegans on Petri plates
+  url: https://doi.org/10.1038/sdata.2017.156
+  holds: [14 874 single-worm experiments, 386 genotypes, on agar plates]
+  formats: [HDF5 videos, WCON skeletons, features]
+  truth: skeletons from Tierpsy, not by hand
+  licence: CC-BY, per Scientific Data 2017
+  trust: high
+  use: the Petri dish at the scale of an animal; one large object per frame, a test of the toolkit far from bacteria
+  checked: 2026-11-12
+  by: agent
+- name: Freely swimming paramecia
+  url: https://zenodo.org/record/6074480
+  holds: [videos of paramecia swimming freely, and their analysed data]
+  formats: [ZIP of images and data, about 940 MB]
+  truth: tracks from the authors' analysis
+  licence: to check on the record
+  trust: medium
+  use: large ciliates, fast and helical; a test of the directed and circular verdicts at another scale
+  checked: 2026-11-12
+  by: agent
+- name: Chlamydomonas species in agar microchambers
+  url: https://zenodo.org/records/8326749
+  holds: [focus-filtered time-lapse of C. reinhardtii and C. smithii, 20 fps, 0.64 µm per pixel]
+  formats: [image sequences, about 16 GB, morphology CSV]
+  truth: none for the tracks
+  licence: to check on the record
+  trust: medium
+  use: swimming algae with a known pixel size and frame rate, so speeds in µm/s; too large to fetch without a reason
+  checked: 2026-11-12
+  by: agent
+- name: SwimTracker, unicellular swimming assay
+  url: https://research.arcadiascience.com/pub/resource-swimtracker-htp-swimming-assay
+  holds: [high-throughput time-lapse of swimming unicellular organisms, with computed trajectories]
+  formats: [BioImage Archive deposit, accession to find]
+  truth: trajectories from their pipeline
+  licence: to check on the BioImage Archive
+  trust: medium
+  use: a modern pipeline to compare with, and its data once the accession is found
+  checked: 2026-11-12
+  by: agent
+- name: Tetrahymena movement and size
+  url: https://zenodo.org/records/10822167
+  holds: [videos of Tetrahymena for speed and size, with an ellipse-fitting tracker]
+  formats: [videos, Python]
+  truth: none
+  licence: to check on the record
+  trust: medium
+  use: another ciliate, and another classical tracker to compare with
+  checked: 2026-11-12
+  by: agent
+- name: trackpy walkthrough, colloids in water
+  url: https://github.com/soft-matter/trackpy-examples
+  holds: [bright-field frames of micron beads diffusing in water]
+  formats: [PNG sequence]
+  truth: the physics, a diffusion coefficient set by the temperature and the viscosity
+  licence: to check on the repository
+  trust: high
+  use: the purest diffusive case; a test of the diffusive verdict and of D against Stokes-Einstein, once the pixel size is known
+  checked: 2026-11-12
+  by: agent

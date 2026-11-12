@@ -61,9 +61,7 @@ class SourcesCommand:
     def execute(self, arguments: argparse.Namespace) -> Sources:
         entries = yaml.safe_load(CATALOGUE.read_text())
         if arguments.with_truth:
-            entries = [
-                entry for entry in entries if entry.get("truth", "none") != "none"
-            ]
+            entries = [entry for entry in entries if _has_truth(entry)]
         return Sources(count=len(entries), sources=tuple(entries))
 
 
@@ -99,3 +97,7 @@ class FetchCommand:
 
     def execute(self, _arguments: argparse.Namespace, /) -> Fetched:
         return Fetched(videos=download_study())
+
+
+def _has_truth(entry: dict[str, object]) -> bool:
+    return not str(entry.get("truth", "none")).startswith("none")
