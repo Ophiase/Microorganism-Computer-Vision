@@ -35,16 +35,30 @@ statistical tests, each with a null model, a p-value, and a correction for
 testing hundreds of tracks at once (Benjamini-Hochberg).
 
 ```mermaid
-flowchart LR
-    T(track) -->|no motion| S(still)
-    T -->|"α = 1"| B(Brownian)
-    T -->|"α < 1, saturates"| C(confined)
-    T -->|"α > 1, heading kept"| W(swimmer)
-    W -->|"turns one way"| R(circling)
-    W -->|"turns too sharp"| U(run-and-tumble)
-    W -->|"turns in rhythm"| V(run-and-reverse)
-    T -->|"non-Gaussian steps"| H(heavy tails)
+graph LR
+    track(a track) --> moves{how it moves}
+    moves -->|no motion| still[still]
+    moves -->|alpha = 1| brownian[Brownian]
+    moves -->|alpha below 1, saturating| confined[confined]
+    moves -->|alpha above 1, heading kept| swimmer[swimmer]
+    swimmer -->|turns one way| circling[circling]
+    swimmer -->|turns too sharply| tumble[run-and-tumble]
+    swimmer -->|turns in a rhythm| reverse[run-and-reverse]
+    classDef still fill:#e87ba4,stroke:#b85a80,color:#ffffff
+    classDef brownian fill:#eb6834,stroke:#b34a20,color:#ffffff
+    classDef confined fill:#1baf7a,stroke:#137f58,color:#ffffff
+    classDef swimmer fill:#2a78d6,stroke:#1d5599,color:#ffffff
+    classDef circling fill:#eda100,stroke:#b37900,color:#ffffff
+    class still still
+    class brownian brownian
+    class confined confined
+    class swimmer swimmer
+    class circling circling
 ```
+
+The colours are the verdicts' in every video and figure. Left out of the
+drawing: the test of non-Gaussian steps, run on every track, which flags
+heavy tails such as waiting times and Lévy flights.
 
 **Every test is checked on a truth.** Synthetic cells of ten behaviours, a
 hundred tracks each, with localisation noise; the share of tracks each test
