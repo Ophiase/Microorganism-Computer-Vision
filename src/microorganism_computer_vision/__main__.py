@@ -1,23 +1,23 @@
 import argparse
 from collections.abc import Sequence
 
-from microorganism_computer_vision.pipeline.extract import process as extract
-from microorganism_computer_vision.pipeline.object_detection import (
-    process_with_tracking,
-    show_tracks,
+from microorganism_computer_vision.dataset import (
+    generate_synthetic_data,
 )
-from microorganism_computer_vision.pipeline.paths import (
+from microorganism_computer_vision.paths import (
     DATA_FOLDER,
     DEFAULT_VIDEO,
     PREPROCESSED_FOLDER,
     TRACKING_FOLDER,
 )
+from microorganism_computer_vision.pipeline.extract import process as extract
+from microorganism_computer_vision.pipeline.object_detection import (
+    process_with_tracking,
+    show_tracks,
+)
 from microorganism_computer_vision.pipeline.render import process as render
 from microorganism_computer_vision.pipeline.statistical_tests import process as analyze
 from microorganism_computer_vision.pipeline.transform import process as transform
-from microorganism_computer_vision.tracking.synthetic.dataset import (
-    generate_synthetic_data,
-)
 
 TASKS = ("extract", "transform", "detection", "render", "analysis", "synthetic")
 

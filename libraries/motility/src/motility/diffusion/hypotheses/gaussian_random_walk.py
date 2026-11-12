@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.stats import kstest
 
-from microorganism_computer_vision.diffusion.base import DiffusionTest
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.diffusion.base import DiffusionTest
+from motility.tracking.trajectories import Trajectory
 
 MIN_DISPLACEMENTS = 3
 

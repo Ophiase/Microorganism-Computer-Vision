@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def compute_optical_flow(video: np.ndarray, verbose: bool = False) -> np.ndarray:
+def compute_optical_flow(video: np.ndarray) -> np.ndarray:
     """Farneback flow between consecutive frames, one flow per frame.
 
     The first flow is the one of the second frame: the pair (0, 1) has no
@@ -20,7 +20,5 @@ def compute_optical_flow(video: np.ndarray, verbose: bool = False) -> np.ndarray
         cv2.calcOpticalFlowFarneback(previous, current, flow, 0.5, 3, 15, 3, 5, 1.2, 0)
         flows.append(flow)
         previous = current
-        if verbose and index % 30 == 0:
-            print(f"Computed optical flow for frame {index}, flow shape: {flow.shape}")
 
     return np.array([flows[0], *flows])

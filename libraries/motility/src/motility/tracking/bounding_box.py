@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Self
 
-from microorganism_computer_vision.tracking.rectangle import Rectangle
+from motility.tracking.rectangle import Rectangle
 
 DEFAULT_INDEX = 0
 

@@ -55,18 +55,28 @@ Read third-party sources through the in-repo venv
 
 ## Layout
 
-A src layout, built by hatchling: the package is
-`src/microorganism_computer_vision/`, imported by its full name, installed
-editable by `uv sync`. `just run <task>` enters through its `__main__.py`.
+A uv workspace, built by hatchling, with **the library apart from the
+application**:
 
-- `vision/` — loading, the filters, the optical flow, the shapes.
-- `tracking/` — the boxes, the Kalman tracker, the trajectories, and
-  `synthetic/`, the trajectory generator.
-- `diffusion/` — the MSD and `hypotheses/`, the six tests.
-- `pipeline/` — one file per task, and `paths.py`, the folders and defaults
-  every task reads.
-- `visualization/` — the Plotly figures.
-- `tests/` — the unit tests.
+- `libraries/motility/` — the library, imported as `motility`: what can be
+  measured from a video. No file, no print, no figure, no setting; it takes
+  arrays and returns values. Its tests are in `libraries/motility/tests/`.
+  - `vision/` — the filters, the optical flow, the shapes.
+  - `tracking/` — the boxes, the Kalman tracker, the trajectories.
+  - `diffusion/` — the MSD and `hypotheses/`, the six tests.
+  - `synthetic.py` — the trajectory generator.
+- `src/microorganism_computer_vision/` — the application: the study of the
+  source videos. It reads the videos and the settings, runs the tasks, writes
+  the files and draws the figures.
+  - `pipeline/` — one file per task, entered through `__main__.py`.
+  - `video.py`, `dataset.py`, `paths.py` — the reads, the writes, the folders.
+  - `visualization/` — the Plotly figures.
+- `settings/` — the data the application reads, never written in code: the
+  source videos are `settings/dataset.toml`.
+- `tests/` — the tests of the application.
+
+A value that names the world — an address, a file id, a frame rate — is a
+setting. A function that touches a file is the application's.
 
 ## Rules and checks
 

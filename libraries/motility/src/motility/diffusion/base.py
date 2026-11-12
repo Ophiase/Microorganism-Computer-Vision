@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.tracking.trajectories import Trajectory
 
 Measurement = dict[str, float | list[float]]
 

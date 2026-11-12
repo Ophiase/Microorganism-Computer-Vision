@@ -1,7 +1,6 @@
 import numpy as np
 import plotly.graph_objects as go
-
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
+from motility.tracking.bounding_box import BoundingBox
 
 BOX_COLOUR = "red"
 BOX_WIDTH = 2

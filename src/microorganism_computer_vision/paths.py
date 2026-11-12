@@ -2,6 +2,7 @@ from pathlib import Path
 
 DATA_FOLDER = Path("data")
 OUTPUT_FOLDER = Path("output")
+SETTINGS_FOLDER = Path("settings")
 ANALYSIS_GRAPHICS_PATH = OUTPUT_FOLDER / "analysis"
 
 PREPROCESSED_FOLDER = DATA_FOLDER / "preprocessed"

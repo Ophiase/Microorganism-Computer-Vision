@@ -1,15 +1,15 @@
 from pathlib import Path
 
 import numpy as np
+from motility.tracking.bounding_box import BoundingBox
+from motility.tracking.kalman_filter import BacterialTracker
+from motility.vision.shape_detection import detect_shapes
 
-from microorganism_computer_vision.pipeline.paths import (
+from microorganism_computer_vision.paths import (
     DEFAULT_VIDEO,
     PREPROCESSED_FOLDER,
     TRACKING_FOLDER,
 )
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.kalman_filter import BacterialTracker
-from microorganism_computer_vision.vision.shape_detection import detect_shapes
 from microorganism_computer_vision.visualization.videos import plot_tracked_video
 
 DEFAULT_NPY_FILE = PREPROCESSED_FOLDER / f"{DEFAULT_VIDEO}.npy"

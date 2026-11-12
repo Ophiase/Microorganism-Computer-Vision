@@ -1,16 +1,15 @@
 import numpy as np
 import pytest
-
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.rectangle import Rectangle
-from microorganism_computer_vision.tracking.trajectories import Trajectory
-from microorganism_computer_vision.vision.filters import (
+from motility.tracking.bounding_box import BoundingBox
+from motility.tracking.rectangle import Rectangle
+from motility.tracking.trajectories import Trajectory
+from motility.vision.filters import (
     pre_transform,
     tensor_gradient,
     transform,
     transform_video,
 )
-from microorganism_computer_vision.vision.kernel import KernelType, average_neighbors
+from motility.vision.kernel import KernelType, average_neighbors
 
 RESOLUTION = 32
 FRAMES = 3

@@ -2,8 +2,8 @@ from collections.abc import Callable
 
 import numpy as np
 
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.rectangle import Rectangle
+from motility.tracking.bounding_box import BoundingBox
+from motility.tracking.rectangle import Rectangle
 
 DEFAULT_SIZE = 20.0
 SPAWN_RANGE = (100.0, 924.0)

@@ -1,11 +1,11 @@
 import numpy as np
 
-from microorganism_computer_vision.diffusion.base import DiffusionTest
-from microorganism_computer_vision.diffusion.msd import (
+from motility.diffusion.base import DiffusionTest
+from motility.diffusion.msd import (
     DisplacementCurve,
     mean_squared_displacement,
 )
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.tracking.trajectories import Trajectory
 
 LAG_DIVISOR = 2
 NULL_DISPLACEMENT = 1e-9

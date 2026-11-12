@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-from microorganism_computer_vision.tracking.bounding_box import BoundingBox
-from microorganism_computer_vision.tracking.rectangle import Rectangle
+from motility.tracking.bounding_box import BoundingBox
+from motility.tracking.rectangle import Rectangle
 
 
 def detect_shapes(

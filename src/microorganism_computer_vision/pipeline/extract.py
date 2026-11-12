@@ -1,29 +1,20 @@
+import tomllib
 from pathlib import Path
 
 import requests
 
-from microorganism_computer_vision.pipeline.paths import DATA_FOLDER
+from microorganism_computer_vision.paths import DATA_FOLDER, SETTINGS_FOLDER
 
 DOWNLOAD_TIMEOUT = 60
 CHUNK = 8192
-FILE_IDS = (
-    "342430",
-    "342517",
-    "342580",
-    "342655",
-    "342737",
-    "342783",
-    "342843",
-    "342910",
-    "342998",
-)
+DATASET_SETTINGS = SETTINGS_FOLDER / "dataset.toml"
 
 
-def video_urls() -> tuple[str, ...]:
-    """The nine videos of the source dataset, one URL per file id."""
-    # hardcoded-url: the dataset of the study
-    base = "https://plos.figshare.com/ndownloader/files/"
-    return tuple(f"{base}{file_id}" for file_id in FILE_IDS)
+def video_urls(settings_path: Path = DATASET_SETTINGS) -> tuple[str, ...]:
+    """The videos of the source dataset, one URL per file id of the settings."""
+    with settings_path.open("rb") as file:
+        dataset = tomllib.load(file)
+    return tuple(f"{dataset['base-url']}{file_id}" for file_id in dataset["files"])
 
 
 def download_file(url: str, output_folder: Path) -> Path:

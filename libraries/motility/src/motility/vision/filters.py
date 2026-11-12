@@ -1,7 +1,7 @@
 import numpy as np
 from numba import njit
 
-from microorganism_computer_vision.vision.kernel import average_neighbors
+from motility.vision.kernel import average_neighbors
 
 LOWER_CLIP = 0.2
 UPPER_CLIP = 0.49

@@ -1,7 +1,7 @@
 import numpy as np
 
-from microorganism_computer_vision.diffusion.base import DiffusionTest
-from microorganism_computer_vision.tracking.trajectories import Trajectory
+from motility.diffusion.base import DiffusionTest
+from motility.tracking.trajectories import Trajectory
 
 
 class CircularMotionTest(DiffusionTest):
