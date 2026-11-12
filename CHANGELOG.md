@@ -4,6 +4,11 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+- **A change of direction**: the project becomes a toolkit an agent
+  calibrates on a researcher's videos, instead of a pipeline tuned by hand or
+  a network to train; the README and `ideas/vision.md` say why.
+- **A catalogue of sources**: `catalogue/sources.yaml` lists the motility
+  videos found, their truth, licence and trust.
 - **The README says what the project is**: a student project of 2025,
   revisited with agents, in a warning at the top.
 - **The library apart from the application**: `libraries/motility/` holds

@@ -1,0 +1,72 @@
+# Where motility videos can be found, kept by agents so that none searches the
+# web from scratch. Add what you learn; say who judged and when.
+- name: microorganism-computer-vision synthetic trajectories
+  url: libraries/motility/src/motility/synthetic.py
+  holds: [brownian, directed, confined, ctrw, sinusoidal]
+  formats: [generated trajectories]
+  truth: every path and its motion, by construction
+  licence: Apache-2.0, part of this repository
+  trust: high
+  use: the default benchmark; rendered into videos it becomes the truth the agent is measured on
+  checked: 2026-11-12
+  by: agent
+- name: Salmonella Typhimurium near-surface swimming
+  url: https://plos.figshare.com/ndownloader/files/342843
+  holds: [nine phase-contrast videos of Salmonella swimming near a surface]
+  formats: [AVI, 150 to 385 frames, 8 to 20 fps]
+  truth: none
+  licence: CC-BY 4.0, as PLOS supplementary files
+  trust: medium
+  use: the original study of the project, listed in settings/dataset.toml; probably the supplementary videos of Misselwitz et al., PLOS Pathogens 2012 (ppat.1002810), to check
+  checked: 2026-11-12
+  by: agent
+- name: Motility Database, Portland State University
+  url: https://motility.research.pdx.edu/Database.html
+  holds: [3D videos of microbial motility, digital holographic microscopy]
+  formats: [anonymous FTP]
+  truth: unknown
+  licence: none found
+  trust: medium
+  use: not fetched; the licence and whether tracks are annotated are to check
+  checked: 2026-11-12
+  by: agent
+- name: YSMR
+  url: https://github.com/schwanbeck/YSMR
+  holds: [a bacterial video tracker, BMC Bioinformatics 2020]
+  formats: [Python tool]
+  truth: none
+  licence: to check
+  trust: medium
+  use: prior art to compare with; its example videos, if any, are to check
+  checked: 2026-11-12
+  by: agent
+- name: C. glutamicum time-lapse, Cell Tracking Challenge format
+  url: https://zenodo.org/record/7260137
+  holds: [five time-lapse sequences with corrected segmentation and tracking]
+  formats: [CTC format archive]
+  truth: segmentation and tracks, manually corrected
+  licence: to check on the record
+  trust: high
+  use: growth over minutes, not swimming; a test of the detection and the linking only
+  checked: 2026-11-12
+  by: agent
+- name: DeepBacs E. coli bright-field time-lapse
+  url: https://zenodo.org/record/5550935
+  holds: [E. coli MG1655 at one frame a minute, with segmentation masks]
+  formats: [images and masks]
+  truth: segmentation
+  licence: to check on the record
+  trust: high
+  use: growth, not swimming; a test of the detection only
+  checked: 2026-11-12
+  by: agent
+- name: Cell Tracking Challenge
+  url: https://celltrackingchallenge.net
+  holds: [2D and 3D time-lapse of cells, mostly eukaryotic]
+  formats: [CTC format]
+  truth: ground truth for the training videos
+  licence: to check on the site
+  trust: high
+  use: the reference format for tracks with a truth; few bacteria
+  checked: 2026-11-12
+  by: agent

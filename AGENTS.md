@@ -6,9 +6,15 @@ read this file; every other tool reads it too, it is the one source.
 ## What this project is
 
 A research pipeline that reads bacterial motility from raw video: extract the
-frames, compute the optical flow, transform each frame into a fourteen-channel
-tensor, track the cells with a Kalman filter, then test each trajectory against
-six diffusion hypotheses and draw the figures.
+frames, compute the optical flow, transform each frame into a channel tensor,
+track the cells with a Kalman filter, then test each trajectory against six
+diffusion hypotheses and draw the figures.
+
+**The direction** ([ideas/vision.md](ideas/vision.md)): a toolkit an agent
+calibrates on a researcher's videos, instead of a network trained on labelled
+data. A parameter is exposed and documented, never buried; the test cases are
+the sources of [catalogue/sources.yaml](catalogue/sources.yaml), which an agent
+keeps current: add what you learn, say who judged and when.
 
 `README.md` says how to run it; the tests and the code say how it works.
 
