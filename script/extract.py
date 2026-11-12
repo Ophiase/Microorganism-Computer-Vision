@@ -1,53 +1,50 @@
-import os
-import requests
 from pathlib import Path
+
+import requests
+
 from common import DATA_FOLDER
 
-###################################################################################
+DOWNLOAD_TIMEOUT = 60
+CHUNK = 8192
+FILE_IDS = (
+    "342430",
+    "342517",
+    "342580",
+    "342655",
+    "342737",
+    "342783",
+    "342843",
+    "342910",
+    "342998",
+)
 
 
-# source:
-# https://plos.figshare.com/articles/dataset/Modification_of_Salmonella_Typhimurium_Motility_by_the_Probiotic_Yeast_Strain_Saccharomyces_boulardii_/127695
-DATA_PATHS = [
-    f"https://plos.figshare.com/ndownloader/files/{x}" for x in [
-        "342430", "342517", "342580",
-        "342655", "342737", "342783",
-        "342843", "342910", "342998"
-    ]
-]
-
-###################################################################################
+def video_urls() -> tuple[str, ...]:
+    """The nine videos of the source dataset, one URL per file id."""
+    # hardcoded-url: the dataset of the study
+    base = "https://plos.figshare.com/ndownloader/files/"
+    return tuple(f"{base}{file_id}" for file_id in FILE_IDS)
 
 
-def create_data_dir(data_dir: str) -> None:
-    os.makedirs(data_dir, exist_ok=True)
+def download_file(url: str, output_folder: Path) -> Path:
+    destination = output_folder / (Path(url).name + ".avi")
+    if destination.exists():
+        return destination
+
+    with requests.get(url, stream=True, timeout=DOWNLOAD_TIMEOUT) as response:
+        response.raise_for_status()
+        with destination.open("wb") as file:
+            for chunk in response.iter_content(chunk_size=CHUNK):
+                file.write(chunk)
+    return destination
 
 
-def download_file(url: str, output_dir: str) -> None:
-    filename = os.path.join(output_dir, Path(url).name + ".avi")
-    if not os.path.exists(filename):
-        response = requests.get(url, stream=True)
-        with open(filename, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+def download_videos(urls: tuple[str, ...], output_folder: Path) -> tuple[Path, ...]:
+    return tuple(download_file(url, output_folder) for url in urls)
 
 
-def download_videos(data_paths: list[str], output_dir: str) -> None:
-    for url in data_paths:
-        download_file(url, output_dir)
-
-###################################################################################
-
-
-def process():
-    create_data_dir(DATA_FOLDER)
-    download_videos(DATA_PATHS, DATA_FOLDER)
-    print(f"Extracted and moved to: {DATA_FOLDER}")
-
-
-def main() -> None:
-    process()
-
-
-if __name__ == "__main__":
-    main()
+def process() -> tuple[Path, ...]:
+    DATA_FOLDER.mkdir(parents=True, exist_ok=True)
+    downloaded = download_videos(video_urls(), DATA_FOLDER)
+    print(f"Extracted {len(downloaded)} videos to {DATA_FOLDER}")
+    return downloaded

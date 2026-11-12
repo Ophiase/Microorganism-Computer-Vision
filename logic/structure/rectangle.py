@@ -1,27 +1,22 @@
 from dataclasses import dataclass
-from typing import Tuple
-from numba import jit
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Rectangle:
+    """An axis-aligned box in pixels, its origin at the top left of the frame."""
+
     x: int
     y: int
-    w: int
-    h: int
+    width: int
+    height: int
 
-    @staticmethod
-    @jit(nopython=True)
-    def _centroid(x: int, y: int, w: int, h: int) -> Tuple[float, float]:
-        return x + w / 2, y + h / 2
-
+    @property
     def centroid(self) -> tuple[float, float]:
-        return self._centroid(self.x, self.y, self.w, self.h)
+        return (self.x + self.width / 2, self.y + self.height / 2)
 
+    @property
     def area(self) -> int:
-        return self.w * self.h
+        return self.width * self.height
 
-    #########################################
-
-    def to_tuple(self) -> Tuple[int, int, int, int]:
-        return (self.x, self.y, self.w, self.h)
+    def to_tuple(self) -> tuple[int, int, int, int]:
+        return (self.x, self.y, self.width, self.height)
