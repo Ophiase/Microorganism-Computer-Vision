@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 
 from motility.diffusion.models.motion import Motion
 from motility.synthetic.scene import Kinetics
-from motility.tracking.geometry import Position
+from motility.vision.geometry import Position
 
 RESTORING = 0.2
 SWIMMING_NOISE = 0.2

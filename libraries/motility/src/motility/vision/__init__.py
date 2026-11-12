@@ -6,6 +6,7 @@ from motility.vision.detection import (
     detect,
     mask,
 )
+from motility.vision.geometry import Position, Rectangle
 from motility.vision.preprocessing import (
     Background,
     Polarity,
@@ -19,7 +20,9 @@ __all__ = [
     "DetectionParameters",
     "Frame",
     "Polarity",
+    "Position",
     "PreprocessingParameters",
+    "Rectangle",
     "ThresholdMethod",
     "Video",
     "as_video",

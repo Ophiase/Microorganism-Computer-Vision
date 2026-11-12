@@ -19,10 +19,10 @@ agent's toolkit, one commit per box, the gate green at each.
    OpenCV and NumPy in place of numba, the tracker's bookkeeping fixed, a track
    table, synthetic scenes rendered with their truth, tracking and
    classification scores, a model selection in place of the six booleans.
-2. [ ] The agent's command line: `mcv guide`, `schema`, `probe`, `run`,
+2. [x] The agent's command line: `mcv guide`, `schema`, `probe`, `run`,
    `synth`, `bench`, `search`, `history`, every answer in JSON, every run a
    folder of PNG looks, a table of tracks and a report.
-3. [ ] The bench: scenes in `settings/bench/`, a tuning and an evaluation
+3. [x] The bench: scenes in `settings/bench/`, a tuning and an evaluation
    split, `just bench`.
 4. [ ] The catalogue: every source found, its truth, licence and trust.
 5. [ ] The skill, `agent.just` recipes, the guide the command prints.

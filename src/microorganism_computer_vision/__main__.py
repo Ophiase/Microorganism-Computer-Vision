@@ -1,19 +1,61 @@
 import argparse
+import sys
 from collections.abc import Sequence
+from typing import Final
 
-from microorganism_computer_vision.pipeline.extract import process as extract
+from pydantic import BaseModel, ValidationError
+
+from microorganism_computer_vision.commands.base import Command
+from microorganism_computer_vision.commands.inform import (
+    FetchCommand,
+    GuideCommand,
+    HistoryCommand,
+    SchemaCommand,
+    SourcesCommand,
+)
+from microorganism_computer_vision.commands.probe import ProbeCommand
+from microorganism_computer_vision.commands.run import RunCommand
+from microorganism_computer_vision.commands.search import SearchCommand
+from microorganism_computer_vision.commands.truth import BenchCommand, SynthCommand
+from microorganism_computer_vision.media.video import UsageError
+
+COMMANDS: Final[tuple[Command, ...]] = (
+    GuideCommand(),
+    SchemaCommand(),
+    SourcesCommand(),
+    ProbeCommand(),
+    RunCommand(),
+    HistoryCommand(),
+    SynthCommand(),
+    BenchCommand(),
+    SearchCommand(),
+    FetchCommand(),
+)
 
 
-def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Microorganism Computer Vision")
-    parser.add_argument("--task", choices=("extract",), required=True)
-    return parser.parse_args(argv)
+def parser() -> argparse.ArgumentParser:
+    root = argparse.ArgumentParser(
+        prog="mcv",
+        description="Read bacterial motility from video; every answer is JSON.",
+    )
+    subcommands = root.add_subparsers(dest="command", required=True)
+    for command in COMMANDS:
+        command.configure(subcommands.add_parser(command.name, help=command.summary))
+    return root
 
 
-def main(argv: Sequence[str] | None = None) -> None:
-    parse_arguments(argv)
-    extract()
+def main(argv: Sequence[str] | None = None) -> int:
+    """Answer on stdout; a refused input is one line on stderr and exit code 2."""
+    arguments = parser().parse_args(argv)
+    command = next(item for item in COMMANDS if item.name == arguments.command)
+    try:
+        output = command.execute(arguments)
+    except (ValidationError, UsageError, FileNotFoundError) as error:
+        print(f"mcv {command.name}: {error}", file=sys.stderr)
+        return 2
+    print(output.model_dump_json(indent=2) if isinstance(output, BaseModel) else output)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -6,8 +6,8 @@ import cv2
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from motility.tracking.geometry import Position, Rectangle
 from motility.vision.arrays import Frame
+from motility.vision.geometry import Position, Rectangle
 
 BYTE_MAX = 255
 CONNECTIVITY = 8

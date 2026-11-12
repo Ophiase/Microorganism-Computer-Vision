@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from itertools import pairwise
 
-from motility.tracking.geometry import Position
+from motility.vision.geometry import Position
 
 
 @dataclass(frozen=True, slots=True)

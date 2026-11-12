@@ -1,5 +1,5 @@
-from motility.tracking import KalmanTracker, Rectangle, TrackingParameters, TrackTable
-from motility.vision import Detection
+from motility.tracking import KalmanTracker, TrackingParameters, TrackTable
+from motility.vision import Detection, Rectangle
 
 
 def detection_at(x: float, y: float) -> Detection:
