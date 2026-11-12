@@ -37,9 +37,10 @@ class RunWriter:
     """
 
     def __init__(
-        self, folder: Path, configuration: Configuration, scale: Scale
+        self, folder: Path, source: str, configuration: Configuration, scale: Scale
     ) -> None:
         self._folder = folder
+        self._source = source
         self._configuration = configuration
         self._scale = scale
 
@@ -52,7 +53,7 @@ class RunWriter:
         zoom: Zoom | None = None,
     ) -> RunRecord:
         self._folder.mkdir(parents=True, exist_ok=True)
-        summary = RunSummary.of(result, self._configuration, self._scale)
+        summary = RunSummary.of(self._source, result, self._configuration, self._scale)
         self._configuration.save(self._folder / "configuration.toml")
         write_tracks(self._folder / "tracks.csv", result.tracks)
         write_verdicts(self._folder / "verdicts.csv", result.verdicts, self._scale)

@@ -30,6 +30,7 @@ class Spread(BaseModel):
 class RunSummary(BaseModel):
     """What one run found, in the numbers an expert reads before the pictures."""
 
+    source: str = Field(description="The video the run read, to replay it.")
     frames: int
     detections_per_frame: Spread
     tracks: int
@@ -49,7 +50,11 @@ class RunSummary(BaseModel):
 
     @classmethod
     def of(
-        cls, result: PipelineResult, parameters: PipelineParameters, scale: Scale
+        cls,
+        source: str,
+        result: PipelineResult,
+        parameters: PipelineParameters,
+        scale: Scale,
     ) -> Self:
         counts = [len(frame) for frame in result.detections]
         lengths = [verdict.length for verdict in result.verdicts]
@@ -62,6 +67,7 @@ class RunSummary(BaseModel):
         }
         motions[Motion.UNDETERMINED] = len(result.verdicts) - len(classified)
         return cls(
+            source=source,
             frames=len(result.detections),
             detections_per_frame=Spread.of(counts),
             tracks=len(result.verdicts),
