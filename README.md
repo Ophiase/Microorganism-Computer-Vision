@@ -15,6 +15,16 @@
 A computer vision pipeline that tracks microorganisms 🦠 in video and tests
 their trajectories against diffusion hypotheses.
 
+## Direction
+
+The student version was tuned by hand on one study's videos; the usual way
+to go further would have been machine learning — label data, train a
+network. **The project now takes another direction**: a toolkit of classical
+filters, tracking and diffusion tests that an agent calibrates on a
+researcher's own videos, measured against a known truth. The reasons, the
+method and its traps are in [ideas/vision.md](ideas/vision.md); the sources
+of videos are in [catalogue/sources.yaml](catalogue/sources.yaml).
+
 <div align="center">
   <img src="./resources/results/342843_original.gif" width="30%">
   <img src="./resources/results/342843_transformed.gif" width="30%">

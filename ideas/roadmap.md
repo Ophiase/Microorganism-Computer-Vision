@@ -40,8 +40,25 @@ dataset in `settings/`.
 
 ## Step 4 — the truth benchmark
 
-[science](science.md) step 1.
+[science](science.md) step 1: synthetic videos with a known truth, the
+tracking and classification scores, the defaults as the first baseline.
 
-## Step 5 — model selection
+*Acceptance*: `just bench` writes the scores of the default configuration.
 
-[science](science.md) step 2. Then step 3, and the JAX question.
+## Step 5 — the agent's surface
+
+Every parameter of the pipeline in one settings file; one command runs a
+configuration on a source and returns the overlays and the scores as files
+an agent reads ([calibration](calibration.md), [open](open.md) question 2).
+
+*Acceptance*: an agent changes a threshold and sees its effect without
+touching code.
+
+## Step 6 — the agentic calibration, measured
+
+The loop of [calibration](calibration.md) against the defaults and a blind
+search, on the tuning and evaluation split of the sources.
+
+## Step 7 — model selection
+
+[science](science.md) step 2.
