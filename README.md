@@ -28,6 +28,10 @@ reviews what they miss, and reports what the cells do, in µm/s.
   tracks too short to judge. Calibrated by Claude.</em>
 </div>
 
+**More videos**: [the study's nine videos](docs/study/README.md), each with
+its film, tracks and tests; [six synthetic scenes](docs/scenes/README.md),
+each scored against its truth.
+
 ## The hypotheses, tested
 
 The 2025 project tested six hypotheses with fixed thresholds. They are now
