@@ -7,7 +7,7 @@ authors:
     website: "https://github.com/Ophiase"
 repository-code: "https://github.com/Ophiase/Microorganism-Computer-Vision"
 license: Apache-2.0
-version: 0.6.0
+version: 0.7.0
 date-released: "2026-11-12"
 keywords:
   - computer-vision
