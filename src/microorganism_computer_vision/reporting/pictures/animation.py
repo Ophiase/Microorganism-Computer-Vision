@@ -13,7 +13,10 @@ from microorganism_computer_vision.reporting.pictures.overlay import (
     TAIL_OPACITY,
     TrackOverlay,
 )
-from microorganism_computer_vision.reporting.pictures.palette import OVERLAY_COLOURS
+from microorganism_computer_vision.reporting.pictures.palette import (
+    LOST,
+    OVERLAY_COLOURS,
+)
 
 PANEL_WIDTH: Final = 480
 GAP: Final = 4
@@ -70,7 +73,9 @@ def _pair(video: Video, overlay: TrackOverlay, frame: int) -> np.ndarray:
 def _palette() -> PillowImage.Image:
     levels = np.linspace(0, 255, GREYS).round().astype(int)
     greys = [(level, level, level) for level in levels]
-    marks = [(red, green, blue) for blue, green, red in OVERLAY_COLOURS.values()]
+    marks = [
+        (red, green, blue) for blue, green, red in (*OVERLAY_COLOURS.values(), LOST)
+    ]
     blends = [
         tuple(
             round(TAIL_OPACITY * channel + (1 - TAIL_OPACITY) * grey)

@@ -5,6 +5,7 @@ from typing import Final
 
 import numpy as np
 from motility.diffusion import Verdict
+from motility.diffusion.evidence import Evidence
 from motility.pipeline import Scale
 from motility.tracking import TrackTable
 from motility.tracking.table import COLUMNS
@@ -69,3 +70,31 @@ def _verdict_row(verdict: Verdict, scale: Scale) -> tuple[object, ...]:
         if verdict.diffusion is None
         else round(scale.diffusion(verdict.diffusion), 6),
     )
+
+
+def write_evidence(path: Path, evidence: Sequence[Evidence]) -> Path:
+    """One row per test on one track: its statistic, p, q and effect."""
+    with path.open("w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow((
+            "hypothesis",
+            "track",
+            "statistic",
+            "p",
+            "q",
+            "effect",
+            "samples",
+        ))
+        writer.writerows(
+            (
+                item.hypothesis,
+                item.subject,
+                round(item.statistic, 5),
+                "" if item.p_value is None else f"{item.p_value:.3g}",
+                "" if item.q_value is None else f"{item.q_value:.3g}",
+                round(item.effect, 5),
+                item.samples,
+            )
+            for item in evidence
+        )
+    return path
