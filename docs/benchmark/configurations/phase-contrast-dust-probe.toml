@@ -1,0 +1,38 @@
+reason = "suggested by the probe: dark objects of about 8 x 5 px, contrast 0.19 over noise 0.029, static share 0.26"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.3078431189060211
+window_high = 0.5
+gain = 1.0
+smoothing = 3
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+min_area = 12
+max_area = 160
+
+[tracking]
+max_assignment_distance = 20.0
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 100

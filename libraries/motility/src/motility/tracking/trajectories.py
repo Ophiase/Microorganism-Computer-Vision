@@ -1,50 +1,22 @@
-from collections.abc import Sequence
 from dataclasses import dataclass
 from itertools import pairwise
-from typing import Self
 
-from motility.tracking.bounding_box import BoundingBox
+from motility.vision.geometry import Position
 
 
 @dataclass(frozen=True, slots=True)
 class Trajectory:
-    """One cell through time: its box per frame, `None` when it is not tracked."""
+    """One cell through time: the frames it was seen at and its position at each."""
 
-    boxes: tuple[BoundingBox | None, ...]
+    index: int
+    frames: tuple[int, ...]
+    positions: tuple[Position, ...]
 
-    @classmethod
-    def from_frames(
-        cls, tracked_frames: Sequence[Sequence[BoundingBox]]
-    ) -> tuple[Self, ...]:
-        """Turn the boxes of each frame into one trajectory per track index."""
-        boxes_per_track: dict[int, list[BoundingBox | None]] = {}
-        for frame_index, frame in enumerate(tracked_frames):
-            for box in frame:
-                track = boxes_per_track.setdefault(
-                    box.index, [None] * len(tracked_frames)
-                )
-                if box.tracked:
-                    track[frame_index] = box
-        return tuple(cls(tuple(boxes)) for _, boxes in sorted(boxes_per_track.items()))
+    def __len__(self) -> int:
+        return len(self.frames)
 
     @property
-    def seen(self) -> tuple[tuple[int, BoundingBox], ...]:
-        return tuple(
-            (frame_index, box)
-            for frame_index, box in enumerate(self.boxes)
-            if box is not None
-        )
-
-    @property
-    def frames(self) -> tuple[int, ...]:
-        return tuple(frame_index for frame_index, _ in self.seen)
-
-    @property
-    def positions(self) -> tuple[tuple[float, float], ...]:
-        return tuple(box.centroid for _, box in self.seen)
-
-    @property
-    def displacements(self) -> tuple[tuple[float, float], ...]:
+    def displacements(self) -> tuple[Position, ...]:
         return tuple(
             (next_x - x, next_y - y)
             for (x, y), (next_x, next_y) in pairwise(self.positions)

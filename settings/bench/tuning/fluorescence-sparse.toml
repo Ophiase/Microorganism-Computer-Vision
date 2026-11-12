@@ -1,0 +1,19 @@
+# Bright cells on black, few of them, little dust: a fluorescence channel.
+seed = 12
+frames = 80
+
+[population]
+stationary = 4
+diffusive = 8
+directed = 10
+confined = 6
+circular = 2
+
+[appearance]
+polarity = "bright"
+background = 0.08
+contrast = 0.4
+noise = 0.02
+dust = 4
+gradient = 0.0
+texture = 0.01
