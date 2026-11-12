@@ -7,7 +7,7 @@ from microorganism_computer_vision.benchmark.search import (
     Strategy,
 )
 from microorganism_computer_vision.benchmark.space import SearchSpace
-from microorganism_computer_vision.benchmark.suite import Bench
+from microorganism_computer_vision.benchmark.suite import Bench, load_scene
 from microorganism_computer_vision.commands.base import (
     add_configuration,
     configuration_of,
@@ -30,12 +30,24 @@ class SearchCommand:
         parser.add_argument("--seed", type=int, default=0)
         parser.add_argument("--split", default="tuning")
         parser.add_argument(
+            "--scene",
+            type=Path,
+            action="append",
+            default=[],
+            help="search on these scene TOML files instead of a split; repeatable",
+        )
+        parser.add_argument(
             "--out", type=Path, help="write the best configuration there"
         )
 
     def execute(self, arguments: argparse.Namespace) -> SearchReport:
+        bench = (
+            Bench({path.stem: load_scene(path) for path in arguments.scene})
+            if arguments.scene
+            else Bench.from_folder(BENCH_SCENES / arguments.split)
+        )
         search = RandomSearch(
-            Bench.from_folder(BENCH_SCENES / arguments.split),
+            bench,
             SearchSpace(),
             Strategy(arguments.strategy),
         )

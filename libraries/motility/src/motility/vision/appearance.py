@@ -53,7 +53,7 @@ def measure_appearance(video: Video) -> AppearanceReport:
     low, high = np.quantile(residual, (TAIL / 100, 1 - TAIL / 100))
     polarity = Polarity.DARK if abs(low) >= abs(high) else Polarity.BRIGHT
     signed = -residual if polarity is Polarity.DARK else residual
-    boxes = _object_boxes(signed, OBJECT_SIGMAS * max(noise, 1e-4))
+    boxes = _object_boxes(signed)
     tenth = max(video.shape[2] // 10, 1)
     return AppearanceReport(
         frames=video.shape[0],
@@ -73,14 +73,22 @@ def measure_appearance(video: Video) -> AppearanceReport:
     )
 
 
-def _object_boxes(signed: Video, level: float) -> np.ndarray:
-    """Width and height of the regions above `level` in a sample of frames."""
+def _object_boxes(signed: Video) -> np.ndarray:
+    """Width and height of the regions five noise deviations out, in sampled frames.
+
+    The deviation is the smoothed frame's own: smoothing lowers the noise, and a
+    threshold set on the raw noise misses every faint cell.
+    """
     sampled = np.linspace(0, len(signed) - 1, min(FRAMES_SAMPLED, len(signed))).astype(
         int
     )
+    smoothed = np.stack([
+        cv2.GaussianBlur(frame, (3, 3), 0) for frame in signed[sampled]
+    ])
+    level = OBJECT_SIGMAS * max(MAD_TO_SIGMA * float(np.median(np.abs(smoothed))), 1e-4)
     sizes = []
-    for frame in signed[sampled]:
-        binary = (cv2.GaussianBlur(frame, (3, 3), 0) > level).astype(np.uint8)
+    for frame in smoothed:
+        binary = (frame > level).astype(np.uint8)
         count, _, statistics, _ = cv2.connectedComponentsWithStats(
             binary, connectivity=CONNECTIVITY
         )
