@@ -35,24 +35,15 @@ statistical tests, each with a null model, a p-value, and a correction for
 testing hundreds of tracks at once (Benjamini-Hochberg).
 
 ```mermaid
-flowchart TD
-    T[a track] --> S{moves at all?}
-    S -- no --> ST[stationary: dead, stuck, sleeping]
-    S -- yes --> A{"MSD ∝ t^α, α = 1?<br/>likelihood ratio, noise offset"}
-    A -- "α = 1" --> B[Brownian: passive]
-    A -- "α < 1" --> C{saturates?}
-    C -- yes --> CO[confined: caged, tethered]
-    C -- no --> SU[subdiffusive: crowded medium]
-    A -- "α > 1" --> P{"heading kept?<br/>mean cos of turns > 0"}
-    P -- yes --> SW[swimmer]
-    SW --> CH{"turns one way?<br/>mean signed turn ≠ 0"}
-    CH -- yes --> CI[circling: near a surface]
-    SW --> TU{"turns too sharp for<br/>rotational diffusion?"}
-    TU -- yes --> RT[run-and-tumble]
-    SW --> PE{"turns in a rhythm?<br/>permutation test"}
-    PE -- yes --> RR[run-and-reverse]
-    T --> NG{"steps Gaussian?<br/>Shapiro-Wilk"}
-    NG -- no --> HT[heavy tails: waiting times, Lévy flights]
+flowchart LR
+    T(track) -->|no motion| S(still)
+    T -->|"α = 1"| B(Brownian)
+    T -->|"α < 1, saturates"| C(confined)
+    T -->|"α > 1, heading kept"| W(swimmer)
+    W -->|"turns one way"| R(circling)
+    W -->|"turns too sharp"| U(run-and-tumble)
+    W -->|"turns in rhythm"| V(run-and-reverse)
+    T -->|"non-Gaussian steps"| H(heavy tails)
 ```
 
 **Every test is checked on a truth.** Synthetic cells of ten behaviours, a
