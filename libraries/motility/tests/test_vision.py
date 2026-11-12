@@ -87,3 +87,21 @@ def test_a_static_object_and_its_halo_are_excluded() -> None:
 
     assert foreground[2, 28, 33] == pytest.approx(0.0)
     assert foreground[0, 21, 12] > 0.9
+
+
+def test_a_white_bar_in_a_corner_is_found_with_its_length() -> None:
+    from motility.vision.scale_bar import find_scale_bars
+
+    frame = np.full((200, 300), 0.5, dtype=np.float32)
+    frame[180:182, 240:270] = 1.0
+    frame[60:100, 100:140] = 1.0
+
+    bars = find_scale_bars(frame)
+
+    assert (bars[0].x, bars[0].y, bars[0].length, bars[0].thickness) == (
+        240,
+        180,
+        30,
+        2,
+    )
+    assert all(bar.x != 100 for bar in bars)

@@ -3,8 +3,11 @@ from pathlib import Path
 from typing import Final
 
 import cv2
+import numpy as np
 from motility.pipeline import suggest
+from motility.vision import Video
 from motility.vision.appearance import AppearanceReport, measure_appearance
+from motility.vision.scale_bar import find_scale_bars
 from pydantic import BaseModel
 
 from microorganism_computer_vision.commands.base import clip_of
@@ -15,12 +18,21 @@ from microorganism_computer_vision.media.workspace import source_key
 from microorganism_computer_vision.reporting.pictures.looks import probe_look
 
 DEFAULT_CLIP: Final = Clip(stop=100)
+CROP_MARGIN: Final = 25
+
+
+class ScaleBarCandidate(BaseModel):
+    x: int
+    y: int
+    length: int
+    crop: Path
 
 
 class ProbeReport(BaseModel):
     source: str
     frame_rate: float | None
     appearance: AppearanceReport
+    scale_bars: tuple[ScaleBarCandidate, ...]
     look: Path
     suggested: Path
     next: str
@@ -55,9 +67,14 @@ class ProbeCommand:
             source=str(source),
             frame_rate=recording.frame_rate,
             appearance=appearance,
+            scale_bars=_scale_bars(recording.video, folder),
             look=look,
             suggested=suggested,
-            next=f"open {look}, then `mcv run {source} --config {suggested}`",
+            next=(
+                f"open {look} and the scale bar crops: read the length written"
+                " beside the bar, set acquisition.pixel_size to it over the bar's"
+                f" length, then `mcv run {source} --config {suggested}`"
+            ),
         )
 
 
@@ -68,3 +85,24 @@ def _reason(appearance: AppearanceReport) -> str:
         f" contrast {appearance.contrast:.2f} over noise {appearance.noise:.3f},"
         f" static share {appearance.static_share:.2f}"
     )
+
+
+def _scale_bars(video: Video, folder: Path) -> tuple[ScaleBarCandidate, ...]:
+    """The burnt-in bars the probe suspects, each with an enlarged crop to read."""
+    median = np.median(video, axis=0)
+    candidates = []
+    for index, bar in enumerate(find_scale_bars(median), start=1):
+        top, left = max(bar.y - CROP_MARGIN, 0), max(bar.x - CROP_MARGIN, 0)
+        window = median[
+            top : bar.y + CROP_MARGIN, left : bar.x + bar.length + CROP_MARGIN
+        ]
+        crop = folder / f"scale_bar_{index}.png"
+        image = (np.clip(window, 0, 1) * 255).astype(np.uint8)
+        cv2.imwrite(
+            str(crop),
+            cv2.resize(image, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST),
+        )
+        candidates.append(
+            ScaleBarCandidate(x=bar.x, y=bar.y, length=bar.length, crop=crop)
+        )
+    return tuple(candidates)
