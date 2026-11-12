@@ -49,7 +49,7 @@ class RunCommand:
         result = run_pipeline(recording.video, configuration)
         scale = Scale.from_acquisition(configuration.acquisition, recording.frame_rate)
         folder = Workspace(RUNS, source_key(arguments.source)).next_folder()
-        record = RunWriter(folder, configuration, scale).write(
+        record = RunWriter(folder, str(arguments.source), configuration, scale).write(
             f"{arguments.source.name}, run {folder.name}",
             recording.video,
             result,

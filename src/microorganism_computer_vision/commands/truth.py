@@ -10,6 +10,12 @@ from motility.truth.synthetic import Kinetics, Population, SceneParameters, simu
 from motility.vision.appearance import AppearanceReport
 from pydantic import BaseModel
 
+from microorganism_computer_vision.benchmark.search import (
+    RandomSearch,
+    SearchReport,
+    Strategy,
+)
+from microorganism_computer_vision.benchmark.space import SearchSpace
 from microorganism_computer_vision.benchmark.suite import Bench, BenchReport, load_scene
 from microorganism_computer_vision.commands.base import (
     add_configuration,
@@ -91,18 +97,7 @@ class BenchCommand:
 
     def configure(self, parser: argparse.ArgumentParser) -> None:
         add_configuration(parser)
-        parser.add_argument(
-            "--split",
-            default="tuning",
-            help="a folder of settings/bench/: tuning or evaluation",
-        )
-        parser.add_argument(
-            "--scene",
-            type=Path,
-            action="append",
-            default=[],
-            help="a scene TOML; repeatable",
-        )
+        _scenes(parser)
         parser.add_argument(
             "--write",
             action="store_true",
@@ -111,16 +106,67 @@ class BenchCommand:
 
     def execute(self, arguments: argparse.Namespace) -> BenchReport:
         configuration = configuration_of(arguments)
-        bench = (
-            Bench({path.stem: load_scene(path) for path in arguments.scene})
-            if arguments.scene
-            else Bench.from_folder(BENCH_SCENES / arguments.split)
-        )
+        bench = _bench(arguments)
         if arguments.write:
             for name in bench.names:
                 scored = bench.run(name, configuration)
                 scale = Scale.from_acquisition(configuration.acquisition, None)
-                RunWriter(BENCH_RUNS / name, configuration, scale).write(
+                RunWriter(
+                    BENCH_RUNS / name, f"scene:{name}", configuration, scale
+                ).write(
                     f"bench scene {name}", bench.simulation(name).video, scored.result
                 )
         return bench.score(configuration)
+
+
+class SearchCommand:
+    name = "search"
+    summary = "the baseline: a random search with the truth as its score"
+
+    def configure(self, parser: argparse.ArgumentParser) -> None:
+        add_configuration(parser)
+        parser.add_argument(
+            "--strategy", choices=[item.value for item in Strategy], default="blind"
+        )
+        parser.add_argument(
+            "--budget", type=int, default=30, help="configurations tried"
+        )
+        parser.add_argument("--seed", type=int, default=0)
+        _scenes(parser)
+        parser.add_argument(
+            "--out", type=Path, help="write the best configuration there"
+        )
+
+    def execute(self, arguments: argparse.Namespace) -> SearchReport:
+        search = RandomSearch(
+            _bench(arguments),
+            SearchSpace(),
+            Strategy(arguments.strategy),
+        )
+        report = search.run(
+            configuration_of(arguments), arguments.budget, arguments.seed
+        )
+        if arguments.out:
+            report.best_configuration.save(arguments.out)
+        return report
+
+
+def _scenes(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--split",
+        default="tuning",
+        help="a folder of settings/bench/: tuning or evaluation",
+    )
+    parser.add_argument(
+        "--scene",
+        type=Path,
+        action="append",
+        default=[],
+        help="a scene TOML; repeatable",
+    )
+
+
+def _bench(arguments: argparse.Namespace) -> Bench:
+    if arguments.scene:
+        return Bench({path.stem: load_scene(path) for path in arguments.scene})
+    return Bench.from_folder(BENCH_SCENES / arguments.split)

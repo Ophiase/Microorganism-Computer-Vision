@@ -30,12 +30,14 @@ class TrackOverlay:
         scale: float = 1.0,
         thickness: int = 1,
         antialiased: bool = True,
+        labels: bool = False,
     ) -> None:
         self._tracks = result.tracks
         self._motions = motions
         self._scale = scale
         self._thickness = thickness
         self._line = cv2.LINE_AA if antialiased else cv2.LINE_8
+        self._labels = labels
 
     def draw(self, frame_image: Frame, frame: int) -> np.ndarray:
         image = self._background(frame_image)
@@ -68,6 +70,10 @@ class TrackOverlay:
         first, second = (tuple(point) for point in self._pixels(corners))
         colour = self._colour(int(tracks.track[row]))
         cv2.rectangle(image, first, second, colour, 1, self._line)
+        if self._labels:
+            corner = (second[0] + 2, first[1] + 8)
+            text = str(tracks.track[row])
+            cv2.putText(image, text, corner, cv2.FONT_HERSHEY_SIMPLEX, 0.35, colour, 1)
 
     def _tail(self, image: np.ndarray, track: int, frame: int) -> None:
         tracks = self._tracks
