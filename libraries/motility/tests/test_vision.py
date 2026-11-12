@@ -87,3 +87,37 @@ def test_a_static_object_and_its_halo_are_excluded() -> None:
 
     assert foreground[2, 28, 33] == pytest.approx(0.0)
     assert foreground[0, 21, 12] > 0.9
+
+
+def test_a_white_bar_in_a_corner_is_found_with_its_length() -> None:
+    from motility.vision.measures.scale_bar import find_scale_bars
+
+    frame = np.full((200, 300), 0.5, dtype=np.float32)
+    frame[180:182, 240:270] = 1.0
+    frame[60:100, 100:140] = 1.0
+
+    bars = find_scale_bars(frame)
+
+    assert (bars[0].x, bars[0].y, bars[0].length, bars[0].thickness) == (
+        240,
+        180,
+        30,
+        2,
+    )
+    assert all(bar.x != 100 for bar in bars)
+
+
+def test_a_diagonal_rod_counts_as_much_as_a_level_one_in_pixels() -> None:
+    from motility.vision import AreaMeasure
+
+    level = np.zeros((SIZE, SIZE), dtype=np.float32)
+    level[10:12, 5:19] = 1.0
+    diagonal = np.zeros((SIZE, SIZE), dtype=np.float32)
+    for step in range(14):
+        diagonal[20 + step, 20 + step] = diagonal[20 + step, 21 + step] = 1.0
+    parameters = DetectionParameters(area=AreaMeasure.PIXELS, min_area=10, max_area=40)
+
+    assert len(detect(level, parameters)) == 1
+    assert len(detect(diagonal, parameters)) == 1
+    boxed = parameters.model_copy(update={"area": AreaMeasure.BOX})
+    assert detect(diagonal, boxed) == ()

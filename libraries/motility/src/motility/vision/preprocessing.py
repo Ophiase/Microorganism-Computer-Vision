@@ -102,7 +102,18 @@ class PreprocessingParameters(BaseModel):
 
 def preprocess(video: Video, parameters: PreprocessingParameters) -> Video:
     """The foreground map of every frame: cells bright, background black, in [0, 1]."""
-    contrast = _subtract_background(video, parameters.background)
+    smoothed = foreground_of(
+        _subtract_background(video, parameters.background), parameters
+    )
+    if parameters.exclude_static is None:
+        return smoothed
+    return smoothed * ~static_objects(
+        video, parameters.exclude_static, parameters.exclusion_margin
+    )
+
+
+def foreground_of(contrast: Video, parameters: PreprocessingParameters) -> Video:
+    """Window, polarity, gain and smoothing of intensities freed of their background."""
     span = parameters.window_high - parameters.window_low
     windowed = (np.clip(contrast, parameters.window_low, parameters.window_high)) - (
         parameters.window_low
@@ -111,12 +122,7 @@ def preprocess(video: Video, parameters: PreprocessingParameters) -> Video:
     if parameters.polarity is Polarity.DARK:
         foreground = 1.0 - foreground
     foreground = np.clip(foreground * parameters.gain, 0.0, 1.0).astype(np.float32)
-    smoothed = np.stack([smooth(frame, parameters.smoothing) for frame in foreground])
-    if parameters.exclude_static is None:
-        return smoothed
-    return smoothed * ~static_objects(
-        video, parameters.exclude_static, parameters.exclusion_margin
-    )
+    return np.stack([smooth(frame, parameters.smoothing) for frame in foreground])
 
 
 def _subtract_background(video: Video, background: Background) -> Video:

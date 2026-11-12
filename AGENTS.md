@@ -71,8 +71,8 @@ application**:
   - `tracking/`: the boxes, the Kalman tracker, the trajectories.
   - `diffusion/`: the MSD, `models/` (the verdicts) and `hypotheses/`, the
     six tests of 2025.
-  - `synthetic/`: scenes rendered into videos with their truth.
-  - `evaluation/`: the tracking and classification scores against a truth.
+  - `truth/`: `synthetic/`, scenes rendered into videos with their truth,
+    and `evaluation/`, the tracking and classification scores against it.
   - `pipeline/`: the stages composed, the probe's suggestion, the twin.
 - `src/microorganism_computer_vision/`: the application, the `mcv` command:
   it reads the videos and the settings, writes the run folders and draws.

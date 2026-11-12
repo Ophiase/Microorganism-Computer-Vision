@@ -4,17 +4,22 @@ from pathlib import Path
 from typing import Final
 
 import yaml
-from motility.synthetic import SceneParameters
+from motility.truth.synthetic import SceneParameters
 from pydantic import BaseModel
 
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.extract import process as download_study
 from microorganism_computer_vision.media.folders import CATALOGUE, RUNS
-from microorganism_computer_vision.media.workspace import (
+from microorganism_computer_vision.media.replay import Replay
+from microorganism_computer_vision.media.run_folder import (
     HistoryEntry,
     Workspace,
     source_key,
 )
+from microorganism_computer_vision.reporting.pictures.figures import (
+    population as population_figure,
+)
+from microorganism_computer_vision.reporting.population import Population
 
 GUIDE: Final = Path("docs/guide.md")
 
@@ -101,3 +106,30 @@ class FetchCommand:
 
 def _has_truth(entry: dict[str, object]) -> bool:
     return not str(entry.get("truth", "none")).startswith("none")
+
+
+class Statistics(BaseModel):
+    figure: Path
+    populations: tuple[Population, ...]
+
+
+class StatsCommand:
+    name = "stats"
+    summary = "the behaviour of every cell across runs: motile share, speeds, chirality"
+
+    def configure(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("runs", type=Path, nargs="+", help="run folders to compare")
+        parser.add_argument(
+            "--name", default="population", help="the folder of the output"
+        )
+
+    def execute(self, arguments: argparse.Namespace) -> Statistics:
+        populations = tuple(Population.of(Replay.of(run)) for run in arguments.runs)
+        folder = RUNS.parent / "stats" / arguments.name
+        folder.mkdir(parents=True, exist_ok=True)
+        statistics = Statistics(
+            figure=population_figure(populations, folder / "population.png"),
+            populations=populations,
+        )
+        (folder / "stats.json").write_text(statistics.model_dump_json(indent=2))
+        return statistics

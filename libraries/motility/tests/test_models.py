@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 from motility.diffusion import Motion, classify, mean_squared_displacement
 from motility.diffusion.models import ClassificationParameters
-from motility.synthetic.motions import walk
-from motility.synthetic.scene import Kinetics
 from motility.tracking import Trajectory
+from motility.truth.synthetic.motions import walk
+from motility.truth.synthetic.scene import Kinetics
 
 FRAMES = 80
 CELLS = 10

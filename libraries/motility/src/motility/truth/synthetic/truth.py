@@ -5,8 +5,8 @@ from typing import Self
 import numpy as np
 
 from motility.diffusion.models.motion import Motion
-from motility.synthetic.motions import Path
 from motility.tracking.table import TrackTable
+from motility.truth.synthetic.motions import Path
 
 
 @dataclass(frozen=True, slots=True)

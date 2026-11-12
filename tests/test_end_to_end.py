@@ -1,6 +1,6 @@
 import json
 
-from motility.synthetic import Population
+from motility.truth.synthetic import Population
 
 from microorganism_computer_vision.__main__ import main
 
