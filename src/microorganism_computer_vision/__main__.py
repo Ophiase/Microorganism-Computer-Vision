@@ -13,10 +13,12 @@ from microorganism_computer_vision.commands.inform import (
     SchemaCommand,
     StatsCommand,
 )
-from microorganism_computer_vision.commands.probe import (
-    FetchCommand,
+from microorganism_computer_vision.commands.prepare.probe import (
     MaskCommand,
     ProbeCommand,
+)
+from microorganism_computer_vision.commands.prepare.sources import (
+    FetchCommand,
     SourcesCommand,
 )
 from microorganism_computer_vision.commands.review import (

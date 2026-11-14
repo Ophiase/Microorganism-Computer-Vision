@@ -1,0 +1,56 @@
+- place: Zenodo
+  url: https://zenodo.org
+  search: https://zenodo.org/api/records?q=bacteria%20motility%20video&type=dataset
+  read: the record's API gives the licence, every file, its size and a download link
+  yields: supplementary videos of papers, often CC-BY; the richest place found
+  found: [openflexure-antibiotics, glutamicum-time-lapse, andi-2-benchmark-dataset, visem-tracking]
+  checked: 2026-11-14
+  by: agent
+- place: Dataverse (DaRUS and others)
+  url: https://darus.uni-stuttgart.de
+  search: https://darus.uni-stuttgart.de/api/search?q=bacteria&type=dataset
+  read: /api/datasets/:persistentId/?persistentId=doi:... lists files with ids; /api/access/datafile/ID downloads
+  yields: simulations with their truth, from physics groups
+  found: [simulated-run-and-tumble]
+  checked: 2026-11-14
+  by: agent
+- place: Wikimedia Commons
+  url: https://commons.wikimedia.org
+  search: the category Videos of bacteria, or titles of PLOS and Nature Communications supplements
+  read: the API's imageinfo gives the licence and the file's address; it limits the rate of scripts (429)
+  yields: short supplementary videos of open-access papers, CC-BY, a few MB each
+  found: [commons-motility-clips]
+  checked: 2026-11-14
+  by: agent
+- place: figshare, through PLOS supplements
+  url: https://figshare.com
+  search: a PLOS paper's supporting information, then its figshare file ids
+  read: ndownloader.figshare.com/files/ID downloads; plos.figshare.com answers scripts with a challenge
+  yields: every supplementary video of PLOS journals, CC-BY
+  found: [salmonella-surface]
+  checked: 2026-11-14
+  by: agent
+- place: Dryad
+  url: https://datadryad.org
+  search: https://datadryad.org/api/v2/search?q=bacterial%20swimming
+  read: datasets often hold processed tracks (MATLAB, CSV) rather than raw video
+  yields: tracks and holograms, CC0
+  found: []
+  checked: 2026-11-14
+  by: agent
+- place: Image Data Resource and BioImage Archive
+  url: https://idr.openmicroscopy.org
+  search: the study list by organism and imaging method; S-BIAD accessions on the BioImage Archive
+  read: large curated studies; few of swimming bacteria found so far
+  yields: time-lapse microscopy with rich metadata, often of growth rather than motility
+  found: []
+  checked: 2026-11-14
+  by: agent
+- place: Challenges and benchmarks
+  url: https://celltrackingchallenge.net
+  search: the Cell Tracking Challenge, the ISBI particle tracking challenge, AnDi
+  read: each states its truth and its terms of use on its own page
+  yields: videos or trajectories with a truth, the rarest and most valuable kind
+  found: [cell-tracking-challenge, isbi-2012-particle-tracking-challenge, andi-2-benchmark-dataset]
+  checked: 2026-11-14
+  by: agent
