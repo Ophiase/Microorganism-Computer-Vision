@@ -1,3 +1,4 @@
+import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,6 +12,9 @@ from microorganism_computer_vision.media.video import UsageError
 
 TIMEOUT: Final = 120
 CHUNK: Final = 1 << 16
+TOO_MANY: Final = 429
+PATIENCE: Final = (5, 30, 120)
+"""Seconds to wait before each new try when a host says it is asked too often."""
 
 
 class Download(BaseModel):
@@ -107,17 +111,30 @@ def bring(planned: Planned) -> Path:
         return destination
     destination.parent.mkdir(parents=True, exist_ok=True)
     partial = destination.with_suffix(destination.suffix + ".part")
-    headers = {"User-Agent": "motility-toolkit/0.8"}
-    with requests.get(
-        planned.download.url, stream=True, timeout=TIMEOUT, headers=headers
-    ) as response:
-        response.raise_for_status()
-        with partial.open("wb") as file:
-            for chunk in response.iter_content(chunk_size=CHUNK):
-                file.write(chunk)
+    for wait in (*PATIENCE, None):
+        with _get(planned.download.url) as response:
+            if response.status_code == TOO_MANY and wait is not None:
+                time.sleep(_retry_after(response, wait))
+                continue
+            response.raise_for_status()
+            with partial.open("wb") as file:
+                for chunk in response.iter_content(chunk_size=CHUNK):
+                    file.write(chunk)
+            break
     if partial.stat().st_size == 0:
         partial.unlink()
         raise UsageError(
             f"{planned.download.url} sent an empty file: the host refused it"
         )
     return partial.replace(destination)
+
+
+def _get(url: str) -> requests.Response:
+    headers = {"User-Agent": "motility-toolkit/0.9 (research video reader)"}
+    return requests.get(url, stream=True, timeout=TIMEOUT, headers=headers)
+
+
+def _retry_after(response: requests.Response, default: int) -> float:
+    """The host's own delay when it gives one in seconds, else ours."""
+    value = response.headers.get("Retry-After", "")
+    return float(value) if value.isdigit() else default
