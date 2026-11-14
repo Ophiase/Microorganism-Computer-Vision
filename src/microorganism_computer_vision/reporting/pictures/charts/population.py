@@ -27,7 +27,7 @@ REFERENCES: Final = ((1.0, "diffusive"), (2.0, "ballistic"))
 
 def population(populations: Sequence[Population], path: Path) -> Path:
     """One row per run: motile share, swimmers' speeds, chirality, sharp turns."""
-    names = [item.source for item in populations]
+    names = [f"{item.source}, {item.window}" for item in populations]
     figure, axes = plt.subplots(
         1,
         4,
