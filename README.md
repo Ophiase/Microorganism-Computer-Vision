@@ -32,7 +32,18 @@ reviews what they miss, and reports what the cells do, in µm/s.
 its film, tracks and tests; [six synthetic scenes](docs/scenes/README.md),
 each scored against its truth.
 
-## The hypotheses, tested
+## [The model](ideas/model/README.md)
+
+A cell is a hidden state, a point, an oriented point or a skeleton, which the
+video shows through noise, gaps and swapped identities
+([one trajectory](ideas/model/trajectory.md)); a video holds a population, in
+a decor ([many trajectories](ideas/model/population.md)). Its laws of motion
+nest, each adding one ingredient to a simpler one
+([the models](ideas/model/models.md)):
+
+![a sample path of each model](docs/figures/models.png)
+
+## [The hypotheses, tested](ideas/model/hypotheses.md)
 
 The 2025 project tested six hypotheses with fixed thresholds. They are now
 statistical tests, each with a null model, a p-value, and a correction for
@@ -84,21 +95,24 @@ swimmers, and fractional subdiffusion (α = 0.6) over 100 frames goes
 undetected. The 2025 Fourier test had the first flaw too: a reversal turns by
 ±π at random, which hides the rhythm in signed angles.
 
-## The agent's tools
+## [The agent's tools](docs/tools.md)
 
 A pipeline gets most cells right and some wrong. The agent finds which, by
 eye, and corrects them; every correction is an annotation, with its reason.
 
 | | |
 | --- | --- |
-| ![sweep](docs/figures/review-sweep-threshold.png) | **`mcv sweep`**: one parameter over several values, the same view side by side. Here no threshold catches the large diagonal rods: the 2025 area filter measured bounding boxes, which grow when a rod lies diagonally. |
-| ![misses](docs/figures/review-misses.png) | **`mcv misses`**: a looser detection, tracked, where no kept track goes. The agent looks; plain rods get `mcv correct ... force`. |
-| ![suspects](docs/figures/review-suspects.png) | **`mcv suspects`**: jumps that look like identity swaps, broken tracks, unsure verdicts, filmed up close; `mcv correct ... split / join / drop / label`. |
-| ![still](docs/figures/review-gallery-still.png) | **`mcv gallery`**: every track of one verdict at once. These are still rods, dead or sleeping, which a median background erased from every frame until the agent noticed. |
+| ![sweep](docs/figures/review-sweep-threshold.png) | **[`mcv sweep`](docs/tools.md#sweep)**: one parameter over several values, the same view side by side. Here no threshold catches the large diagonal rods: the 2025 area filter measured bounding boxes, which grow when a rod lies diagonally. |
+| ![misses](docs/figures/review-misses.png) | **[`mcv misses`](docs/tools.md#misses)**: a looser detection, tracked, where no kept track goes. The agent looks; plain rods get `mcv correct ... force`. |
+| ![suspects](docs/figures/review-suspects.png) | **[`mcv suspects`](docs/tools.md#suspects)**: jumps that look like identity swaps, broken tracks, unsure verdicts, filmed up close; `mcv correct ... split / join / drop / label`. |
+| ![still](docs/figures/review-gallery-still.png) | **[`mcv gallery`](docs/tools.md#gallery)**: every track of one verdict at once. These are still rods, dead or sleeping, which a median background erased from every frame until the agent noticed. |
 
-Also: `mcv probe` measures a video and reads its scale bar, `mcv inspect`
-films one track, `mcv stats` compares populations, `mcv synth` renders a twin
-with a known truth, `mcv bench` and `mcv search` score against it.
+Also: [`mcv probe`](docs/tools.md#probe) measures a video and reads its scale
+bar, [`mcv inspect`](docs/tools.md#inspect) films one track,
+[`mcv stats`](docs/tools.md#stats) compares populations,
+[`mcv synth`](docs/tools.md#synth) renders a twin with a known truth,
+[`mcv bench`](docs/tools.md#bench) and [`mcv search`](docs/tools.md#search)
+score against it.
 
 ## Read more
 

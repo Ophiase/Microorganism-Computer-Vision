@@ -15,6 +15,8 @@ change of direction is in [vision.md](vision.md).
 
 ## Files
 
+- [model/](model/README.md): what a trajectory is, the laws of motion, the
+  hypotheses and their tests
 - [vision.md](vision.md): the change of direction, for whom
 - [calibration.md](calibration.md): the agent's loop, its baselines, its traps
 - [science.md](science.md): the truth to measure against, the prior art
