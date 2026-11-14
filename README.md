@@ -82,20 +82,22 @@ hundred tracks each, with localisation noise; the share of tracks each test
 calls significant (q < 0.05). On a behaviour that satisfies the null this is
 the false positive rate, near 0.05 at most; elsewhere it is the power.
 
-| True behaviour | anomalous | persistent | chiral | non-Gaussian | tumbling | confined |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Brownian | **0.01** | **0.00** | **0.00** | **0.00** | **0.00** | **0.02** |
-| Swimmer | 1.00 | 1.00 | 0.00 | 0.25 | 0.00 | 0.00 |
-| Run-and-tumble | 1.00 | 1.00 | 0.00 | 0.97 | **0.91** | 0.00 |
-| Circling | 1.00 | 1.00 | **1.00** | 0.99 | 0.00 | 0.00 |
-| Confined | 0.88 | 0.00 | 0.00 | 0.00 | 0.00 | **0.77** |
-| CTRW, heavy waits | 0.05 | 0.00 | 0.00 | **0.95** | 0.00 | 0.03 |
-| Lévy walk | 1.00 | 0.99 | 0.00 | 0.97 | 0.91 | 0.00 |
+| True behaviour | [anomalous](ideas/model/hypotheses/one-cell/anomalous.md) | [persistent](ideas/model/hypotheses/one-cell/persistent.md) | [chiral](ideas/model/hypotheses/one-cell/chiral.md) | [heavy tails](ideas/model/hypotheses/one-cell/heavy-tails.md) | [tumbling](ideas/model/hypotheses/one-cell/tumbling.md) | [rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md) | [confined](ideas/model/hypotheses/one-cell/confined.md) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Brownian | **0.01** | **0.00** | **0.00** | **0.00** | **0.00** | **0.00** | **0.02** |
+| Swimmer | 1.00 | 1.00 | 0.00 | 0.25 | 0.00 | 0.00 | 0.00 |
+| Run-and-tumble | 1.00 | 1.00 | 0.00 | 0.97 | **0.91** | 0.00 | 0.00 |
+| Run-and-reverse | 1.00 | 0.00 | 0.00 | 1.00 | 0.00 | **1.00** | 0.00 |
+| Circling | 1.00 | 1.00 | **1.00** | 0.99 | 0.00 | 0.00 | 0.00 |
+| Confined | 0.88 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.77** |
+| CTRW, heavy waits | 0.05 | 0.00 | 0.00 | **0.95** | 0.00 | 0.00 | 0.03 |
+| Lévy walk | 1.00 | 0.99 | 0.00 | 0.97 | 0.91 | 0.00 | 0.00 |
 
-What fails, said plainly: the rhythm test does not yet find run-and-reverse
-swimmers, and fractional subdiffusion (α = 0.6) over 100 frames goes
-undetected. The 2025 Fourier test had the first flaw too: a reversal turns by
-±π at random, which hides the rhythm in signed angles.
+What fails, said plainly: fractional subdiffusion ($\alpha = 0.6$) over 100
+frames goes undetected, its bend smaller than the noise's. The rhythm test
+failed too, until two causes were found: the 2025 spectrum of signed angles
+hides reversals, whose sign is random, and the synthetic reversals had no
+rhythm ([rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md)).
 
 ## [The agent's tools](docs/tools.md)
 
