@@ -48,6 +48,9 @@ What slowed the agent while it worked, found in its own session.
 
 ## Open
 
+- **[question]** The background queue runs the working tree the agent is
+  editing: a half-written file failed two queued runs. A queued task could run
+  on a snapshot of the last commit.
 - **[question]** A result whose spread is wild (2 detections per frame in the
   median, 240 at the 90th percentile) should stop the agent before it reads
   the means: a hint in the summary, or a check of the run.

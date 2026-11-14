@@ -45,3 +45,35 @@ def test_the_msd_measures_lags_in_frames_across_a_gap() -> None:
 
     assert curve.lags == (1, 2, 3)
     assert curve.squared == (1.0, 4.0, 9.0)
+
+
+def test_speed_slope_is_flat_when_no_step_lies_outside_the_decor() -> None:
+    from motility.diffusion.evidence.context_tests import speed_slope
+
+    inside = np.zeros((10, 10), dtype=np.float32)
+    track = np.array([[2.0, 2.0], [3.0, 3.0], [4.0, 4.0]])
+    assert not speed_slope([track], inside)
+
+
+def test_cells_slowed_near_the_decor_give_a_slope_above_the_surrogates() -> None:
+    from motility.diffusion.evidence.context_tests import SurrogateTest, speed_slope
+    from motility.tracking import Trajectory
+
+    objects = np.zeros((200, 200), dtype=bool)
+    objects[:, :20] = True
+    generator = np.random.default_rng(0)
+    tracks = []
+    for index in range(60):
+        x, y = generator.uniform(25, 180), generator.uniform(10, 190)
+        positions = []
+        for _ in range(30):
+            step, heading = 0.02 * (x - 20), generator.uniform(0, 2 * np.pi)
+            x = float(np.clip(x + step * np.cos(heading), 21, 199))
+            y = float(np.clip(y + step * np.sin(heading), 0, 199))
+            positions.append((x, y))
+        tracks.append(
+            Trajectory(index, tuple(range(30)), tuple(positions), (0.0,) * 30, 1.0)
+        )
+    outcome = SurrogateTest(speed_slope, alternative_greater=True).run(tracks, objects)
+    assert outcome is not None
+    assert np.mean(outcome.null >= outcome.observed) < 0.05
