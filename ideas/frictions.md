@@ -45,12 +45,10 @@ What slowed the agent while it worked, found in its own session.
 | Diagonal rods dropped | areas measured as bounding boxes | areas in pixels |
 | The same throwaway line typed again | no place for the agent's own tools | the `self` group of [agent.just](../agent.just) |
 | Films never made, for fear of waiting on them | one lane for every task | a [background queue](assisted-research.md): `just agent::queue`, `worker`, `harvest` |
+| Queued runs failed on a file half-edited | the queue ran the working tree | the worker waits until the code is committed |
 
 ## Open
 
-- **[question]** The background queue runs the working tree the agent is
-  editing: a half-written file failed two queued runs. A queued task could run
-  on a snapshot of the last commit.
 - **[question]** A result whose spread is wild (2 detections per frame in the
   median, 240 at the 90th percentile) should stop the agent before it reads
   the means: a hint in the summary, or a check of the run.
