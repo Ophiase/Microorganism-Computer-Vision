@@ -4,7 +4,6 @@ from typing import Final
 
 import cv2
 import numpy as np
-import yaml
 from motility.pipeline import suggest
 from motility.vision import Video
 from motility.vision.measures.appearance import AppearanceReport, measure_appearance
@@ -18,8 +17,7 @@ from microorganism_computer_vision.commands.base import (
     configuration_of,
 )
 from microorganism_computer_vision.configuration import Configuration
-from microorganism_computer_vision.media.extract import process as download_study
-from microorganism_computer_vision.media.folders import CATALOGUE, RUNS
+from microorganism_computer_vision.media.folders import RUNS
 from microorganism_computer_vision.media.run_folder import source_key
 from microorganism_computer_vision.media.video import Clip, read_recording
 from microorganism_computer_vision.reporting.pictures.looks import (
@@ -152,47 +150,3 @@ class MaskCommand:
                 " give back a cell with preprocessing.mask.keep"
             ),
         )
-
-
-class Sources(BaseModel):
-    count: int
-    sources: tuple[dict[str, object], ...]
-
-
-class SourcesCommand:
-    name = "sources"
-    summary = "the catalogue of motility videos, their truth, licence and trust"
-
-    def configure(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument(
-            "--with-truth", action="store_true", help="only those with a truth"
-        )
-
-    def execute(self, arguments: argparse.Namespace) -> Sources:
-        entries = yaml.safe_load(CATALOGUE.read_text())
-        if arguments.with_truth:
-            entries = [entry for entry in entries if _has_truth(entry)]
-        return Sources(count=len(entries), sources=tuple(entries))
-
-
-class Fetched(BaseModel):
-    videos: tuple[Path, ...]
-
-
-class FetchCommand:
-    name = "fetch"
-    summary = "download the nine videos of the 2025 study into data/ (asks the network)"
-
-    def configure(self, parser: argparse.ArgumentParser) -> None:
-        """The study's addresses are in settings/dataset.toml."""
-
-    def execute(self, _arguments: argparse.Namespace, /) -> Fetched:
-        return Fetched(videos=download_study())
-
-
-def _has_truth(entry: dict[str, object]) -> bool:
-    return not str(entry.get("truth", "none")).startswith("none")
-
-
-def _has_truth(entry: dict[str, object]) -> bool:
-    return not str(entry.get("truth", "none")).startswith("none")
