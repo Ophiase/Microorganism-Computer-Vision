@@ -92,3 +92,10 @@ review run:
 [doc("The shape of every document of ideas/ and docs/: orphans, bare, dense, unlinked")]
 docs:
     @python3 .agents/checks/doc_shape.py
+
+[group("self")]
+[doc("Replace a text in a file, or fail loudly when it is absent: just agent::edit FILE OLD NEW")]
+[script("bash")]
+edit file old new:
+    set -euo pipefail
+    python3 -c 'import sys, pathlib; path, old, new = sys.argv[1:4]; text = pathlib.Path(path).read_text(); count = text.count(old); sys.exit(f"{path}: the anchor is absent, nothing replaced") if count == 0 else pathlib.Path(path).write_text(text.replace(old, new)); print(f"{path}: {count} replaced")' "$1" "$2" "$3"

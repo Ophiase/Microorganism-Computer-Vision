@@ -39,6 +39,12 @@ graph LR
     notice --> tool
 ```
 
+## The frictions, written down
+
+The loops feed on [frictions](frictions.md): what slowed the reader of the
+work, and what slowed the agent doing it, each with its cause and the tool it
+led to. A friction not written down comes back.
+
 ## The agent's own toolbox
 
 [agent.just](../agent.just) is where the second loop lands. Its recipes are
