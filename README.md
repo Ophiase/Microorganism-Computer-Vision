@@ -82,22 +82,34 @@ hundred tracks each, with localisation noise; the share of tracks each test
 calls significant (q < 0.05). On a behaviour that satisfies the null this is
 the false positive rate, near 0.05 at most; elsewhere it is the power.
 
-| True behaviour | [anomalous](ideas/model/hypotheses/one-cell/anomalous.md) | [persistent](ideas/model/hypotheses/one-cell/persistent.md) | [chiral](ideas/model/hypotheses/one-cell/chiral.md) | [heavy tails](ideas/model/hypotheses/one-cell/heavy-tails.md) | [tumbling](ideas/model/hypotheses/one-cell/tumbling.md) | [rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md) | [confined](ideas/model/hypotheses/one-cell/confined.md) |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Brownian | **0.01** | **0.00** | **0.00** | **0.00** | **0.00** | **0.00** | **0.02** |
-| Swimmer | 1.00 | 1.00 | 0.00 | 0.25 | 0.00 | 0.00 | 0.00 |
-| Run-and-tumble | 1.00 | 1.00 | 0.00 | 0.97 | **0.91** | 0.00 | 0.00 |
-| Run-and-reverse | 1.00 | 0.00 | 0.00 | 1.00 | 0.00 | **1.00** | 0.00 |
-| Circling | 1.00 | 1.00 | **1.00** | 0.99 | 0.00 | 0.00 | 0.00 |
-| Confined | 0.88 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.77** |
-| CTRW, heavy waits | 0.05 | 0.00 | 0.00 | **0.95** | 0.00 | 0.00 | 0.03 |
-| Lévy walk | 1.00 | 0.99 | 0.00 | 0.97 | 0.91 | 0.00 | 0.00 |
+| True behaviour | [anomalous](ideas/model/hypotheses/one-cell/anomalous.md) | [persistent](ideas/model/hypotheses/one-cell/persistent.md) | [chiral](ideas/model/hypotheses/one-cell/chiral.md) | [heavy tails](ideas/model/hypotheses/one-cell/heavy-tails.md) | [tumbling](ideas/model/hypotheses/one-cell/tumbling.md) | [rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md) | [confined](ideas/model/hypotheses/one-cell/confined.md) | [body-frame](ideas/model/hypotheses/one-cell/body-frame.md) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Brownian | **0.00** | **0.03** | **0.00** | **0.00** | **0.00** | **0.00** | **0.00** | **0.00** |
+| Swimmer | 1.00 | 1.00 | 0.00 | 0.09 | 0.00 | 0.00 | 0.00 | 1.00 |
+| Run-and-tumble | 1.00 | 1.00 | 0.00 | 0.99 | **0.90** | 0.00 | 0.00 | 1.00 |
+| Run-and-reverse | 1.00 | 0.00 | 0.00 | 1.00 | 0.00 | **1.00** | 0.00 | 1.00 |
+| Circling | 1.00 | 0.99 | **1.00** | 0.94 | 0.03 | 0.17 | 0.00 | 1.00 |
+| Confined | 0.87 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.74** | 0.00 |
+| CTRW, heavy waits | 0.06 | 0.00 | 0.00 | **0.96** | 0.00 | 0.00 | 0.09 | 0.20 |
+| Lévy walk | 1.00 | 0.99 | 0.00 | 0.95 | 0.92 | 0.00 | 0.00 | 1.00 |
+| Passive rod, body-frame | 0.03 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.05 | **1.00** |
 
 What fails, said plainly: fractional subdiffusion ($\alpha = 0.6$) over 100
 frames goes undetected, its bend smaller than the noise's. The rhythm test
 failed too, until two causes were found: the 2025 spectrum of signed angles
 hides reversals, whose sign is random, and the synthetic reversals had no
 rhythm ([rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md)).
+
+## What the tools found
+
+On the study's video, every cell's long axis measured from its shape
+([body-frame](ideas/model/hypotheses/one-cell/body-frame.md)):
+
+- **Swimmers move eleven times more along their axis than across it**: they
+  swim along their bodies, and the axis measured on rods of a few pixels is
+  sound.
+- **Non-motile rods diffuse 2.7 times more along their axis**: Brownian kicks
+  in the body's frame, near what a slender passive rod should show.
 
 ## [The agent's tools](docs/tools.md)
 

@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import Final, Protocol
 
+from motility.diffusion.evidence.body_tests import body_frame
 from motility.diffusion.evidence.motion_tests import anomalous, confined, non_gaussian
 from motility.diffusion.evidence.result import Evidence, Hypothesis, benjamini_hochberg
 from motility.diffusion.evidence.turning_tests import (
@@ -12,6 +13,7 @@ from motility.diffusion.evidence.turning_tests import (
 from motility.tracking.trajectories import Trajectory
 
 LEVEL: Final = 0.05
+SWIMMING: Final = frozenset({Hypothesis.TUMBLING, Hypothesis.CHIRAL})
 WEIGHT: Final = 0.9
 
 
@@ -27,14 +29,16 @@ TRACK_TESTS: Final[dict[Hypothesis, TrackTest]] = {
     Hypothesis.TUMBLING: tumbling,
     Hypothesis.PERIODIC: periodic,
     Hypothesis.CONFINED: confined,
+    Hypothesis.BODY_FRAME: body_frame,
 }
 
 
 def test_tracks(trajectories: Sequence[Trajectory]) -> tuple[Evidence, ...]:
     """Every hypothesis on the tracks it applies to, corrected for how many those are.
 
-    Tumbling asks whether a swimmer turns more sharply than its rotational
-    diffusion allows: it is tested only on the tracks found persistent first.
+    Tumbling and chirality ask how a swimmer turns: they are tested only on the
+    tracks found persistent first. On an anti-persistent walk, half-turns near
+    plus or minus pi bias the mean signed turn, and the chirality test fired.
     """
     results: list[Evidence] = []
     for hypothesis, test in TRACK_TESTS.items():
@@ -53,7 +57,7 @@ def test_tracks(trajectories: Sequence[Trajectory]) -> tuple[Evidence, ...]:
 def _eligible(
     hypothesis: Hypothesis, trajectories: Sequence[Trajectory], results: list[Evidence]
 ) -> Sequence[Trajectory]:
-    if hypothesis is not Hypothesis.TUMBLING:
+    if hypothesis not in SWIMMING:
         return trajectories
     swimmers = {
         item.subject

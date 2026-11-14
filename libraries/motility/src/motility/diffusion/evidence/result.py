@@ -16,6 +16,7 @@ class Hypothesis(StrEnum):
     TUMBLING = "tumbling"
     PERIODIC = "periodic"
     CONFINED = "confined"
+    BODY_FRAME = "body-frame"
 
     @property
     def null(self) -> str:
@@ -34,6 +35,10 @@ NULLS: dict[Hypothesis, str] = {
     Hypothesis.PERIODIC: (
         "turns come in no rhythm: the periodogram's peak is no higher than in"
         " shuffled turns (permutation test)"
+    ),
+    Hypothesis.BODY_FRAME: (
+        "kicks of equal size along and across the body (F-test on the mean"
+        " squares of the steps projected on its axis)"
     ),
     Hypothesis.CONFINED: (
         "the MSD keeps growing: a saturating law is not preferred over a linear"
