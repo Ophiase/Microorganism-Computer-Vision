@@ -49,6 +49,18 @@ IN_WORDS: Final = {
 }
 """Each simulated behaviour as a reader says it, without the physicist's name."""
 
+ASKS: Final = {
+    Hypothesis.ANOMALOUS: "spreads at\nan odd rate",
+    Hypothesis.PERSISTENT: "keeps its\nheading",
+    Hypothesis.CHIRAL: "turns\none way",
+    Hypothesis.NON_GAUSSIAN: "steps of\nuneven size",
+    Hypothesis.TUMBLING: "turns\nsharply",
+    Hypothesis.PERIODIC: "has a\nrhythm",
+    Hypothesis.CONFINED: "stays in\na cage",
+    Hypothesis.BODY_FRAME: "moves along\nits body",
+}
+"""What each test asks of a track, under its name."""
+
 SAYS_YES: Final = LinearSegmentedColormap.from_list("yes", ["#fcfcfb", "#2a78d6"])
 SHOWN: Final = (
     Hypothesis.ANOMALOUS,
@@ -93,7 +105,9 @@ def power(rates: RejectionRates, path: Path) -> Path:
     axes.add_patch(
         Rectangle((-0.5, -0.5), len(SHOWN), 1, fill=False, edgecolor="#e34948", lw=2)
     )
-    axes.set_xticks(range(len(SHOWN)), [test.value for test in SHOWN], rotation=30)
+    axes.set_xticks(
+        range(len(SHOWN)), [f"{test.value}\n{ASKS[test]}" for test in SHOWN]
+    )
     axes.set_yticks(
         range(len(behaviours)), [IN_WORDS.get(item, item.value) for item in behaviours]
     )
