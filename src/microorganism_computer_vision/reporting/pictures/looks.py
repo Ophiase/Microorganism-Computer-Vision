@@ -8,6 +8,7 @@ from cv2.typing import MatLike
 from motility.diffusion import Motion
 from motility.pipeline import PipelineResult
 from motility.vision import DetectionParameters, Frame, Video, mask
+from motility.vision.regions.mask import MaskParameters
 
 from microorganism_computer_vision.reporting.pictures.overlay import TrackOverlay
 
@@ -38,6 +39,9 @@ TAIL = 15
 BANNER = 22
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 WHITE = (255, 255, 255)
+MASKED = (72, 73, 227)
+KEPT = (122, 175, 27)
+MASK_OPACITY = 0.45
 
 
 def look(
@@ -99,3 +103,22 @@ def probe_look(video: Video) -> Image:
 def _stretched(frame: np.ndarray) -> np.ndarray:
     high = float(np.percentile(frame, 99.5))
     return np.clip(frame / high, 0, 1) if high > 0 else frame
+
+
+def mask_preview(
+    median: Frame, ignored: np.ndarray, parameters: MaskParameters
+) -> Image:
+    """The median frame, red where the mask hides it; drawn discs outlined, numbered.
+
+    Red outlines are discs masked by hand, green ones discs given back.
+    """
+    image = grey(median)
+    tint = image.copy()
+    tint[ignored] = MASKED
+    image = cv2.addWeighted(tint, MASK_OPACITY, image, 1 - MASK_OPACITY, 0)
+    for colour, discs in ((MASKED, parameters.ignore), (KEPT, parameters.keep)):
+        for index, disc in enumerate(discs, start=1):
+            centre = (round(disc.x), round(disc.y))
+            cv2.circle(image, centre, round(disc.radius), colour, 1, cv2.LINE_AA)
+            cv2.putText(image, str(index), centre, FONT, 0.4, colour, 1, cv2.LINE_AA)
+    return image

@@ -11,6 +11,7 @@ from motility.vision.geometry import Position, Rectangle
 
 BYTE_MAX = 255
 CONNECTIVITY = 8
+ELONGATED = 10.0
 
 
 class ThresholdMethod(StrEnum):
@@ -69,6 +70,15 @@ class DetectionParameters(BaseModel):
         description="Largest region kept, in pixels: above, cells touch or debris.",
     )
 
+    min_elongation: float = Field(
+        default=1.0,
+        ge=1.0,
+        description=(
+            "Smallest ratio of a region's long axis to its short one, from its"
+            " second moments: rods are 1.5 and more, round specks and diffuse"
+            " patches near 1. 1 keeps every shape."
+        ),
+    )
     static_cells: bool = Field(
         default=False,
         description=(
@@ -87,11 +97,17 @@ class DetectionParameters(BaseModel):
 
 @dataclass(frozen=True, slots=True)
 class Detection:
-    """One connected region: its centre of mass, its box and its pixel count."""
+    """One connected region: its centre, box, pixel count, and its long axis.
+
+    `angle` is the long axis in radians, modulo pi: a rod has no head in one
+    frame. `elongation` is the long axis over the short one, 1 for a disc.
+    """
 
     centroid: Position
     rectangle: Rectangle
     pixels: int
+    angle: float = 0.0
+    elongation: float = 1.0
 
 
 def mask(foreground: Frame, parameters: DetectionParameters) -> np.ndarray:
@@ -112,15 +128,34 @@ def mask(foreground: Frame, parameters: DetectionParameters) -> np.ndarray:
 
 
 def detect(foreground: Frame, parameters: DetectionParameters) -> tuple[Detection, ...]:
-    """The cells of one foreground frame, filtered by the area of their box."""
-    count, _, statistics, centroids = cv2.connectedComponentsWithStats(
+    """The cells of one foreground frame, kept by their size and their shape."""
+    count, labels, statistics, centroids = cv2.connectedComponentsWithStats(
         mask(foreground, parameters), connectivity=CONNECTIVITY
     )
     detections = []
     for label in range(1, count):
         x, y, width, height, pixels = (int(value) for value in statistics[label])
         size = pixels if parameters.area is AreaMeasure.PIXELS else width * height
-        if parameters.min_area <= size <= parameters.max_area:
-            centre = (float(centroids[label][0]), float(centroids[label][1]))
-            detections.append(Detection(centre, Rectangle(x, y, width, height), pixels))
+        if not parameters.min_area <= size <= parameters.max_area:
+            continue
+        window = labels[y : y + height, x : x + width] == label
+        angle, elongation = axis_of(window)
+        if elongation < parameters.min_elongation:
+            continue
+        centre = (float(centroids[label][0]), float(centroids[label][1]))
+        detections.append(
+            Detection(centre, Rectangle(x, y, width, height), pixels, angle, elongation)
+        )
     return tuple(detections)
+
+
+def axis_of(region: np.ndarray) -> tuple[float, float]:
+    """The long axis of a binary region, its angle and its elongation, by moments."""
+    moments = cv2.moments(region.astype(np.uint8), binaryImage=True)
+    if moments["m00"] == 0:
+        return 0.0, 1.0
+    xx, yy, xy = moments["mu20"], moments["mu02"], moments["mu11"]
+    spread = np.sqrt(((xx - yy) / 2) ** 2 + xy**2)
+    long, short = (xx + yy) / 2 + spread, (xx + yy) / 2 - spread
+    angle = 0.5 * float(np.arctan2(2 * xy, xx - yy))
+    return angle, float(np.sqrt(long / short)) if short > 0 else ELONGATED

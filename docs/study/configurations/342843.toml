@@ -1,4 +1,4 @@
-reason = "the configuration calibrated on 342843, rods measured in pixels, still cells found in the median; 0.323 µm per pixel: 10 µm bar of 31 px"
+reason = "the configuration calibrated on 342843, rods measured in pixels, still cells found in the median; 0.323 µm per pixel: 10 µm bar of 31 px; the two host cells masked by hand, their inner texture passed for still rods; shapes rounder than 1.4 dropped, diffuse patches passed for still cells"
 
 [acquisition]
 pixel_size = 0.323
@@ -10,8 +10,15 @@ window_low = 0.42
 window_high = 0.5
 gain = 1.0
 smoothing = 3
-exclude_static = 0.15
-exclusion_margin = 4
+
+[preprocessing.mask]
+static = 0.15
+margin = 4
+ignore = [
+    { x = 505.0, y = 455.0, radius = 75.0 },
+    { x = 370.0, y = 540.0, radius = 75.0 },
+]
+keep = []
 
 [detection]
 method = "fixed"
@@ -20,6 +27,7 @@ opening = 0
 area = "pixels"
 min_area = 4
 max_area = 150
+min_elongation = 1.4
 static_cells = true
 
 [tracking]

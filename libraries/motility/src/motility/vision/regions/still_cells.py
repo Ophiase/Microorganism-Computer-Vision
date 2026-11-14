@@ -9,8 +9,8 @@ from motility.vision.preprocessing import (
     MID_GREY,
     PreprocessingParameters,
     foreground_of,
-    static_objects,
 )
+from motility.vision.regions.mask import ignored_region
 
 FLATTENING: Final = 10.0
 
@@ -31,8 +31,6 @@ def static_cells(
     foreground = foreground_of(flattened[np.newaxis].astype(np.float32), preprocessing)[
         0
     ]
-    if preprocessing.exclude_static is not None:
-        foreground = foreground * ~static_objects(
-            video, preprocessing.exclude_static, preprocessing.exclusion_margin
-        )
+    if preprocessing.mask.active:
+        foreground = foreground * ~ignored_region(video, preprocessing.mask)
     return detect(foreground, detection)

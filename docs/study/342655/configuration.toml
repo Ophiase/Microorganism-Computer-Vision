@@ -10,8 +10,10 @@ window_low = 0.42
 window_high = 0.5
 gain = 1.0
 smoothing = 3
-exclude_static = 0.15
-exclusion_margin = 4
+
+[preprocessing.mask]
+margin = 4
+static = 0.15
 
 [detection]
 method = "fixed"

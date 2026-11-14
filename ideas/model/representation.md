@@ -26,6 +26,10 @@ graph LR
 - An **oriented point** adds the long axis of the shape, from the second
   moments of its pixels. On a rod of a few pixels the axis is noisy, and it
   has no head: the head is the end that leads, read from the motion.
+- **[fact]** 2026-11-14: every detection carries its axis and its elongation,
+  the long axis over the short one; `detection.min_elongation` drops what is
+  too round to be a rod. On the study's video, 1.4 removed diffuse patches
+  taken for still cells. The axis is not yet kept along a track.
 
 ## Skeletons
 
@@ -51,7 +55,7 @@ $$\lvert p_{i+1} - p_i \rvert = \ell = \frac{L}{N - 1}$$
   $\kappa(s)$ along the body; a rod is the filament with $N = 2$.
 - It carries the [gait](hypotheses/one-cell/gait.md): a wave travelling along
   the body is a change of its tangent angles in time.
-- **[question]** Not measured yet: the axis and the skeleton are planned
-  recipes, `just axis` and `just skeleton`.
+- **[question]** The skeleton is not measured yet: `just skeleton` is a planned
+  recipe; the axis along a track is `just axis`.
 
 Back: [one trajectory](trajectory.md). Next: [the models](models.md).
