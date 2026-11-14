@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import Final
 
@@ -32,6 +33,64 @@ class Behaviour(StrEnum):
     SUBDIFFUSIVE = "fbm-subdiffusive"
     WAITING = "ctrw-waiting"
     LEVY = "levy-walk"
+    BODY_FRAME = "body-frame-rod"
+
+
+ACTIVE: Final = frozenset({
+    Behaviour.SWIMMER,
+    Behaviour.RUN_AND_TUMBLE,
+    Behaviour.RUN_AND_REVERSE,
+    Behaviour.CIRCLING,
+    Behaviour.LEVY,
+})
+AXIS_DIFFUSION: Final = 0.002
+ALONG: Final = 1.6
+ACROSS: Final = 0.4
+
+
+@dataclass(frozen=True, slots=True)
+class OrientedPath:
+    """Positions and the body's long axis at each frame, modulo pi."""
+
+    positions: Path2D
+    angles: NDArray[np.float64]
+
+
+def behave_oriented(
+    behaviour: Behaviour,
+    kinetics: Kinetics,
+    frames: int,
+    generator: np.random.Generator,
+) -> OrientedPath:
+    """A path and its axis: a swimmer points where it swims, a passive cell anywhere."""
+    if behaviour is Behaviour.BODY_FRAME:
+        return _body_frame(frames, generator)
+    positions = behave(behaviour, kinetics, frames, generator)
+    if behaviour in ACTIVE:
+        steps = np.diff(
+            positions, axis=0, append=positions[-1:] + positions[-1:] - positions[-2:-1]
+        )
+        return OrientedPath(positions, np.arctan2(steps[:, 1], steps[:, 0]))
+    return OrientedPath(positions, _wandering_axis(frames, generator))
+
+
+def _wandering_axis(frames: int, generator: np.random.Generator) -> NDArray[np.float64]:
+    return generator.uniform(0, np.pi) + np.cumsum(
+        generator.normal(0, np.sqrt(2 * AXIS_DIFFUSION), frames)
+    )
+
+
+def _body_frame(frames: int, generator: np.random.Generator) -> OrientedPath:
+    """A passive rod, kicked twice as easily along its axis as across it."""
+    axis = _wandering_axis(frames, generator)
+    along = generator.normal(0, np.sqrt(2 * ALONG), frames)
+    across = generator.normal(0, np.sqrt(2 * ACROSS), frames)
+    steps = np.column_stack((
+        along * np.cos(axis) - across * np.sin(axis),
+        along * np.sin(axis) + across * np.cos(axis),
+    ))
+    steps[0] = 0
+    return OrientedPath(np.cumsum(steps, axis=0), axis)
 
 
 def behave(
@@ -48,6 +107,8 @@ def behave(
         Behaviour.CIRCLING: Motion.CIRCULAR,
         Behaviour.CONFINED: Motion.CONFINED,
     }
+    if behaviour is Behaviour.BODY_FRAME:
+        return _body_frame(frames, generator).positions
     if behaviour in simple:
         return walk(
             simple[behaviour], kinetics, frames, (0.0, 0.0), generator

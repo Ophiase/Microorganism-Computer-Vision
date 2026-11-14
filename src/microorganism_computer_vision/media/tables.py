@@ -24,7 +24,9 @@ def read_tracks(path: Path) -> TrackTable:
     with path.open(newline="") as file:
         rows = list(csv.DictReader(file))
     return TrackTable.from_columns({
-        name: np.array([float(row[name]) for row in rows]) for name in COLUMNS
+        name: np.array([float(row[name]) for row in rows])
+        for name in COLUMNS
+        if not rows or name in rows[0]
     })
 
 

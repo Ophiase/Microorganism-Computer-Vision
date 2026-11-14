@@ -86,3 +86,27 @@ def test_reversals_in_rhythm_are_found_and_random_turns_are_not() -> None:
 
     assert p_value(Behaviour.RUN_AND_REVERSE) < 0.01
     assert p_value(Behaviour.BROWNIAN) > 0.05
+
+
+def test_a_rod_kicked_along_its_axis_is_found_and_an_isotropic_one_is_not() -> None:
+    from motility.diffusion.evidence.body_tests import body_frame
+    from motility.tracking import Trajectory
+    from motility.truth.synthetic.behaviours import Behaviour, behave_oriented
+    from motility.truth.synthetic.scene import Kinetics
+
+    generator = np.random.default_rng(4)
+
+    def p_value(behaviour: Behaviour) -> float:
+        path = behave_oriented(behaviour, Kinetics(), 150, generator)
+        trajectory = Trajectory(
+            0,
+            tuple(range(150)),
+            tuple(map(tuple, path.positions.tolist())),
+            tuple(path.angles.tolist()),
+            2.5,
+        )
+        evidence = body_frame(trajectory)
+        return 1.0 if evidence is None or evidence.p_value is None else evidence.p_value
+
+    assert p_value(Behaviour.BODY_FRAME) < 0.01
+    assert p_value(Behaviour.BROWNIAN) > 0.05
