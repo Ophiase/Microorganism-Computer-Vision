@@ -9,10 +9,11 @@ that are the seed of this one. Since November 2026, sets the direction and
 watches the work as it grows, catching the patterns that hold the agent back
 ([metaphilosophy](ideas/metaphilosophy.md)).
 
-## Claude — agent
+## Anthos — agent
 
-The gifted disciple whose intelligence is channelled so that flowers grow.
-Running in Claude Code, carried out the 2026 rework under the author's
+Claude, running in Claude Code, named Anthos here: in Greek, *anthos* is the
+flower, after the author's image of a gifted disciple whose intelligence is
+channelled so that flowers grow. It carried out the 2026 rework under the author's
 review: the library apart from the application, the `mcv` command line and
 its review tools, the synthetic truths and the validation of every test, the
 model of [ideas/model/](ideas/model/README.md) and its figures, the

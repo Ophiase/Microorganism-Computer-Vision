@@ -37,3 +37,18 @@ def test_a_saved_configuration_loads_back_the_same(tmp_path) -> None:
         Configuration.load(configuration.save(tmp_path / "configuration.toml"))
         == configuration
     )
+
+
+def test_a_fetch_plan_keeps_the_smallest_files_within_the_budget(tmp_path) -> None:
+    from microorganism_computer_vision.media.fetch import Download, Source, plan
+
+    files = tuple(
+        Download(file=f"{size}.mp4", url="the-address", megabytes=size)
+        for size in (30.0, 5.0, 12.0)
+    )
+    sources = (Source(id="videos", name="videos", downloads=files),)
+
+    planned = plan(sources, tmp_path, max_megabytes=20.0)
+
+    assert [item.download.megabytes for item in planned] == [5.0, 12.0]
+    assert planned[0].destination == tmp_path / "videos" / "5.0.mp4"
