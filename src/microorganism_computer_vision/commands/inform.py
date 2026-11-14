@@ -137,7 +137,7 @@ class InteractionsCommand:
                 SurrogateTest(near_share(arguments.radius), True),
                 "share near objects",
             ),
-            Hypothesis.SLOWED: (SurrogateTest(speed_slope, False), "px/frame per px"),
+            Hypothesis.SLOWED: (SurrogateTest(speed_slope, True), "px/frame per px"),
         }
         panels, evidence = [], []
         for group, (motions, colour) in groups.items():
