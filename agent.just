@@ -136,3 +136,15 @@ harvest count="10":
     set -euo pipefail
     echo "pending: $(ls output/queue/pending 2>/dev/null | wc -l), running: $(ls output/queue/*.sh 2>/dev/null | wc -l)"
     tail -n "$1" output/queue/harvest.tsv 2>/dev/null || echo "nothing gathered yet"
+
+[group("self")]
+[doc("Queue clips of a long video, one configuration: just agent::windows v.mp4 c.toml 150 6 750 (size, count, every)")]
+[script("bash")]
+windows source config size count every priority="4":
+    set -euo pipefail
+    for ((window = 0; window < $4; window++)); do
+        start=$((window * $5))
+        just agent::queue "$6" uv run mcv run "$1" --config "$2" \
+            --set clip.start=$start --set clip.stop=$((start + $3)) \
+            --reason "window $((window + 1)) of $4, frames $start to $((start + $3))"
+    done
