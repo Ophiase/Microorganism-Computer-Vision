@@ -1,9 +1,9 @@
-# The models of motion
+# Basic models
 
 **[sketch]** 2026-11-14. Laws for the hidden state of
 [one trajectory](trajectory.md), each a stochastic differential equation.
 They nest: each adds one ingredient to a simpler one, which is what makes
-them testable against each other ([hypotheses](hypotheses.md)).
+them testable against each other ([hypotheses](hypotheses/README.md)).
 
 ![a sample path of each model](../../docs/figures/models.png)
 
