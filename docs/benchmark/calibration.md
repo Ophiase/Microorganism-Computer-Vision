@@ -34,11 +34,11 @@ The baselines:
 | Method | What it does |
 | --- | --- |
 | 2025 | the configuration the student tuned by eye on the study's video |
-| Probe | `mcv probe`'s suggestion, from measures alone, no truth |
-| Blind | random draws over the whole space (`mcv search --strategy blind`) |
+| [Probe](../tools.md#probe) | `mcv probe`'s suggestion, from measures alone, no truth |
+| [Blind](../tools.md#search) | random draws over the whole space (`mcv search --strategy blind`) |
 | Blind ×3 | the same with thirty runs |
-| Local | steps around the 2025 configuration (`--strategy around`) |
-| Local from the probe | steps around the probe's suggestion, the agent's own start |
+| [Local](../tools.md#search) | steps around the 2025 configuration (`--strategy around`) |
+| [Local from the probe](../tools.md#search) | steps around the probe's suggestion, the agent's own start |
 
 ## The results
 
@@ -48,11 +48,11 @@ searches, their spread in brackets.
 | Method | Dark and dust | Fluorescence | Dim and crowded |
 | --- | ---: | ---: | ---: |
 | 2025 | −0.59 | 0.00 | 0.00 |
-| Probe | 0.67 | 0.77 | −0.95 |
-| Blind | 0.07 [−0.28, 0.48] | 0.56 [0.02, 0.85] | 0.00 [0.00, 0.00] |
-| Blind ×3 | 0.52 [0.30, 0.77] | 0.81 [0.75, 0.85] | 0.22 [0.00, 0.55] |
-| Local | 0.20 [0.17, 0.22] | 0.62 [0.52, 0.81] | −0.11 [−0.30, 0.00] |
-| Local from the probe | 0.76 [0.69, 0.80] | 0.78 [0.75, 0.84] | −0.15 [−0.46, 0.00] |
+| [Probe](../tools.md#probe) | 0.67 | 0.77 | −0.95 |
+| [Blind](../tools.md#search) | 0.07 [−0.28, 0.48] | 0.56 [0.02, 0.85] | 0.00 [0.00, 0.00] |
+| [Blind ×3](../tools.md#search) | 0.52 [0.30, 0.77] | 0.81 [0.75, 0.85] | 0.22 [0.00, 0.55] |
+| [Local](../tools.md#search) | 0.20 [0.17, 0.22] | 0.62 [0.52, 0.81] | −0.11 [−0.30, 0.00] |
+| [Local from the probe](../tools.md#search) | 0.76 [0.69, 0.80] | 0.78 [0.75, 0.84] | −0.15 [−0.46, 0.00] |
 | **Agent** | **0.80** | **0.86** | **0.59** |
 
 What it says:
