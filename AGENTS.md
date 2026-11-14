@@ -112,6 +112,14 @@ report. `mcv guide` is the method, printed from [docs/guide.md](docs/guide.md);
 use it. A parameter added to the library is a pydantic `Field` with a
 description: the schema, the guide's table and the agent all read it there.
 
+## Your own toolbox
+
+[agent.just](agent.just) is the agent's meta-library, not the user's: when a
+command line comes back in a session for the third time, make it a recipe
+there, in the `self` group; when a mistake comes back, make it a check in
+`.agents/checks/`. Remove what goes unused. The aim is an agent that improves
+itself ([metaphilosophy](ideas/metaphilosophy.md)).
+
 ## Done
 
 A topic is done when `just agent gate` passes and the documentation it makes

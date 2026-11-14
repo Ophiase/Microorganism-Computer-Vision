@@ -49,3 +49,46 @@ search *arguments:
 [doc("A synthetic twin with its truth: just agent::synth twin --like appearance.json")]
 synth name *arguments:
     uv run mcv synth "$@"
+
+[group("self")]
+[doc("The newest run folder of a source: just agent::last data/342843.avi")]
+[script("bash")]
+last source:
+    set -euo pipefail
+    key=$(uv run python -c 'import sys; from pathlib import Path; from microorganism_computer_vision.media.run_folder import source_key; print(source_key(Path(sys.argv[1])))' "$1")
+    ls -d output/runs/"$key"/[0-9]*/ | sort | tail -1
+
+[group("self")]
+[doc("One frame of a GIF as a PNG, to look at it: just agent::frame output/runs/x/001/tracks.gif 20")]
+[script("bash")]
+frame gif index="0":
+    set -euo pipefail
+    out="${1%.gif}_frame_$2.png"
+    uv run python -c 'import sys; from PIL import Image; g = Image.open(sys.argv[1]); g.seek(int(sys.argv[2])); g.convert("RGB").save(sys.argv[3])' "$1" "$2" "$out"
+    echo "$out"
+
+[group("self")]
+[doc("A crop of a picture too large to read at once: just agent::crop sheet.png TOP BOTTOM LEFT RIGHT")]
+[script("bash")]
+crop picture top bottom left right:
+    set -euo pipefail
+    out="${1%.png}_crop.png"
+    uv run python -c 'import sys, cv2; t, b, l, r = map(int, sys.argv[2:6]); cv2.imwrite(sys.argv[6], cv2.imread(sys.argv[1])[t:b, l:r])' "$@" "$out"
+    echo "$out"
+
+[group("self")]
+[doc("Every review sheet of a run at once: suspects, misses, and a gallery per motion")]
+[script("bash")]
+review run:
+    set -euo pipefail
+    uv run mcv suspects "$1" > /dev/null
+    uv run mcv misses "$1" > /dev/null
+    for motion in stationary diffusive directed confined circular; do
+        uv run mcv gallery "$1" "$motion" > /dev/null 2>&1 || true
+    done
+    ls "$1"/suspects.png "$1"/misses.png "$1"/gallery_*.png 2>/dev/null
+
+[group("self")]
+[doc("The shape of every document of ideas/ and docs/: orphans, bare, dense, unlinked")]
+docs:
+    @python3 .agents/checks/doc_shape.py
