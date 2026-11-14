@@ -50,15 +50,33 @@ the untreated ones.
 - **The dose does not order the effect**: ceftazidime 4 slows them less than
   0.5 does.
 
+## Over the three minutes
+
+Is the first 6 s typical? Six windows of 6 s, every 30 s, of the untreated
+video and of ceftazidime 0.5, the same configurations
+(`just agent::windows`):
+
+![six windows of each video: motile share, swimmers' speed, circling, sharp turns](../figures/antibiotics-windows.png)
+
+- **Every window under the drug swims less than every untreated one**: 25 to
+  40 % motile, against 49 to 74 %.
+- **The drug's swimmers stay slow**, under 60 px/s, where untreated ones
+  reach 150.
+- **They turn sharply more often**: 0.3 to 0.9 turns per second swimming,
+  against 0.3 to 0.55.
+
+So the effect is not a chance of the first seconds. It is still one field per
+condition.
+
 ## What it cannot say
 
 - **[caution]** One field of one capillary per condition: the fields differ in
   more than the drug (their depth, their light, the place in the capillary).
   The ceftazidime 4 video is also the one whose exposure jumped. A dose
   effect needs several fields per condition.
-- **[caution]** 6 s of 3 min are read; the toolkit holds a whole video in
-  memory, and these are 23 GB as floats. **[question]** Reading in windows, or
-  at a lower resolution, is the planned fix.
+- **[caution]** The toolkit holds a whole clip in memory, 23 GB as floats for
+  one of these videos: they are read as windows of 6 s. A track crossing two
+  windows is cut in two.
 
 ## The *E. coli* videos
 

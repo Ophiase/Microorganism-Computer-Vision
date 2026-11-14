@@ -19,6 +19,7 @@ class Population(BaseModel):
 
     run: str
     source: str
+    window: str = Field(default="", description="The clip read, in seconds.")
     classified: int
     motions: dict[Motion, int]
     motile_share: float = Field(
@@ -63,6 +64,7 @@ class Population(BaseModel):
         return cls(
             run=str(replay.folder.path),
             source=replay.folder.source.stem,
+            window=_window(replay),
             classified=len(classified),
             motions={
                 motion: sum(item.motion is motion for item in classified)
@@ -123,3 +125,11 @@ def _distances(
         distance_to_objects(trajectories[item.track], objects) for item in verdicts
     ]
     return Spread.of([value * length for value in values if value is not None])
+
+
+def _window(replay: Replay) -> str:
+    """The clip as a time range, so windows of one video tell apart."""
+    start = replay.configuration.clip.start
+    stop = start + len(replay.video)
+    seconds = replay.scale.time
+    return f"{start * seconds:.0f}-{stop * seconds:.0f} s"
