@@ -1,11 +1,10 @@
 # Basic models
 
-**[sketch]** 2026-11-14. Laws for the hidden state of
-[one trajectory](trajectory.md), each a stochastic differential equation.
-They nest: each adds one ingredient to a simpler one, which is what makes
-them testable against each other ([hypotheses](hypotheses/README.md)).
-
-![a sample path of each model](../../docs/figures/models.png)
+**[sketch]** 2026-11-14. Laws for the hidden state of [one
+trajectory](trajectory.md), seen as a [point or an oriented
+point](representation.md), each a stochastic differential equation. They nest:
+each adds one ingredient to a simpler one, which is what makes them testable
+against each other ([hypotheses](hypotheses/README.md)).
 
 ## How they nest
 
@@ -27,9 +26,14 @@ graph LR
     class caged confined
 ```
 
-The colours are the verdicts' in every video and figure.
+The colours are the verdicts' in every video and figure. Each law leaves its
+signature on the mean squared displacement, its slope on a log-log plot:
+
+![the MSD of five laws](../../docs/figures/model/models-msd.png)
 
 ## Passive
+
+![Brownian, body-frame Brownian, confined](../../docs/figures/model/models-passive.png)
 
 **Isotropic Brownian**: kicks of equal size in every direction.
 
@@ -60,6 +64,8 @@ $$
 
 ## Active
 
+![active, chiral, run-and-tumble, run-and-reverse](../../docs/figures/model/models-active.png)
+
 **Active swimmer** (active Brownian particle): self-propelled at speed $v_0$
 along its axis, the axis wandering.
 
@@ -83,6 +89,8 @@ angle $\Delta$; *E. coli* turns by about 68° on average **[to check]**.
 runs have a typical length.
 
 ## Anomalous
+
+![fractional, waiting times, Lévy walk](../../docs/figures/model/models-anomalous.png)
 
 - **Fractional Brownian motion**: correlated kicks, $\alpha = 2H$; a crowded
   or viscoelastic medium gives $H < 1/2$.
