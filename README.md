@@ -140,6 +140,10 @@ score against it.
 
 - [The study's videos, case by case](docs/cases/salmonella.md): Salmonella
   near surfaces and host cells, in µm/s.
+- [Motility under antibiotics](docs/cases/antibiotics.md): Pseudomonas
+  aeruginosa at several doses, filmed with a 3D-printed microscope.
+- [Simulated run-and-tumble](docs/cases/simulated-tumbling.md): swimmers of
+  known run time, rendered by another engine.
 - [The calibration, measured](docs/benchmark/calibration.md): the agent
   against blind and local searches on unseen scenes.
 - [The method an agent follows](docs/guide.md), printed by `mcv guide`.
