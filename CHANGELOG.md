@@ -4,6 +4,14 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+- **Three cases on the home page**: Salmonella near a surface, Pseudomonas and
+  E. coli under antibiotics, simulated swimmers whose tumbles follow their
+  known run times.
+- **`mcv validate` draws its figure**: how often each test says yes on cells
+  of known behaviour, the false alarms in a red row, the test made for each
+  behaviour boxed.
+- **A background queue** for slow runs, and long videos read as windows.
+
 ## 0.8.0 (2026-11-12)
 
 - **An agent's toolkit**: `mcv` answers in JSON; `probe` measures a video and
