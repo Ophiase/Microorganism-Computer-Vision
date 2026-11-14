@@ -7,6 +7,8 @@
 | $H_0$ | [Brownian](../../models.md#passive) |
 | $H_1$ | [confined](../../models.md#passive) |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-confined.png)
+
 ## The test
 
 The Akaike weight of a saturating MSD against a linear one.

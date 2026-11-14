@@ -7,6 +7,8 @@
 | $H_0$ | no body wave |
 | $H_1$ | [a travelling wave](../../models.md#the-body-itself) |
 
+![the family of skeletons: the filament carries the gait](../../../../docs/figures/model/representation.png)
+
 ## The test
 
 **[sketch]** The phase velocity of the curvature along the

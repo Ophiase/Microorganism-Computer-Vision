@@ -7,6 +7,8 @@
 | $H_0$ | Gaussian steps |
 | $H_1$ | [waiting times or Lévy flights](../../models.md#anomalous) |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-heavy-tails.png)
+
 ## The test
 
 Shapiro-Wilk on the steps of one frame, each axis standardised, pooled.
