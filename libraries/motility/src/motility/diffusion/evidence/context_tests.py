@@ -114,7 +114,7 @@ def speed_slope(tracks: Sequence[Positions], distance: NDArray[np.float32]) -> f
         distances.append(_sample(distance, track[:-1]))
     x, y = np.concatenate(distances), np.concatenate(speeds)
     x, y = x[x > 0], y[x > 0]
-    return float(np.polyfit(x, y, 1)[0]) if np.ptp(x) > 0 else 0.0
+    return float(np.polyfit(x, y, 1)[0]) if len(x) > 1 and np.ptp(x) > 0 else 0.0
 
 
 def _sample(distance: NDArray[np.float32], track: Positions) -> NDArray[np.float64]:

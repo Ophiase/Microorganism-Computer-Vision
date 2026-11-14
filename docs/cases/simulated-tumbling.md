@@ -52,5 +52,17 @@ Each run took about 80 s and 11 GB of memory, queued in the background
 - **[caution]** Speeds are in pixels; the median grows from 70 to 137 px/s
   with the run time, likely because a tumble inside a frame step shortens
   the displacement.
-- The swimmers follow the obstacle's wall; testing it needs a mask marking
-  the disc, then `mcv interactions`.
+
+## Near the obstacle
+
+The trajectories seem to follow the obstacle's wall. With the disc masked as
+decor ([configuration](configurations/simulated-obstacle.toml)),
+`mcv interactions` compares the real tracks with the same tracks moved at
+random across the frame:
+
+- **Not held**: 2.6 % of the swimmers' positions lie within 10 px of the disc,
+  as many as for the moved tracks (p = 0.38).
+- **Not slowed**: their speed does not fall near the disc (p = 1.0).
+
+The eye saw a pattern that chance draws as often. This run also found a bug:
+the slowing test read the wrong tail, and called "slowed" what was faster.
