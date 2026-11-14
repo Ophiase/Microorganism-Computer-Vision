@@ -150,16 +150,23 @@ score against it.
 
 ```bash
 just install                 # Python 3.14 and the locked dependencies, by uv
-just extract                 # the nine videos of the 2025 study, into data/
 uv run mcv guide             # the method, for you or your agent
-uv run mcv probe data/342843.avi
+uv run mcv probe your-video.avi
+uv run mcv sources           # videos found elsewhere, with their licence
+uv run mcv fetch NAME        # bring one of them into data/
 ```
+
+Any video, TIFF stack or folder of frames works. To find more:
+[where to look](catalogue/README.md), the repositories and journals
+that hold motility videos and how to search them; [what was found](catalogue/sources.yaml),
+each source with its truth, licence and trust.
 
 ## Contributors
 
 - **Phorcys** ([Ophiase](https://github.com/Ophiase)): author.
-- **Claude**: the agent, a gifted disciple whose intelligence is channelled so
-  that flowers grow.
+- **Anthos**: the agent, Claude in Claude Code. In Greek, *anthos* is the
+  flower: a gifted disciple whose intelligence is channelled so that flowers
+  grow.
 
 See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 

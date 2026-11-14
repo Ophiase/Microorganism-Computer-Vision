@@ -17,11 +17,17 @@ a system, and to catch those patterns by hand.
 
 ## The bet
 
-What the author catches is turned into something explicit the agent keeps:
-a rule, a check, a recipe, a tool. Large labs hope such method emerges from
+What the author catches is turned into something explicit the agent keeps: a
+rule, a check, a recipe, a tool. Large labs hope such method emerges from
 gradient descent on bigger models; the bet here is that much of it is a
 structure of computational thinking any engineer recognises, and that it can
 be written down.
+
+**The aim is that the agent improves itself.** Not only keeping what it is
+shown, but catching its own patterns: the command it types for the third time
+becomes a recipe, the mistake it makes twice becomes a check, the document it
+cannot read at a glance becomes a figure. The author's loop is the scaffold;
+the agent's own loop is the point.
 
 ```mermaid
 graph LR
@@ -29,7 +35,17 @@ graph LR
     watch --> pattern[a pattern that holds it back]
     pattern --> tool[a rule, a check, a tool]
     tool --> work
+    work --> notice[the agent notices itself]
+    notice --> tool
 ```
+
+## The agent's own toolbox
+
+[agent.just](../agent.just) is where the second loop lands. Its recipes are
+not the user's commands: they are the agent's meta-library, grown by the agent
+from what it caught itself doing again and again. When a line comes back in a
+session, it becomes a recipe; when a recipe goes unused, it goes. `just
+--list agent` shows what the agent has taught itself so far.
 
 ## What it looks like here
 
@@ -43,7 +59,8 @@ repository's:
 | code before the problem is understood | [the model](model/README.md) before any test |
 | a test trusted because it looked right | [`mcv validate`](../docs/tools.md#validate): every test's false positives and power |
 | a picture trusted over a measure | the [review tools](../docs/tools.md): suspects, misses, galleries, sweeps |
-| a doc too long, too dense, unlinked | checks of the docs' own shape, run on every change |
+| a doc too long, too dense, unlinked | [doc-shape](../.agents/checks/doc-shape.sh), run on every commit |
+| the same throwaway line typed again and again | a recipe in [agent.just](../agent.just), made by the agent itself |
 
 ## Why it may go far
 

@@ -12,9 +12,9 @@ install:
     uv sync --all-groups
 
 [group("user")]
-[doc("Download the nine source videos of the 2025 study into data/, out of git.")]
-extract:
-    uv run mcv fetch
+[doc("Bring catalogued videos into data/: just extract salmonella-surface, or --tag swimming --max-mb 200; --yes to download")]
+extract *arguments:
+    uv run mcv fetch "$@"
 
 [group("user")]
 [doc("The toolkit's command line: just mcv probe|run|bench|search|synth|guide ...")]
