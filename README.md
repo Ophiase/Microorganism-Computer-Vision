@@ -34,16 +34,18 @@ each scored against its truth.
 
 ## [The model](ideas/model/README.md)
 
-A cell is a hidden state, a point, an oriented point or a skeleton, which the
-video shows through noise, gaps and swapped identities
-([one trajectory](ideas/model/trajectory.md)); a video holds a population, in
-a decor ([many trajectories](ideas/model/population.md)). Its laws of motion
-nest, each adding one ingredient to a simpler one
-([the models](ideas/model/models.md)):
+A cell is a hidden state that the video shows through noise, gaps and
+swapped identities ([one trajectory](ideas/model/trajectory.md)). Before any
+test, the model says what a cell can be and do:
 
-![a sample path of each model](docs/figures/models.png)
+| | |
+| --- | --- |
+| [![representation](docs/figures/model/representation.png)](ideas/model/representation.md) | **[Representation](ideas/model/representation.md)**: a body in 3D, its view in 2D, kept as a point, an oriented point or a skeleton; the filament for rods and worms. |
+| [![basic models](docs/figures/model/models-active.png)](ideas/model/models.md) | **[Basic models](ideas/model/models.md)**: nested laws of motion, Brownian to body-frame Brownian, swimmers, run-and-tumble, anomalous walks, each with its MSD signature. |
+| [![basic interactions](docs/figures/model/interactions-decor.png)](ideas/model/interactions.md) | **[Basic interactions](ideas/model/interactions.md)**: laws that depend on neighbours and decor, a weight by distance: alignment, gathering, chasing, edges that trap, gradients that attract. |
+| [![internal state](docs/figures/model/internal-mixture.png)](ideas/model/internal-state.md) | **[Internal state](ideas/model/internal-state.md)**: a hidden state that switches, or a slow vector whose normalised weights mix basic laws. |
 
-## [The hypotheses, tested](ideas/model/hypotheses.md)
+## [The hypotheses, tested](ideas/model/hypotheses/README.md)
 
 The 2025 project tested six hypotheses with fixed thresholds. They are now
 statistical tests, each with a null model, a p-value, and a correction for
