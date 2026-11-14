@@ -9,12 +9,15 @@ from motility.pipeline import PipelineResult
 from motility.vision import Frame
 
 from microorganism_computer_vision.reporting.pictures.palette import (
+    LOST,
     OVERLAY_COLOURS,
     Colour,
 )
 
 TAIL: Final = 15
 TAIL_OPACITY: Final = 0.45
+LOST_FRAMES: Final = 4
+CORNER: Final = 3
 
 
 class TrackOverlay:
@@ -23,7 +26,9 @@ class TrackOverlay:
     Drawing happens at the output scale, after the frame is resized, so a one
     pixel line stays one sharp pixel however small the picture. The tails are
     translucent, so the cell under them stays visible; the boxes are thin and
-    opaque, a little larger than the cell.
+    opaque, a little larger than the cell. A track missed in this frame but
+    seen in the last few keeps red corners where it was last seen, so a box
+    does not blink: it turns red, then goes.
     """
 
     def __init__(
@@ -51,7 +56,47 @@ class TrackOverlay:
         image = cv2.addWeighted(tails, TAIL_OPACITY, image, 1 - TAIL_OPACITY, 0)
         for row in here:
             self._box(image, row)
+        for row in self._lost(frame, here):
+            self._corners(image, row)
         return image
+
+    def _lost(self, frame: int, here: list[int]) -> list[int]:
+        """The last observation of each track seen recently but not now."""
+        tracks = self._tracks
+        seen_now = set(tracks.track[here].tolist())
+        recent = np.flatnonzero(
+            (tracks.frame < frame) & (tracks.frame >= frame - LOST_FRAMES)
+        )
+        last: dict[int, int] = {}
+        for row in recent.tolist():
+            track = int(tracks.track[row])
+            if track not in seen_now and (
+                track not in last or tracks.frame[row] > tracks.frame[last[track]]
+            ):
+                last[track] = row
+        return list(last.values())
+
+    def _corners(self, image: np.ndarray, row: int) -> None:
+        (left, top), (right, bottom) = (
+            tuple(point) for point in self._pixels(self._extent(row))
+        )
+        for x, y, dx, dy in (
+            (left, top, 1, 1),
+            (right, top, -1, 1),
+            (left, bottom, 1, -1),
+            (right, bottom, -1, -1),
+        ):
+            cv2.line(image, (x, y), (x + dx * CORNER, y), LOST, 1, self._line)
+            cv2.line(image, (x, y), (x, y + dy * CORNER), LOST, 1, self._line)
+
+    def _extent(self, row: int) -> np.ndarray:
+        tracks = self._tracks
+        half_width = max(tracks.width[row], 4) / 2 + 2
+        half_height = max(tracks.height[row], 4) / 2 + 2
+        return np.array([
+            (tracks.x[row] - half_width, tracks.y[row] - half_height),
+            (tracks.x[row] + half_width, tracks.y[row] + half_height),
+        ])
 
     def _background(self, frame_image: Frame) -> np.ndarray:
         grey = (np.clip(frame_image, 0, 1) * 255).astype(np.uint8)
@@ -66,13 +111,7 @@ class TrackOverlay:
 
     def _box(self, image: np.ndarray, row: int) -> None:
         tracks = self._tracks
-        half_width = max(tracks.width[row], 4) / 2 + 2
-        half_height = max(tracks.height[row], 4) / 2 + 2
-        corners = np.array([
-            (tracks.x[row] - half_width, tracks.y[row] - half_height),
-            (tracks.x[row] + half_width, tracks.y[row] + half_height),
-        ])
-        first, second = (tuple(point) for point in self._pixels(corners))
+        first, second = (tuple(point) for point in self._pixels(self._extent(row)))
         colour = self._colour(int(tracks.track[row]))
         cv2.rectangle(image, first, second, colour, 1, self._line)
         if self._labels:

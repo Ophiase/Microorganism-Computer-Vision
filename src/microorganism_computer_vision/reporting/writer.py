@@ -5,11 +5,16 @@ from typing import Final
 
 import cv2
 import numpy as np
+from motility.diffusion.evidence import Evidence, Hypothesis, supports, test_tracks
 from motility.pipeline import PipelineResult, Scale
 from motility.vision import Video
 
 from microorganism_computer_vision.configuration import Configuration
-from microorganism_computer_vision.media.tables import write_tracks, write_verdicts
+from microorganism_computer_vision.media.tables import (
+    write_evidence,
+    write_tracks,
+    write_verdicts,
+)
 from microorganism_computer_vision.reporting.markdown import report
 from microorganism_computer_vision.reporting.pictures.animation import animate
 from microorganism_computer_vision.reporting.pictures.figures import distributions
@@ -53,7 +58,12 @@ class RunWriter:
         zoom: Zoom | None = None,
     ) -> RunRecord:
         self._folder.mkdir(parents=True, exist_ok=True)
-        summary = RunSummary.of(self._source, result, self._configuration, self._scale)
+        minimum = self._configuration.classification.min_track_length
+        evidence = test_tracks(result.tracks.trajectories(minimum))
+        summary = RunSummary.of(
+            self._source, result, self._configuration, self._scale
+        ).model_copy(update={"hypotheses": _counts(evidence)})
+        write_evidence(self._folder / "evidence.csv", evidence)
         self._configuration.save(self._folder / "configuration.toml")
         write_tracks(self._folder / "tracks.csv", result.tracks)
         write_verdicts(self._folder / "verdicts.csv", result.verdicts, self._scale)
@@ -108,6 +118,16 @@ class RunWriter:
     def _animation(self, video: Video, result: PipelineResult) -> Path:
         motions = {verdict.track: verdict.motion for verdict in result.verdicts}
         return animate(video, result, motions, self._folder / "tracks.gif")
+
+
+def _counts(evidence: Sequence[Evidence]) -> dict[str, tuple[int, int]]:
+    return {
+        hypothesis.value: (
+            sum(item.hypothesis == hypothesis for item in evidence),
+            sum(item.hypothesis == hypothesis and supports(item) for item in evidence),
+        )
+        for hypothesis in Hypothesis
+    }
 
 
 def _spread_frames(count: int) -> tuple[int, ...]:

@@ -1,0 +1,74 @@
+{
+  "source": "data/342580.avi",
+  "frames": 161,
+  "detections_per_frame": {
+    "median": 134.0,
+    "low": 111.0,
+    "high": 161.0
+  },
+  "tracks": 2731,
+  "track_length": {
+    "median": 3.0,
+    "low": 1.0,
+    "high": 49.0
+  },
+  "classified": 495,
+  "motions": {
+    "stationary": 213,
+    "diffusive": 166,
+    "directed": 87,
+    "confined": 24,
+    "circular": 5,
+    "undetermined": 2236
+  },
+  "speed": {
+    "median": 3.9926854048054965,
+    "low": 0.0,
+    "high": 7.742342075870864
+  },
+  "speed_unit": "µm/s",
+  "alpha": {
+    "median": 0.8613113124712224,
+    "low": 0.3346217689266258,
+    "high": 1.4187366919437783
+  },
+  "diffusion": {
+    "median": 0.9412792889120244,
+    "low": 0.20374181708265005,
+    "high": 3.3083512261559074
+  },
+  "diffusion_unit": "µm²/s",
+  "hypotheses": {
+    "anomalous": [
+      363,
+      221
+    ],
+    "persistent": [
+      59,
+      3
+    ],
+    "chiral": [
+      59,
+      0
+    ],
+    "non-gaussian": [
+      297,
+      161
+    ],
+    "tumbling": [
+      3,
+      0
+    ],
+    "periodic": [
+      429,
+      0
+    ],
+    "confined": [
+      363,
+      194
+    ]
+  },
+  "hints": [
+    "most tracks are shorter than 20 observations: the tracker loses them; raise tracking.max_assignment_distance or max_missed_frames, or look for blinking detections"
+  ]
+}
