@@ -1,0 +1,49 @@
+reason = "simulated run-and-tumble: bright rods of 7 x 4 px striped by the compression, an obstacle removed by the median; the whole 31 s, run times up to 21 s"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "bright"
+window_low = 0.55
+window_high = 0.8
+gain = 1.0
+smoothing = 3
+even_exposure = false
+
+[preprocessing.mask]
+margin = 3
+ignore = []
+keep = []
+inside = []
+ignore_regions = []
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+area = "pixels"
+min_area = 4
+max_area = 112
+min_elongation = 1.0
+static_cells = false
+
+[tracking]
+max_assignment_distance = 12.0
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 752
