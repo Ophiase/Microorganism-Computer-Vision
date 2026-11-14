@@ -118,10 +118,10 @@ interactions run:
 gallery:
     @just _planned "the galleries, written again from the runs" docs/study/README.md
 
-[group("planned")]
-[doc("Planned: the figures of the docs, drawn from the library. ideas/model/models.md")]
+[group("docs")]
+[doc("Draw the figures of ideas/model/ from the library, into docs/figures/model/.")]
 figures:
-    @just _planned "the model figures" ideas/model/models.md
+    PYTHONPATH=scripts uv run python -m illustrate
 
 _planned what where:
     @printf 'not built yet: %s\nthe sub-problem is stated in %s\n' "$1" "$2" >&2
