@@ -1,0 +1,72 @@
+{
+  "source": "data/342843.avi",
+  "frames": 191,
+  "detections_per_frame": {
+    "median": 67.0,
+    "low": 58.0,
+    "high": 79.0
+  },
+  "tracks": 883,
+  "track_length": {
+    "median": 8.0,
+    "low": 1.0,
+    "high": 90.20000000000061
+  },
+  "classified": 278,
+  "motions": {
+    "stationary": 83,
+    "diffusive": 44,
+    "directed": 133,
+    "confined": 15,
+    "circular": 3,
+    "undetermined": 605
+  },
+  "speed": {
+    "median": 5.6186177000451325,
+    "low": 0.0,
+    "high": 24.322479777744515
+  },
+  "speed_unit": "µm/s",
+  "alpha": {
+    "median": 1.8374829604528549,
+    "low": 0.5402102782096811,
+    "high": 1.9972945930796482
+  },
+  "diffusion": {
+    "median": 0.254787737000391,
+    "low": 0.12093593062444472,
+    "high": 1.2661599187564412
+  },
+  "diffusion_unit": "µm²/s",
+  "hypotheses": {
+    "anomalous": [
+      189,
+      148
+    ],
+    "persistent": [
+      88,
+      80
+    ],
+    "chiral": [
+      88,
+      12
+    ],
+    "non-gaussian": [
+      204,
+      60
+    ],
+    "tumbling": [
+      80,
+      15
+    ],
+    "periodic": [
+      234,
+      0
+    ],
+    "confined": [
+      189,
+      77
+    ]
+  },
+  "hints": []
+}

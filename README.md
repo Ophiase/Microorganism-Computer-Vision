@@ -28,6 +28,10 @@ reviews what they miss, and reports what the cells do, in µm/s.
   tracks too short to judge. Calibrated by Claude.</em>
 </div>
 
+**More videos**: [the study's nine videos](docs/study/README.md), each with
+its film, tracks and tests; [six synthetic scenes](docs/scenes/README.md),
+each scored against its truth.
+
 ## The hypotheses, tested
 
 The 2025 project tested six hypotheses with fixed thresholds. They are now
@@ -35,25 +39,30 @@ statistical tests, each with a null model, a p-value, and a correction for
 testing hundreds of tracks at once (Benjamini-Hochberg).
 
 ```mermaid
-flowchart TD
-    T[a track] --> S{moves at all?}
-    S -- no --> ST[stationary: dead, stuck, sleeping]
-    S -- yes --> A{"MSD ∝ t^α, α = 1?<br/>likelihood ratio, noise offset"}
-    A -- "α = 1" --> B[Brownian: passive]
-    A -- "α < 1" --> C{saturates?}
-    C -- yes --> CO[confined: caged, tethered]
-    C -- no --> SU[subdiffusive: crowded medium]
-    A -- "α > 1" --> P{"heading kept?<br/>mean cos of turns > 0"}
-    P -- yes --> SW[swimmer]
-    SW --> CH{"turns one way?<br/>mean signed turn ≠ 0"}
-    CH -- yes --> CI[circling: near a surface]
-    SW --> TU{"turns too sharp for<br/>rotational diffusion?"}
-    TU -- yes --> RT[run-and-tumble]
-    SW --> PE{"turns in a rhythm?<br/>permutation test"}
-    PE -- yes --> RR[run-and-reverse]
-    T --> NG{"steps Gaussian?<br/>Shapiro-Wilk"}
-    NG -- no --> HT[heavy tails: waiting times, Lévy flights]
+graph LR
+    track(a track) --> moves{how it moves}
+    moves -->|no motion| still[still]
+    moves -->|alpha = 1| brownian[Brownian]
+    moves -->|alpha below 1, saturating| confined[confined]
+    moves -->|alpha above 1, heading kept| swimmer[swimmer]
+    swimmer -->|turns one way| circling[circling]
+    swimmer -->|turns too sharply| tumble[run-and-tumble]
+    swimmer -->|turns in a rhythm| reverse[run-and-reverse]
+    classDef still fill:#e87ba4,stroke:#b85a80,color:#ffffff
+    classDef brownian fill:#eb6834,stroke:#b34a20,color:#ffffff
+    classDef confined fill:#1baf7a,stroke:#137f58,color:#ffffff
+    classDef swimmer fill:#2a78d6,stroke:#1d5599,color:#ffffff
+    classDef circling fill:#eda100,stroke:#b37900,color:#ffffff
+    class still still
+    class brownian brownian
+    class confined confined
+    class swimmer swimmer
+    class circling circling
 ```
+
+The colours are the verdicts' in every video and figure. Left out of the
+drawing: the test of non-Gaussian steps, run on every track, which flags
+heavy tails such as waiting times and Lévy flights.
 
 **Every test is checked on a truth.** Synthetic cells of ten behaviours, a
 hundred tracks each, with localisation noise; the share of tracks each test
