@@ -7,11 +7,12 @@
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
 > [!WARNING]
-> **Work in progress, by an agent.** The tools, the statistics and the
-> calibration of every video are Claude's work since November 2026, measured
-> where a truth exists and reviewed by eye where none does. Read the results
-> as work in progress, not as a published method. It began as a student
-> project ([where it comes from](#where-it-comes-from)).
+> **A student project of February 2025, being turned into an agent's
+> toolkit.** The 2025 version was tuned by hand on one study's videos. Since
+> November 2026 Claude reworks it: the tools, the statistics and the
+> calibration of every video are the agent's work in progress, measured where
+> a truth exists and reviewed by eye where none does. Read the results as
+> work in progress, not as a published method.
 
 > [!NOTE]
 > **Why it is built this way**: [the metaphilosophy](ideas/metaphilosophy.md).
