@@ -25,6 +25,8 @@ class TrackTable:
     y: NDArray[np.float64]
     width: NDArray[np.int64]
     height: NDArray[np.int64]
+    angle: NDArray[np.float64]
+    elongation: NDArray[np.float64]
 
     @classmethod
     def from_columns(cls, columns: Mapping[str, Column]) -> Self:
@@ -37,6 +39,10 @@ class TrackTable:
             y=np.asarray(columns["y"], dtype=np.float64),
             width=np.asarray(columns.get("width", no_size), dtype=np.int64),
             height=np.asarray(columns.get("height", no_size), dtype=np.int64),
+            angle=np.asarray(columns.get("angle", np.zeros(rows)), dtype=np.float64),
+            elongation=np.asarray(
+                columns.get("elongation", np.ones(rows)), dtype=np.float64
+            ),
         )
 
     @classmethod
@@ -51,6 +57,10 @@ class TrackTable:
             ]),
             "height": np.array([
                 item.detection.rectangle.height for item in observations
+            ]),
+            "angle": np.array([item.detection.angle for item in observations]),
+            "elongation": np.array([
+                item.detection.elongation for item in observations
             ]),
         })
 
@@ -92,7 +102,13 @@ class TrackTable:
 
     def _trajectory(self, track: int, rows: slice) -> Trajectory:
         positions = zip(self.x[rows].tolist(), self.y[rows].tolist(), strict=True)
-        return Trajectory(track, tuple(self.frame[rows].tolist()), tuple(positions))
+        return Trajectory(
+            track,
+            tuple(self.frame[rows].tolist()),
+            tuple(positions),
+            tuple(self.angle[rows].tolist()),
+            float(np.median(self.elongation[rows])),
+        )
 
 
-COLUMNS = ("track", "frame", "x", "y", "width", "height")
+COLUMNS = ("track", "frame", "x", "y", "width", "height", "angle", "elongation")

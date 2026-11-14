@@ -5,10 +5,12 @@ from pydantic import BaseModel, Field
 
 from motility.diffusion.evidence import Evidence, Hypothesis, supports, test_tracks
 from motility.tracking.trajectories import Trajectory
-from motility.truth.synthetic.behaviours import Behaviour, behave
+from motility.truth.synthetic.behaviours import Behaviour, OrientedPath, behave_oriented
 from motility.truth.synthetic.scene import Kinetics
 
 LOCALISATION: Final = 0.3
+AXIS_NOISE: Final = 0.15
+ROD: Final = 2.5
 
 
 class RejectionRates(BaseModel):
@@ -34,7 +36,11 @@ def rejection_rates(
     rates = {}
     for behaviour in Behaviour:
         trajectories = [
-            _noisy(behave(behaviour, kinetics, frames, generator), index, generator)
+            _noisy(
+                behave_oriented(behaviour, kinetics, frames, generator),
+                index,
+                generator,
+            )
             for index in range(cells)
         ]
         evidence = test_tracks(trajectories)
@@ -48,11 +54,17 @@ def rejection_rates(
 
 
 def _noisy(
-    positions: np.ndarray, index: int, generator: np.random.Generator
+    path: OrientedPath, index: int, generator: np.random.Generator
 ) -> Trajectory:
-    observed = positions + generator.normal(0, LOCALISATION, positions.shape)
+    """The path seen by the pipeline: noisy centres, a noisy axis, an elongated rod."""
+    observed = path.positions + generator.normal(0, LOCALISATION, path.positions.shape)
+    angles = path.angles + generator.normal(0, AXIS_NOISE, len(path.angles))
     return Trajectory(
-        index, tuple(range(len(observed))), tuple(map(tuple, observed.tolist()))
+        index,
+        tuple(range(len(observed))),
+        tuple(map(tuple, observed.tolist())),
+        tuple(angles.tolist()),
+        ROD,
     )
 
 
