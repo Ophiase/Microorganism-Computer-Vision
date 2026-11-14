@@ -7,6 +7,8 @@
 | $H_0$ | still, jitter only |
 | $H_1$ | [Brownian](../../models.md#passive) |
 
+![the MSD of five laws: flat for a still cell, rising for the others](../../../../docs/figures/model/models-msd.png)
+
 ## The test
 
 The MSD's growth against the noise floor $4\sigma^2$: a flat MSD is a still

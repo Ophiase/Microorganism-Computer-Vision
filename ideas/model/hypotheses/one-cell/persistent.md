@@ -7,6 +7,8 @@
 | $H_0$ | [Brownian](../../models.md#passive) |
 | $H_1$ | [active swimmer](../../models.md#active) |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-persistent.png)
+
 ## The test
 
 The mean cosine of the turns between steps of three frames, above zero, by a

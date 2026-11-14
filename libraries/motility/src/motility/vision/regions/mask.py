@@ -20,6 +20,16 @@ class Disc(BaseModel):
     radius: float = Field(gt=0.0, description="Radius, px.")
 
 
+class Polygon(BaseModel):
+    """A region of the frame outlined by its corners, in pixels, in order."""
+
+    model_config = FROZEN
+
+    points: tuple[tuple[float, float], ...] = Field(
+        min_length=3, description="Corners (x, y), px, in order around the region."
+    )
+
+
 class MaskParameters(BaseModel):
     """What the pipeline ignores: large static objects, and discs an agent draws.
 
@@ -47,10 +57,29 @@ class MaskParameters(BaseModel):
     keep: tuple[Disc, ...] = Field(
         default=(), description="Discs given back: cells the level masked wrongly."
     )
+    inside: tuple[Polygon, ...] = Field(
+        default=(),
+        description=(
+            "Where to look, when only part of the frame matters: the inside of a"
+            " channel or a chamber. Everything outside these polygons is ignored."
+        ),
+    )
+    ignore_regions: tuple[Polygon, ...] = Field(
+        default=(),
+        description=(
+            "Polygons masked by hand: a wall, a channel's outside, an uneven"
+            " light the level would take for objects."
+        ),
+    )
 
     @property
     def active(self) -> bool:
-        return self.static is not None or bool(self.ignore)
+        return any((
+            self.static is not None,
+            self.ignore,
+            self.ignore_regions,
+            self.inside,
+        ))
 
 
 def ignored_region(video: Video, mask: MaskParameters) -> NDArray[np.bool_]:
@@ -59,6 +88,15 @@ def ignored_region(video: Video, mask: MaskParameters) -> NDArray[np.bool_]:
     region = np.zeros(shape, dtype=np.uint8)
     if mask.static is not None:
         region = static_objects(video, mask.static, mask.margin).astype(np.uint8)
+    if mask.inside:
+        looked = np.zeros(shape, dtype=np.uint8)
+        for polygon in mask.inside:
+            corners = np.round(np.array(polygon.points)).astype(np.int32)
+            cv2.fillPoly(looked, [corners], 1)
+        region = np.maximum(region, 1 - looked)
+    for polygon in mask.ignore_regions:
+        corners = np.round(np.array(polygon.points)).astype(np.int32)
+        cv2.fillPoly(region, [corners], 1)
     for disc in mask.ignore:
         cv2.circle(region, (round(disc.x), round(disc.y)), round(disc.radius), 1, -1)
     for disc in mask.keep:

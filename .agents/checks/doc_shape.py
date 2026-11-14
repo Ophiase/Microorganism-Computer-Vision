@@ -8,6 +8,7 @@ from typing import Final
 
 ROOTS: Final = ("ideas/", "docs/")
 GENERATED: Final = ("docs/study/", "docs/scenes/")
+MODULES: Final = "ideas/model/"
 BARE_LINES: Final = 60
 DENSE_SECTIONS: Final = 7
 DENSE_LINES: Final = 150
@@ -70,7 +71,9 @@ def unlinked_names(text: str) -> list[str]:
 def notes_for(path: Path, text: str) -> list[str]:
     notes = []
     drawn = "![" in text or "```mermaid" in text
-    if len(prose_lines(text)) > BARE_LINES and not drawn:
+    if str(path).startswith(MODULES) and not drawn and path.name != "README.md":
+        notes.append(f"BARE {path}: a concept of the model without a picture: draw it")
+    elif len(prose_lines(text)) > BARE_LINES and not drawn:
         notes.append(f"BARE {path}: {len(prose_lines(text))} lines of text, no picture: draw what it says")
     sections = len(re.findall(r"^## ", text, flags=re.MULTILINE))
     if sections > DENSE_SECTIONS and len(text.splitlines()) > DENSE_LINES:

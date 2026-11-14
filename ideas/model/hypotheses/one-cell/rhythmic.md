@@ -7,6 +7,8 @@
 | $H_0$ | sharp turns at random frames, a Bernoulli sequence |
 | $H_1$ | [run-and-reverse](../../models.md#active), turns that keep time |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-rhythmic.png)
+
 ## The test
 
 The frames that hold a turn sharper than ninety degrees, turns closer than

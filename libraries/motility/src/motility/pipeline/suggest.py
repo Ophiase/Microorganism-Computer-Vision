@@ -21,6 +21,7 @@ LARGEST_FACTOR = 4.0
 GATE_FACTOR = 2.5
 MIN_GATE = 8.0
 DEFAULT_LENGTH = 6.0
+EXPOSURE_JUMP = 0.01
 
 
 def suggest(appearance: AppearanceReport) -> PipelineParameters:
@@ -54,6 +55,7 @@ def suggest(appearance: AppearanceReport) -> PipelineParameters:
             window_high=min(high, 1.0),
             gain=1.0,
             smoothing=3,
+            even_exposure=appearance.exposure_jump > EXPOSURE_JUMP,
         ),
         detection=DetectionParameters(
             area=AreaMeasure.PIXELS,

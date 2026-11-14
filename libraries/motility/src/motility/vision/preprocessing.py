@@ -75,6 +75,14 @@ class PreprocessingParameters(BaseModel):
         ),
     )
 
+    even_exposure: bool = Field(
+        default=False,
+        description=(
+            "Scale every frame to the clip's median brightness first: a camera's"
+            " automatic exposure jumps between frames, and the background"
+            " subtraction would turn each jump into thousands of false cells."
+        ),
+    )
     mask: MaskParameters = Field(
         default_factory=MaskParameters,
         description="What the pipeline ignores; see the mask's own fields.",
@@ -98,6 +106,8 @@ def preprocess(
 
     `ignored` is the region the mask hides, when the caller computed it already.
     """
+    if parameters.even_exposure:
+        video = even_exposure(video)
     smoothed = foreground_of(
         _subtract_background(video, parameters.background), parameters
     )
@@ -119,6 +129,13 @@ def foreground_of(contrast: Video, parameters: PreprocessingParameters) -> Video
         foreground = 1.0 - foreground
     foreground = np.clip(foreground * parameters.gain, 0.0, 1.0).astype(np.float32)
     return np.stack([smooth(frame, parameters.smoothing) for frame in foreground])
+
+
+def even_exposure(video: Video) -> Video:
+    """Every frame scaled so its median brightness is the clip's."""
+    medians = np.median(video.reshape(len(video), -1), axis=1)
+    scale = float(np.median(medians)) / np.maximum(medians, 1e-6)
+    return np.clip(video * scale[:, None, None], 0.0, 1.0).astype(np.float32)
 
 
 def _subtract_background(video: Video, background: Background) -> Video:

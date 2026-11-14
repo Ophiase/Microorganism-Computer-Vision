@@ -6,6 +6,8 @@ the same tracks shifted or moved, which keep each cell's law and break the
 relation under test. **[fact]** 2026-11-14: [trapped](#trapped) and
 [slowed](#slowed) are built, `mcv interactions`; the others are not.
 
+![on 342580, the real tracks against the same tracks moved at random: near objects and speed](../../../docs/figures/model/context-342580.png)
+
 | Hypothesis | Question | Statistic |
 | --- | --- | --- |
 | [Trapped](#trapped) | do swimmers linger near objects? | time within $r$ of an object |

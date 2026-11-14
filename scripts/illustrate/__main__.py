@@ -1,5 +1,6 @@
-from illustrate import internal, models, representation
+from illustrate import hypotheses
 from illustrate.interactions import decor, neighbours
+from illustrate.model import internal, models, representation
 
 
 def main() -> None:
@@ -8,6 +9,7 @@ def main() -> None:
     neighbours.draw()
     decor.draw()
     internal.draw()
+    hypotheses.draw()
 
 
 if __name__ == "__main__":
