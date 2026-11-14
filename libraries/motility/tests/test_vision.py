@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 import pytest
 from motility.vision import (
@@ -9,6 +10,7 @@ from motility.vision import (
     preprocess,
 )
 from motility.vision.preprocessing import smooth
+from motility.vision.regions.mask import Disc, MaskParameters
 
 SIZE = 48
 
@@ -79,8 +81,7 @@ def test_a_static_object_and_its_halo_are_excluded() -> None:
         window_high=0.5,
         gain=1.0,
         smoothing=1,
-        exclude_static=0.2,
-        exclusion_margin=2,
+        mask=MaskParameters(static=0.2, margin=2),
     )
     video[2, 28, 33] = 0.1
     foreground = preprocess(video, parameters)
@@ -121,3 +122,31 @@ def test_a_diagonal_rod_counts_as_much_as_a_level_one_in_pixels() -> None:
     assert len(detect(diagonal, parameters)) == 1
     boxed = parameters.model_copy(update={"area": AreaMeasure.BOX})
     assert detect(diagonal, boxed) == ()
+
+
+def test_a_disc_masks_by_hand_and_a_kept_one_gives_back() -> None:
+    video = dark_cell_video(frames=3)
+    mask = MaskParameters(ignore=(Disc(x=12, y=21, radius=4),))
+    parameters = PreprocessingParameters(
+        window_low=0.2, window_high=0.6, gain=1.0, smoothing=1, mask=mask
+    )
+    assert preprocess(video, parameters)[0, 21, 12] == pytest.approx(0.0)
+
+    kept = mask.model_copy(update={"keep": (Disc(x=12, y=21, radius=2),)})
+    parameters = parameters.model_copy(update={"mask": kept})
+    assert preprocess(video, parameters)[0, 21, 12] == pytest.approx(1.0)
+
+
+def test_the_axis_of_a_rod_follows_it_and_a_disc_is_not_elongated() -> None:
+    from motility.vision.detection import axis_of
+
+    rod = np.zeros((20, 20), dtype=bool)
+    for step in range(12):
+        rod[4 + step, 4 + step] = rod[4 + step, 5 + step] = True
+    disc = np.zeros((20, 20), dtype=np.uint8)
+    cv2.circle(disc, (10, 10), 6, 1, -1)
+
+    angle, elongation = axis_of(rod)
+    assert angle == pytest.approx(np.pi / 4, abs=0.1)
+    assert elongation > 3
+    assert axis_of(disc.astype(bool))[1] == pytest.approx(1.0, abs=0.05)

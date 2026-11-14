@@ -16,6 +16,7 @@ from microorganism_computer_vision.reporting.pictures.palette import (
 
 TAIL: Final = 15
 TAIL_OPACITY: Final = 0.45
+VEIL: Final = 0.45
 LOST_FRAMES: Final = 4
 CORNER: Final = 3
 
@@ -41,6 +42,7 @@ class TrackOverlay:
         labels: bool = False,
     ) -> None:
         self._tracks = result.tracks
+        self._ignored = result.ignored
         self._motions = motions
         self._scale = scale
         self._thickness = thickness
@@ -99,7 +101,10 @@ class TrackOverlay:
         ])
 
     def _background(self, frame_image: Frame) -> np.ndarray:
+        """The frame in grey, the masked region darkened: seen, not looked at."""
         grey = (np.clip(frame_image, 0, 1) * 255).astype(np.uint8)
+        if self._ignored is not None:
+            grey = np.where(self._ignored, (grey * VEIL).astype(np.uint8), grey)
         if not math.isclose(self._scale, 1.0):
             grey = cv2.resize(
                 grey, None, fx=self._scale, fy=self._scale, interpolation=cv2.INTER_AREA

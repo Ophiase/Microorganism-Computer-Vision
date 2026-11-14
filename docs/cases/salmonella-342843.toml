@@ -1,4 +1,4 @@
-reason = "tracks of 4 observations: the rods swim in and out of focus and blink under the cut; let a track coast 6 frames, half a second"
+reason = "tracks of 4 observations: the rods swim in and out of focus and blink under the cut; let a track coast 6 frames, half a second; the two host cells masked by hand, their inner texture passed for still rods"
 
 [acquisition]
 pixel_size = 0.323
@@ -10,15 +10,24 @@ window_low = 0.42
 window_high = 0.5
 gain = 1.0
 smoothing = 3
-exclude_static = 0.15
-exclusion_margin = 4
+
+[preprocessing.mask]
+static = 0.15
+margin = 4
+ignore = [
+    { x = 505.0, y = 455.0, radius = 75.0 },
+    { x = 370.0, y = 540.0, radius = 75.0 },
+]
+keep = []
 
 [detection]
 method = "fixed"
 threshold = 0.5
 opening = 0
+area = "box"
 min_area = 6
 max_area = 60
+static_cells = false
 
 [tracking]
 max_assignment_distance = 15.0

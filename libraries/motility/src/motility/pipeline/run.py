@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 from motility.diffusion.models.motion import Motion
 from motility.diffusion.models.selection import Verdict, classify
 from motility.diffusion.models.turning import Turning
@@ -10,7 +12,8 @@ from motility.tracking.table import TrackTable
 from motility.vision.arrays import Video
 from motility.vision.detection import Detection, detect
 from motility.vision.preprocessing import preprocess
-from motility.vision.static_cells import static_cells
+from motility.vision.regions.mask import ignored_region
+from motility.vision.regions.still_cells import static_cells
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,11 +24,14 @@ class PipelineResult:
     detections: tuple[tuple[Detection, ...], ...]
     tracks: TrackTable
     verdicts: tuple[Verdict, ...]
+    ignored: np.ndarray | None = None
 
 
 def run_pipeline(video: Video, parameters: PipelineParameters) -> PipelineResult:
     """Preprocess, detect, track and classify a grayscale video in [0, 1]."""
-    foreground = preprocess(video, parameters.preprocessing)
+    mask = parameters.preprocessing.mask
+    ignored = ignored_region(video, mask) if mask.active else None
+    foreground = preprocess(video, parameters.preprocessing, ignored)
     detections = tuple(detect(frame, parameters.detection) for frame in foreground)
     tracker = KalmanTracker(parameters.tracking)
     observations = [
@@ -43,7 +49,7 @@ def run_pipeline(video: Video, parameters: PipelineParameters) -> PipelineResult
             for index in sorted({item.track for item in still})
         ),
     )
-    return PipelineResult(foreground, detections, tracks, verdicts)
+    return PipelineResult(foreground, detections, tracks, verdicts, ignored)
 
 
 def _still_observations(
