@@ -83,37 +83,25 @@ The colours are the verdicts' in every video and figure. Left out of the
 drawing: the test of non-Gaussian steps, run on every track, which flags
 heavy tails such as waiting times and Lévy flights.
 
-**Every test is checked on a truth.** Synthetic cells of ten known
-behaviours, a hundred tracks each, with noise on every position. Each cell of
-the table is **how often a test says yes** on those hundred tracks.
+**Every test is checked on a truth.** Synthetic cells whose behaviour is
+known, a hundred tracks each, with noise on every position. Blue means the test
+says yes.
 
-How to read it:
+![how often each test says yes on cells of known behaviour](docs/figures/power.png)
 
-- **The Brownian row is the false alarms**: a cell that only diffuses, where
-  every test should say no. Near 0 is good; the tests promise at most 5 %.
-- **A bold cell is the test made for that behaviour**: near 1 means it finds it.
-- **The other cells are side effects**, often right: a swimmer is also
-  *anomalous*, since it spreads faster than diffusion.
+- **The red row should stay white**: a cell that only diffuses, so every yes
+  there is a false alarm. At most 3 %.
+- **A boxed cell should be blue**: the test made for that behaviour finds it,
+  74 to 100 % of the time, except one.
+- **The other blue cells are right too**: a swimmer is also *anomalous*, it
+  spreads faster than diffusion.
 
-"Yes" is a q-value under 0.05: a p-value corrected for testing hundreds of
-tracks at once, so that at most 5 % of the yes are wrong.
+The maths of each test is on its own page:
+[the hypotheses](ideas/model/hypotheses/README.md);
+`mcv validate` redraws this figure.
 
-| True behaviour | [anomalous](ideas/model/hypotheses/one-cell/anomalous.md) | [persistent](ideas/model/hypotheses/one-cell/persistent.md) | [chiral](ideas/model/hypotheses/one-cell/chiral.md) | [heavy tails](ideas/model/hypotheses/one-cell/heavy-tails.md) | [tumbling](ideas/model/hypotheses/one-cell/tumbling.md) | [rhythmic](ideas/model/hypotheses/one-cell/rhythmic.md) | [confined](ideas/model/hypotheses/one-cell/confined.md) | [body-frame](ideas/model/hypotheses/one-cell/body-frame.md) |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Brownian (false alarms) | 0.00 | 0.03 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| Swimmer | 1.00 | 1.00 | 0.00 | 0.09 | 0.00 | 0.00 | 0.00 | 1.00 |
-| Run-and-tumble | 1.00 | 1.00 | 0.00 | 0.99 | **0.90** | 0.00 | 0.00 | 1.00 |
-| Run-and-reverse | 1.00 | 0.00 | 0.00 | 1.00 | 0.00 | **1.00** | 0.00 | 1.00 |
-| Circling | 1.00 | 0.99 | **1.00** | 0.94 | 0.03 | 0.17 | 0.00 | 1.00 |
-| Confined | 0.87 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | **0.74** | 0.00 |
-| CTRW, heavy waits | 0.06 | 0.00 | 0.00 | **0.96** | 0.00 | 0.00 | 0.09 | 0.20 |
-| Lévy walk | 1.00 | 0.99 | 0.00 | 0.95 | 0.92 | 0.00 | 0.00 | 1.00 |
-| Passive rod, body-frame | 0.03 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.05 | **1.00** |
-
-**In short**: no test raises more than 3 % of false alarms, and each finds
-the behaviour it was made for in 74 to 100 % of the tracks.
-
-What fails, said plainly: fractional subdiffusion ($\alpha = 0.6$) over 100
+**The one that fails**, the white boxed cell: fractional subdiffusion
+($\alpha = 0.6$) over 100
 frames goes undetected, its bend smaller than the noise's. The rhythm test
 failed too, until two causes were found: the 2025 spectrum of signed angles
 hides reversals, whose sign is random, and the synthetic reversals had no
