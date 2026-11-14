@@ -6,7 +6,6 @@ import cv2
 import numpy as np
 import tomli_w
 from motility.pipeline import Scale, twin
-from motility.truth.evaluation.power import RejectionRates, rejection_rates
 from motility.truth.synthetic import Kinetics, Population, SceneParameters, simulate
 from motility.vision.measures.appearance import AppearanceReport
 from pydantic import BaseModel
@@ -171,23 +170,3 @@ def _bench(arguments: argparse.Namespace) -> Bench:
     if arguments.scene:
         return Bench({path.stem: load_scene(path) for path in arguments.scene})
     return Bench.from_folder(BENCH_SCENES / arguments.split)
-
-
-class ValidateCommand:
-    name = "validate"
-    summary = "each hypothesis test's false positives and power on known behaviours"
-
-    def configure(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument("--frames", type=int, default=100, help="frames per track")
-        parser.add_argument(
-            "--cells", type=int, default=100, help="tracks per behaviour"
-        )
-        parser.add_argument("--seed", type=int, default=0)
-
-    def execute(self, arguments: argparse.Namespace) -> RejectionRates:
-        return rejection_rates(
-            Kinetics(),
-            frames=arguments.frames,
-            cells=arguments.cells,
-            seed=arguments.seed,
-        )
