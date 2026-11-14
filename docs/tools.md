@@ -20,7 +20,7 @@ graph LR
 | Tune | [sweep](#sweep), [mask](#mask) |
 | Find what is wrong | [suspects](#suspects), [misses](#misses) |
 | Correct | [correct](#correct) |
-| Check on a truth | [synth](#synth), [bench](#bench), [search](#search) |
+| Check on a truth | [synth](#synth), [bench](#bench), [search](#search), [validate](#validate) |
 | Conclude | [stats](#stats), [history](#history) |
 
 ## See
@@ -115,6 +115,12 @@ identity switches for the tracks; the share of right verdicts.
 
 The baseline an agent must beat: random draws of the parameters, blind or
 around a start, with the truth as their score and the same budget.
+
+### validate
+
+Runs every hypothesis test on a hundred synthetic tracks of each of ten
+behaviours, noise included, and returns how often each rejects its null: its
+false positive rate where the null holds, its power elsewhere. `just validate`.
 
 ## Conclude
 

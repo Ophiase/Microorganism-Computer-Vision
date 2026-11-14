@@ -103,10 +103,10 @@ axis source:
 skeleton source:
     @just _planned "the skeleton and the gait" ideas/model/models.md
 
-[group("planned")]
-[doc("Planned: the tests' rejection rates on every synthetic behaviour. ideas/model/hypotheses.md")]
+[group("user")]
+[doc("Each hypothesis test's false positives and power on ten synthetic behaviours.")]
 validate:
-    @just _planned "the table of the tests' false positives and power" ideas/model/hypotheses.md
+    uv run mcv validate
 
 [group("planned")]
 [doc("Planned: the tests of the decor and the others, by surrogates. ideas/model/population.md")]

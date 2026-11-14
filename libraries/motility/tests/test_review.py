@@ -68,3 +68,21 @@ def test_a_forced_cell_is_adopted_without_duplicating_a_kept_one() -> None:
 
     assert set(adopted.track.tolist()) == {0, 1}
     assert (adopted.track == 1).sum() == 5
+
+
+def test_reversals_in_rhythm_are_found_and_random_turns_are_not() -> None:
+    from motility.diffusion.evidence.turning_tests import periodic
+    from motility.tracking import Trajectory
+    from motility.truth.synthetic.behaviours import Behaviour, behave
+    from motility.truth.synthetic.scene import Kinetics
+
+    generator = np.random.default_rng(1)
+
+    def p_value(behaviour: Behaviour) -> float:
+        path = behave(behaviour, Kinetics(), 120, generator)
+        trajectory = Trajectory(0, tuple(range(120)), tuple(map(tuple, path.tolist())))
+        evidence = periodic(trajectory)
+        return 1.0 if evidence is None or evidence.p_value is None else evidence.p_value
+
+    assert p_value(Behaviour.RUN_AND_REVERSE) < 0.01
+    assert p_value(Behaviour.BROWNIAN) > 0.05
