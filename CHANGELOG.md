@@ -11,6 +11,8 @@ Milestones of the project; the version is in `VERSION`.
   of known behaviour, the false alarms in a red row, the test made for each
   behaviour boxed.
 - **A background queue** for slow runs, and long videos read as windows.
+- **Fixed**: `mcv interactions` tested the wrong tail for *slowed*, and failed
+  on a group with no step outside the decor.
 
 ## 0.8.0 (2026-11-12)
 

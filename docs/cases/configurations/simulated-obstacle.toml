@@ -16,7 +16,6 @@ margin = 3
 ignore = []
 keep = []
 inside = []
-ignore_regions = []
 
 
 [[preprocessing.mask.ignore_regions]]
