@@ -87,3 +87,42 @@ version:
     @printf 'VERSION    %s\n' "$(cat VERSION)"
     @printf 'pyproject  %s\n' "$(awk -F'\"' '/^version = / { print $2; exit }' pyproject.toml)"
     @printf 'changelog  %s\n' "$(awk '/^## [0-9]/ { print $2; exit }' CHANGELOG.md)"
+
+[group("planned")]
+[doc("Planned: a mask of the static objects the agent sees and edits. docs/tools.md#mask")]
+mask source:
+    @just _planned "an editable mask of the static objects" docs/tools.md#mask
+
+[group("planned")]
+[doc("Planned: the body axis of each cell, from its shape. ideas/model/trajectory.md")]
+axis source:
+    @just _planned "the body axis of each cell" ideas/model/trajectory.md
+
+[group("planned")]
+[doc("Planned: the skeleton of elongated cells, and their gait. ideas/model/models.md")]
+skeleton source:
+    @just _planned "the skeleton and the gait" ideas/model/models.md
+
+[group("planned")]
+[doc("Planned: the tests' rejection rates on every synthetic behaviour. ideas/model/hypotheses.md")]
+validate:
+    @just _planned "the table of the tests' false positives and power" ideas/model/hypotheses.md
+
+[group("planned")]
+[doc("Planned: the tests of the decor and the others, by surrogates. ideas/model/population.md")]
+interactions run:
+    @just _planned "the hypotheses on the decor and the neighbours" ideas/model/population.md
+
+[group("planned")]
+[doc("Planned: the gallery of the study's videos and of the scenes. docs/study/README.md")]
+gallery:
+    @just _planned "the galleries, written again from the runs" docs/study/README.md
+
+[group("planned")]
+[doc("Planned: the figures of the docs, drawn from the library. ideas/model/models.md")]
+figures:
+    @just _planned "the model figures" ideas/model/models.md
+
+_planned what where:
+    @printf 'not built yet: %s\nthe sub-problem is stated in %s\n' "$1" "$2" >&2
+    @exit 1

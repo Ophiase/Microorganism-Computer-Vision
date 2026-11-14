@@ -37,6 +37,9 @@ audit, the language question and the ordered steps in
    they decide what a file, a function and a comment may look like here.
 2. Read [.agents/rules/layout.md](.agents/rules/layout.md) before adding a
    file: one concept per file, seven entries per folder, two hundred lines.
+   Read [.agents/rules/top-down.md](.agents/rules/top-down.md) before a new
+   topic: its link and its placeholder come first, `just --list` shows the
+   planned ones.
 3. `.agents/local/projects.yaml` (gitignored) names the reference projects.
    Take their conventions, never their code.
 
