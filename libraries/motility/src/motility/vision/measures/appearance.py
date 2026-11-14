@@ -37,6 +37,12 @@ class AppearanceReport(BaseModel):
     )
     object_length: float = Field(description="Median long side of their boxes, px.")
     object_width: float = Field(description="Median short side of their boxes, px.")
+    exposure_jump: float = Field(
+        description=(
+            "Largest change of the frames' median brightness between two frames:"
+            " above 0.01, an automatic exposure flickers; even it out."
+        )
+    )
     static_share: float = Field(
         description=(
             "Share of the image's structure that never moves: dust and stuck cells."
@@ -70,6 +76,7 @@ def measure_appearance(video: Video) -> AppearanceReport:
         object_length=float(np.median(boxes.max(axis=1))) if len(boxes) else 0.0,
         object_width=float(np.median(boxes.min(axis=1))) if len(boxes) else 0.0,
         static_share=_static_share(background, residual),
+        exposure_jump=_exposure_jump(video),
     )
 
 
@@ -98,6 +105,11 @@ def _object_boxes(signed: Video) -> np.ndarray:
             if statistics[label][4] >= MIN_PIXELS
         )
     return np.array(sizes).reshape(-1, 2)
+
+
+def _exposure_jump(video: Video) -> float:
+    medians = np.median(video.reshape(len(video), -1), axis=1)
+    return float(np.max(np.abs(np.diff(medians)))) if len(medians) > 1 else 0.0
 
 
 def _static_share(background: np.ndarray, residual: Video) -> float:

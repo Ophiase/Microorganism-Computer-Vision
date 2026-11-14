@@ -1,0 +1,68 @@
+reason = "PSA-Ceftazidime-0_5: the inside of the capillary traced by hand on a grid of the first frame; the same detection and tracking as the untreated video"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.45
+window_high = 0.5
+gain = 1.0
+smoothing = 3
+even_exposure = true
+
+[preprocessing.mask]
+margin = 6
+ignore = []
+keep = []
+ignore_regions = []
+
+[[preprocessing.mask.inside]]
+points = [
+    [
+        0.0,
+        390.0,
+    ],
+    [
+        760.0,
+        358.0,
+    ],
+    [
+        760.0,
+        858.0,
+    ],
+    [
+        0.0,
+        888.0,
+    ],
+]
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+area = "pixels"
+min_area = 3
+max_area = 40
+min_elongation = 1.0
+static_cells = false
+
+[tracking]
+max_assignment_distance = 15.0
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 150

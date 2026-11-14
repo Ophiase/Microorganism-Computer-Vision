@@ -4,6 +4,17 @@
 it does: not only a motility toolkit, but an experiment in how an agent does
 research.
 
+## The stance
+
+The author comes from research and development, and finds it a pity that so
+few people build real tools around the best AI available. The common use is
+passive: a prompt asking the model to think hard every four hours, then
+frustration when it does not. The stance here is a vim user's: the tool is
+shaped by the one who uses it, every day, until it fits the hand.
+
+The state of things is not a fate. This is an optimistic project: what is
+missing can be built, a small tool at a time.
+
 ## The observation
 
 Some of what makes research work does not live in a model's weights. An agent
@@ -38,6 +49,18 @@ graph LR
     work --> notice[the agent notices itself]
     notice --> tool
 ```
+
+## The frictions, written down
+
+The loops feed on [frictions](frictions.md): what slowed the reader of the
+work, and what slowed the agent doing it, each with its cause and the tool it
+led to. A friction not written down comes back.
+
+## A process, not a request
+
+The researcher should always have something to see and a way to steer:
+[assisted research](assisted-research.md) runs in two lanes, the agent's
+foreground and a queue of films and sheets in the background.
 
 ## The agent's own toolbox
 
