@@ -29,7 +29,8 @@ graph LR
 - **[fact]** 2026-11-14: every detection carries its axis and its elongation,
   the long axis over the short one; `detection.min_elongation` drops what is
   too round to be a rod. On the study's video, 1.4 removed diffuse patches
-  taken for still cells. The axis is not yet kept along a track.
+  taken for still cells. Every track keeps its axis, and the
+  [body-frame](hypotheses/one-cell/body-frame.md) test reads it.
 
 ## Skeletons
 
@@ -56,6 +57,6 @@ $$\lvert p_{i+1} - p_i \rvert = \ell = \frac{L}{N - 1}$$
 - It carries the [gait](hypotheses/one-cell/gait.md): a wave travelling along
   the body is a change of its tangent angles in time.
 - **[question]** The skeleton is not measured yet: `just skeleton` is a planned
-  recipe; the axis along a track is `just axis`.
+  recipe.
 
 Back: [one trajectory](trajectory.md). Next: [the models](models.md).

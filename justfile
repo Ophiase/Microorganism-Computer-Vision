@@ -94,11 +94,6 @@ mask source *arguments:
     uv run mcv mask "$@"
 
 [group("planned")]
-[doc("Planned: the body axis of each cell, from its shape. ideas/model/trajectory.md")]
-axis source:
-    @just _planned "the body axis of each cell" ideas/model/trajectory.md
-
-[group("planned")]
 [doc("Planned: the skeleton of elongated cells, and their gait. ideas/model/models.md")]
 skeleton source:
     @just _planned "the skeleton and the gait" ideas/model/models.md
