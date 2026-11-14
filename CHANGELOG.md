@@ -4,6 +4,8 @@ Milestones of the project; the version is in `VERSION`.
 
 ## Unreleased
 
+## 0.9.0 (2026-11-14)
+
 - **Three cases on the home page**: Salmonella near a surface, Pseudomonas and
   E. coli under antibiotics, simulated swimmers whose tumbles follow their
   known run times.
