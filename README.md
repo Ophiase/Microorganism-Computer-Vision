@@ -43,7 +43,7 @@ nest, each adding one ingredient to a simpler one
 
 ![a sample path of each model](docs/figures/models.png)
 
-## [The hypotheses, tested](ideas/model/hypotheses.md)
+## [The hypotheses, tested](ideas/model/hypotheses/README.md)
 
 The 2025 project tested six hypotheses with fixed thresholds. They are now
 statistical tests, each with a null model, a p-value, and a correction for

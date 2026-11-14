@@ -79,6 +79,6 @@ Each link of the chain fakes a behaviour, and the tests must expect it:
 
 So every test is validated on synthetic cells **seen through the same
 chain**: noise, gaps and swaps included, never on perfect paths
-([hypotheses](hypotheses.md)).
+([hypotheses](hypotheses/README.md)).
 
 Next: [many cells](population.md).
