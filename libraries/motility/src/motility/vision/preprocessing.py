@@ -6,6 +6,7 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from motility.vision.arrays import Video
+from motility.vision.regions.mask import MaskParameters, ignored_region
 
 MID_GREY = 0.5
 
@@ -74,21 +75,9 @@ class PreprocessingParameters(BaseModel):
         ),
     )
 
-    exclude_static: float | None = Field(
-        default=None,
-        gt=0.0,
-        description=(
-            "Zero the foreground wherever the clip's median departs from its own"
-            " median level by more than this: large static objects (beads, host"
-            " cells, debris, a scale bar) whose edges jitter into false cells."
-            " Unset keeps everything."
-        ),
-    )
-    exclusion_margin: int = Field(
-        default=3,
-        ge=0,
-        le=30,
-        description="Pixels added around each excluded object, to cover its halo.",
+    mask: MaskParameters = Field(
+        default_factory=MaskParameters,
+        description="What the pipeline ignores; see the mask's own fields.",
     )
 
     @model_validator(mode="after")
@@ -100,16 +89,23 @@ class PreprocessingParameters(BaseModel):
         return self
 
 
-def preprocess(video: Video, parameters: PreprocessingParameters) -> Video:
-    """The foreground map of every frame: cells bright, background black, in [0, 1]."""
+def preprocess(
+    video: Video,
+    parameters: PreprocessingParameters,
+    ignored: np.ndarray | None = None,
+) -> Video:
+    """The foreground map of every frame: cells bright, background black, in [0, 1].
+
+    `ignored` is the region the mask hides, when the caller computed it already.
+    """
     smoothed = foreground_of(
         _subtract_background(video, parameters.background), parameters
     )
-    if parameters.exclude_static is None:
+    if not parameters.mask.active:
         return smoothed
-    return smoothed * ~static_objects(
-        video, parameters.exclude_static, parameters.exclusion_margin
-    )
+    if ignored is None:
+        ignored = ignored_region(video, parameters.mask)
+    return smoothed * ~ignored
 
 
 def foreground_of(contrast: Video, parameters: PreprocessingParameters) -> Video:
@@ -129,17 +125,6 @@ def _subtract_background(video: Video, background: Background) -> Video:
     if background is Background.NONE:
         return video
     return (video - np.median(video, axis=0) + MID_GREY).astype(np.float32)
-
-
-def static_objects(video: Video, level: float, margin: int) -> np.ndarray:
-    """Where the median frame departs from its median level, grown by `margin` px."""
-    median = np.median(video, axis=0)
-    objects = (np.abs(median - np.median(median)) > level).astype(np.uint8)
-    if margin > 0:
-        side = 2 * margin + 1
-        element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (side, side))
-        objects = cv2.dilate(objects, element)
-    return objects.astype(bool)
 
 
 def smooth(frame: np.ndarray, side: int) -> np.ndarray:

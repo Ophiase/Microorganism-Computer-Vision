@@ -88,10 +88,10 @@ version:
     @printf 'pyproject  %s\n' "$(awk -F'\"' '/^version = / { print $2; exit }' pyproject.toml)"
     @printf 'changelog  %s\n' "$(awk '/^## [0-9]/ { print $2; exit }' CHANGELOG.md)"
 
-[group("planned")]
-[doc("Planned: a mask of the static objects the agent sees and edits. docs/tools.md#mask")]
-mask source:
-    @just _planned "an editable mask of the static objects" docs/tools.md#mask
+[group("user")]
+[doc("Draw what a configuration's mask hides: just mask data/342843.avi --config c.toml")]
+mask source *arguments:
+    uv run mcv mask "$@"
 
 [group("planned")]
 [doc("Planned: the body axis of each cell, from its shape. ideas/model/trajectory.md")]

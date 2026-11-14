@@ -8,14 +8,22 @@ from motility.pipeline import suggest
 from motility.vision import Video
 from motility.vision.measures.appearance import AppearanceReport, measure_appearance
 from motility.vision.measures.scale_bar import find_scale_bars
+from motility.vision.regions.mask import ignored_region
 from pydantic import BaseModel
 
-from microorganism_computer_vision.commands.base import clip_of
+from microorganism_computer_vision.commands.base import (
+    add_configuration,
+    clip_of,
+    configuration_of,
+)
 from microorganism_computer_vision.configuration import Configuration
 from microorganism_computer_vision.media.folders import RUNS
 from microorganism_computer_vision.media.run_folder import source_key
 from microorganism_computer_vision.media.video import Clip, read_recording
-from microorganism_computer_vision.reporting.pictures.looks import probe_look
+from microorganism_computer_vision.reporting.pictures.looks import (
+    mask_preview,
+    probe_look,
+)
 
 DEFAULT_CLIP: Final = Clip(stop=100)
 CROP_MARGIN: Final = 25
@@ -106,3 +114,39 @@ def _scale_bars(video: Video, folder: Path) -> tuple[ScaleBarCandidate, ...]:
             ScaleBarCandidate(x=bar.x, y=bar.y, length=bar.length, crop=crop)
         )
     return tuple(candidates)
+
+
+class MaskReport(BaseModel):
+    preview: Path
+    ignored_share: float
+    next: str
+
+
+class MaskCommand:
+    name = "mask"
+    summary = "draw what a configuration's mask hides, to check it before a run"
+
+    def configure(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument(
+            "source", type=Path, help="a video, TIFF stack or image folder"
+        )
+        add_configuration(parser)
+
+    def execute(self, arguments: argparse.Namespace) -> MaskReport:
+        configuration = configuration_of(arguments)
+        video = read_recording(arguments.source, configuration.clip).video
+        mask = configuration.preprocessing.mask
+        ignored = ignored_region(video, mask)
+        folder = RUNS / source_key(arguments.source)
+        folder.mkdir(parents=True, exist_ok=True)
+        preview = folder / "mask.png"
+        cv2.imwrite(str(preview), mask_preview(np.median(video, axis=0), ignored, mask))
+        return MaskReport(
+            preview=preview,
+            ignored_share=float(ignored.mean()),
+            next=(
+                f"open {preview}: red is ignored. Mask an object the level missed"
+                " with --set 'preprocessing.mask.ignore=[{x=..., y=..., radius=...}]',"
+                " give back a cell with preprocessing.mask.keep"
+            ),
+        )
