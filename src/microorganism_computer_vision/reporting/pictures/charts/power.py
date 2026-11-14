@@ -34,6 +34,21 @@ MADE_FOR: Final = {
 NULL: Final = Behaviour.BROWNIAN
 """A cell that only diffuses: every test should stay silent on it."""
 
+IN_WORDS: Final = {
+    Behaviour.BROWNIAN: "only diffuses: false alarms",
+    Behaviour.STATIONARY: "does not move",
+    Behaviour.SWIMMER: "swims straight",
+    Behaviour.RUN_AND_TUMBLE: "runs, then turns sharply",
+    Behaviour.RUN_AND_REVERSE: "runs back and forth",
+    Behaviour.CIRCLING: "swims in circles",
+    Behaviour.CONFINED: "held in a cage",
+    Behaviour.SUBDIFFUSIVE: "spreads slower than diffusion",
+    Behaviour.WAITING: "diffuses with long pauses",
+    Behaviour.LEVY: "runs of any length",
+    Behaviour.BODY_FRAME: "a rod diffusing along its axis",
+}
+"""Each simulated behaviour as a reader says it, without the physicist's name."""
+
 SAYS_YES: Final = LinearSegmentedColormap.from_list("yes", ["#fcfcfb", "#2a78d6"])
 SHOWN: Final = (
     Hypothesis.ANOMALOUS,
@@ -58,7 +73,7 @@ def power(rates: RejectionRates, path: Path) -> Path:
         [rates.rates[behaviour].get(test, 0.0) for test in SHOWN]
         for behaviour in behaviours
     ])
-    figure, axes = plt.subplots(figsize=(9, 0.45 * len(behaviours) + 1.6))
+    figure, axes = plt.subplots(figsize=(10, 0.45 * len(behaviours) + 2.0))
     figure.patch.set_facecolor(SURFACE)
     axes.imshow(shares, cmap=SAYS_YES, vmin=0, vmax=1, aspect="auto")
     for row, behaviour in enumerate(behaviours):
@@ -80,25 +95,24 @@ def power(rates: RejectionRates, path: Path) -> Path:
     )
     axes.set_xticks(range(len(SHOWN)), [test.value for test in SHOWN], rotation=30)
     axes.set_yticks(
-        range(len(behaviours)),
-        [
-            f"{item.value} (false alarms)" if item is NULL else item.value
-            for item in behaviours
-        ],
+        range(len(behaviours)), [IN_WORDS.get(item, item.value) for item in behaviours]
     )
+    axes.set_ylabel("the simulated cell truly...", color=INK, fontsize=9)
+    axes.set_xlabel("the hypothesis tested", color=INK, fontsize=9, labelpad=8)
+    axes.xaxis.set_label_position("top")
     axes.tick_params(colors=MUTED_INK, labelsize=8, length=0)
     axes.xaxis.tick_top()
     for side in axes.spines.values():
         side.set_visible(False)
-    axes.set_title(
-        "How often each test says yes, on cells whose behaviour is known",
+    figure.suptitle(
+        "How often each test says yes, over 100 simulated tracks per row",
         color=INK,
-        fontsize=10,
-        loc="left",
-        pad=40,
+        fontsize=11,
+        x=0.02,
+        ha="left",
     )
     figure.tight_layout()
-    figure.savefig(path, dpi=110, facecolor=SURFACE)
+    figure.savefig(path, dpi=200, facecolor=SURFACE)
     plt.close(figure)
     return path
 
