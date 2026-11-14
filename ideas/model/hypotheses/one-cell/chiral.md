@@ -7,6 +7,8 @@
 | $H_0$ | [active swimmer](../../models.md#active) |
 | $H_1$ | [chiral swimmer](../../models.md#active) |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-chiral.png)
+
 ## The test
 
 The mean signed turn against zero, by a t-test.

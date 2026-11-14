@@ -7,6 +7,8 @@
 | $H_0$ | isotropic kicks |
 | $H_1$ | [body-frame Brownian](../../models.md#passive), or a swimmer moving along its axis |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-body-frame.png)
+
 ## The test
 
 Each one-frame step is projected on the body's long axis, measured from the
@@ -43,6 +45,9 @@ unstable.
   diffusing **[sketch]**.
 
 ## What it misses
+
+Noise pulls the ratio towards 1: a rod with $D_\parallel = 4 D_\perp$ is
+measured near 3.3. The study's ratios are underestimates.
 
 A swimmer rejects isotropy too: the test says *anisotropic*, the model
 selection says *passive or active*.

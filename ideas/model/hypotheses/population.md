@@ -3,6 +3,8 @@
 Questions about the set of a run's cells, not about one of them. Each departs
 from the [independence hypothesis](../population.md#the-independence-hypothesis).
 
+![the study's swimmers and diffusing cells: two kinds by speed and by alpha](../../../docs/figures/salmonella-distributions.png)
+
 | Hypothesis | Question | Status |
 | --- | --- | --- |
 | [Two kinds](#two-kinds) | are there two populations, by their speeds? | **[question]** |

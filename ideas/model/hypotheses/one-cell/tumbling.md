@@ -8,6 +8,8 @@ allows?
 | $H_0$ | [active swimmer](../../models.md#active), turns Gaussian |
 | $H_1$ | [run-and-tumble](../../models.md#active) |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-tumbling.png)
+
 ## The test
 
 The turns' robust spread (median absolute deviation) gives a Gaussian; the count

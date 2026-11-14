@@ -7,6 +7,8 @@
 | $H_0$ | [Brownian](../../models.md#passive), $\alpha = 1$ |
 | $H_1$ | a power law $t^\alpha$ |
 
+![four tracks under each model, and the test's statistic over a hundred](../../../../docs/figures/model/hypothesis-anomalous.png)
+
 ## The test
 
 A likelihood ratio between a straight line and a power law, both with a noise
