@@ -1,8 +1,25 @@
 # Roadmap
 
-**[sketch]** The ordered steps. A step is done when `just agent gate` passes
-and its acceptance sentence is true. The optimization steps run on the
-desktop, not the laptop: re-measure [baseline](baseline.md) there first.
+**[sketch]** The ordered steps.
+
+```mermaid
+graph LR
+    waste[remove the waste] --> end2end[end to end]
+    end2end --> truth[a truth]
+    truth --> surface[the agent's surface]
+    surface --> measured[calibration measured]
+    measured --> model[the model]
+    model --> tests[tests checked on a truth]
+    tests --> decor[the decor and the others]
+    classDef done fill:#1baf7a,stroke:#137f58,color:#ffffff
+    class waste,end2end,truth,surface,measured,model,tests done
+```
+
+Green is done; the decor and the others are under way.
+
+A step is done when `just agent gate` passes and its acceptance sentence is
+true. The optimization steps run on the desktop, not the laptop: re-measure
+[baseline](baseline.md) there first.
 
 ## How to resume
 
