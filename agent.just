@@ -99,3 +99,40 @@ docs:
 edit file old new:
     set -euo pipefail
     python3 -c 'import sys, pathlib; path, old, new = sys.argv[1:4]; text = pathlib.Path(path).read_text(); count = text.count(old); sys.exit(f"{path}: the anchor is absent, nothing replaced") if count == 0 else pathlib.Path(path).write_text(text.replace(old, new)); print(f"{path}: {count} replaced")' "$1" "$2" "$3"
+
+[group("self")]
+[doc("Stack a slow command for the background worker, 0 first: just agent::queue 5 uv run mcv run ...")]
+[script("bash")]
+queue priority +command:
+    set -euo pipefail
+    [[ $1 =~ ^[0-9]$ ]] || { echo "a priority from 0 to 9" >&2; exit 1; }
+    mkdir -p output/queue/pending
+    task="output/queue/pending/$1-$(date +%s%N).sh"
+    shift
+    printf '%q ' "$@" > "$task"
+    echo "$task"
+
+[group("self")]
+[doc("Run the stacked commands niced, highest priority first, until none is left")]
+[script("bash")]
+worker:
+    set -uo pipefail
+    mkdir -p output/queue/{pending,done,failed}
+    mkdir output/queue/lock 2>/dev/null || { echo "a worker already runs"; exit 0; }
+    trap 'rmdir output/queue/lock' EXIT
+    while task=$(ls output/queue/pending | sort | head -1) && [[ -n $task ]]; do
+        mv "output/queue/pending/$task" "output/queue/$task"
+        start=$(date +%s)
+        if nice -n 19 bash "output/queue/$task" > "output/queue/${task%.sh}.log" 2>&1; then status=done; else status=failed; fi
+        mv "output/queue/$task" "output/queue/$status/$task"
+        mv "output/queue/${task%.sh}.log" "output/queue/$status/"
+        printf '%s\t%s\t%ss\t%s\t%s\n' "$(date +%FT%T)" "$status" "$(($(date +%s) - start))" "$(cat "output/queue/$status/$task")" "$(tail -c 200 "output/queue/$status/${task%.sh}.log" | tr '\n\t' '  ')" >> output/queue/harvest.tsv
+    done
+
+[group("self")]
+[doc("What the background gathered: the pending count, then the last harvests")]
+[script("bash")]
+harvest count="10":
+    set -euo pipefail
+    echo "pending: $(ls output/queue/pending 2>/dev/null | wc -l), running: $(ls output/queue/*.sh 2>/dev/null | wc -l)"
+    tail -n "$1" output/queue/harvest.tsv 2>/dev/null || echo "nothing gathered yet"

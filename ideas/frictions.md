@@ -44,6 +44,7 @@ What slowed the agent while it worked, found in its own session.
 | Still cells absent from every count | a median background erases them | still cells found in the median |
 | Diagonal rods dropped | areas measured as bounding boxes | areas in pixels |
 | The same throwaway line typed again | no place for the agent's own tools | the `self` group of [agent.just](../agent.just) |
+| Films never made, for fear of waiting on them | one lane for every task | a [background queue](assisted-research.md): `just agent::queue`, `worker`, `harvest` |
 
 ## Open
 
@@ -52,5 +53,9 @@ What slowed the agent while it worked, found in its own session.
   the means: a hint in the summary, or a check of the run.
 - **[question]** Videos of one condition filmed in different places differ in
   more than the condition: a comparison needs fields alike, or many of them.
+- **[question]** The reader cannot annotate a document as they read it: mark
+  their progress, ask the agent to detail a passage, leave a note for
+  themselves outside the history, without interrupting the agent's work. Not
+  for this project: an editor extension one day.
 
 Back: [the map](README.md).

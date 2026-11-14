@@ -15,6 +15,8 @@ change of direction is in [vision.md](vision.md).
 
 ## Files
 
+- [assisted-research.md](assisted-research.md): research as a permanent process,
+  a foreground and a background queue
 - [frictions.md](frictions.md): what slowed the reader and the agent, and the
   tool each friction led to
 - [metaphilosophy.md](metaphilosophy.md): why the repository is built this way, an
