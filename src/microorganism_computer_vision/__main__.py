@@ -27,6 +27,7 @@ from microorganism_computer_vision.commands.truth import (
     BenchCommand,
     SearchCommand,
     SynthCommand,
+    ValidateCommand,
 )
 from microorganism_computer_vision.media.video import UsageError
 
@@ -47,6 +48,7 @@ COMMANDS: Final[tuple[Command, ...]] = (
     SynthCommand(),
     BenchCommand(),
     SearchCommand(),
+    ValidateCommand(),
     FetchCommand(),
 )
 

@@ -86,8 +86,9 @@ def _reversing_headings(
     frames: int, generator: np.random.Generator
 ) -> NDArray[np.float64]:
     """A reversal every ten frames, give or take one, as run-reverse swimmers do."""
-    period = REVERSAL_PERIOD + generator.integers(-1, 2, frames)
-    reversals = (np.arange(frames) % period) == 0
+    periods = REVERSAL_PERIOD + generator.integers(-1, 2, frames)
+    times = np.cumsum(periods)
+    reversals = np.isin(np.arange(frames), times[times < frames])
     drift = generator.normal(0, 0.05, frames)
     return generator.uniform(0, 2 * np.pi) + np.cumsum(
         np.where(reversals, np.pi, drift)

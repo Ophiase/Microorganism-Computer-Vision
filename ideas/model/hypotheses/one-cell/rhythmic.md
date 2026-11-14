@@ -4,21 +4,32 @@
 
 | | |
 | --- | --- |
-| $H_0$ | sharp turns at random times |
-| $H_1$ | [run-and-reverse](../../models.md#active) |
+| $H_0$ | sharp turns at random frames, a Bernoulli sequence |
+| $H_1$ | [run-and-reverse](../../models.md#active), turns that keep time |
 
 ## The test
 
-Today: the periodogram's peak of the turns' sizes against shuffled sizes.
+The frames that hold a turn sharper than ninety degrees, turns closer than
+two frames merged into one event. The statistic is the coefficient of
+variation of the intervals between events: small when they keep time. Its
+null distribution comes from shuffling which frames hold the turns, which
+keeps their number and destroys any rhythm.
+
+Not a variation of one: in discrete time, turns at random give geometric
+intervals, whose coefficient of variation is $\sqrt{1 - p}$, below one.
+Comparing with one would call Brownian cells rhythmic.
 
 ## Checked on a truth
 
-**[fact]** fails: 0 % power on run-and-reverse.
+**[fact]** 2026-11-14: 100 % power on run-and-reverse, 0 % false positives
+on the nine other behaviours.
 
 ## What it misses
 
-Each run's length varies, so the spectrum has no sharp peak. **[sketch]** Next:
-the intervals between sharp turns, more regular than a Poisson process allows
-(their coefficient of variation below one).
+- **[fact]** The first version failed for two reasons. The 2025 test took the
+  spectrum of signed headings, and a reversal turns by $\pm\pi$ at a random
+  sign. And the synthetic run-and-reverse had no rhythm: it drew a new period
+  at every frame. The test was right to find none.
+- A rhythm of tumbles that are not sharp, below ninety degrees, is not seen.
 
 Back: [one cell](README.md).
