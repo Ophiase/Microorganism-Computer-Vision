@@ -7,14 +7,18 @@ from pydantic import BaseModel, ValidationError
 
 from microorganism_computer_vision.commands.base import Command
 from microorganism_computer_vision.commands.inform import (
-    FetchCommand,
     GuideCommand,
     HistoryCommand,
+    InteractionsCommand,
     SchemaCommand,
-    SourcesCommand,
     StatsCommand,
 )
-from microorganism_computer_vision.commands.probe import MaskCommand, ProbeCommand
+from microorganism_computer_vision.commands.probe import (
+    FetchCommand,
+    MaskCommand,
+    ProbeCommand,
+    SourcesCommand,
+)
 from microorganism_computer_vision.commands.review import (
     CorrectCommand,
     GalleryCommand,
@@ -41,6 +45,7 @@ COMMANDS: Final[tuple[Command, ...]] = (
     SweepCommand(),
     HistoryCommand(),
     StatsCommand(),
+    InteractionsCommand(),
     SuspectsCommand(),
     MissesCommand(),
     InspectCommand(),
