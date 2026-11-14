@@ -7,12 +7,11 @@
 [![Kanon](https://img.shields.io/badge/%3C%3E-Kanon-black.svg)](.agents/kanon.md)
 
 > [!WARNING]
-> **A student project of February 2025, being turned into an agent's
-> toolkit.** The 2025 version was tuned by hand on one study's videos. Since
-> November 2026 Claude reworks it: the tools, the statistics and the
-> calibration of every video are the agent's work in progress, measured where
-> a truth exists and reviewed by eye where none does. Read the results as
-> work in progress, not as a published method.
+> **Work in progress, by an agent.** The tools, the statistics and the
+> calibration of every video are Claude's work since November 2026, measured
+> where a truth exists and reviewed by eye where none does. Read the results
+> as work in progress, not as a published method. It began as a student
+> project ([where it comes from](#where-it-comes-from)).
 
 > [!NOTE]
 > **Why it is built this way**: [the metaphilosophy](ideas/metaphilosophy.md).
@@ -53,9 +52,17 @@ test, the model says what a cell can be and do:
 
 ## [The hypotheses, tested](ideas/model/hypotheses/README.md)
 
-The 2025 project tested six hypotheses with fixed thresholds. They are now
-statistical tests, each with a null model, a p-value, and a correction for
-testing hundreds of tracks at once (Benjamini-Hochberg).
+A hypothesis asks one question of the tracks, at one of three scales:
+
+| Scale | Asks | Built |
+| --- | --- | --- |
+| [One cell](ideas/model/hypotheses/one-cell/README.md) | does it swim, turn sharply, circle one way, stay caged? | eight tests, `mcv run` |
+| [A population](ideas/model/population.md) | how many swim, and does the whole population turn one way? | shares and a chirality bias, `mcv stats` |
+| [The decor and the others](ideas/model/hypotheses/context.md) | are cells held or slowed near objects; do neighbours align? | held and slowed, `mcv interactions` |
+
+Each is a statistical test: a null model the cell would follow without the
+behaviour, a p-value, and a correction for testing hundreds of tracks at once.
+The tree below is the scale of one cell.
 
 ```mermaid
 graph LR
