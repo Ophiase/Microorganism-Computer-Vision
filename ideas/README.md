@@ -15,6 +15,8 @@ change of direction is in [vision.md](vision.md).
 
 ## Files
 
+- [metaphilosophy.md](metaphilosophy.md): why the repository is built this way, an
+  agent keeping the method it is shown
 - [model/](model/README.md): what a trajectory is, the laws of motion, the
   hypotheses and their tests
 - [vision.md](vision.md): the change of direction, for whom

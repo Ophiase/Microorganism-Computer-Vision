@@ -19,3 +19,8 @@ attention for it.
 A placeholder that stays empty is a decision deferred, visible to anyone who
 lists the recipes or reads the map. Work written bottom-up is invisible until
 it is finished, and lost if it is not.
+
+[doc-shape](../checks/doc-shape.sh) holds the documents of `ideas/` and
+`docs/` to it on every commit: one that nothing links is refused; one long
+without a picture, dense with sections, or naming concepts in plain text is
+noted, for the agent to judge.

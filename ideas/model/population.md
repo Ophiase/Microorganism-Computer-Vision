@@ -37,10 +37,10 @@ Every population question is a departure from it:
 
 | Departure | Question | Example |
 | --- | --- | --- |
-| Heterogeneity | does one law fit every cell of a kind? | diffusion coefficients spread wider than noise allows |
-| Mixture | how many kinds, in what shares? | motile and non-motile, by their speeds |
-| The decor | does the law change near objects? | trapped, slowed, steered along an edge |
-| The others | does a cell react to its neighbours? | alignment, avoidance, chasing |
+| [Heterogeneity](hypotheses/population.md#heterogeneous) | does one law fit every cell of a kind? | diffusion coefficients spread wider than noise allows |
+| [Mixture](hypotheses/population.md#two-kinds) | how many kinds, in what shares? | motile and non-motile, by their speeds |
+| [The decor](hypotheses/context.md#trapped) | does the law change near objects? | trapped, slowed, steered along an edge |
+| [The others](hypotheses/context.md#aligned) | does a cell react to its neighbours? | alignment, avoidance, chasing |
 
 ## Surrogates: the null of an interaction
 

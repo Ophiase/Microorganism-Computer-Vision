@@ -14,6 +14,12 @@
 > a truth exists and reviewed by eye where none does. Read the results as
 > work in progress, not as a published method.
 
+> [!NOTE]
+> **Why it is built this way**: [the metaphilosophy](ideas/metaphilosophy.md).
+> Some of what makes research work is not in a model's weights; an agent can
+> craft it for itself as small explicit tools, and the author's part is to
+> watch for the patterns that hold it back.
+
 **Statistical tests of how microorganisms move, read from raw microscope
 video.** Each cell is tracked, then its trajectory is tested against
 hypotheses of behaviour: does it diffuse, swim, tumble, circle, turn one way,
@@ -148,6 +154,14 @@ just extract                 # the nine videos of the 2025 study, into data/
 uv run mcv guide             # the method, for you or your agent
 uv run mcv probe data/342843.avi
 ```
+
+## Contributors
+
+- **Phorcys** ([Ophiase](https://github.com/Ophiase)): author.
+- **Claude**: the agent, a gifted disciple whose intelligence is channelled so
+  that flowers grow.
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ## Where it comes from
 

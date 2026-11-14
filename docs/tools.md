@@ -16,12 +16,12 @@ graph LR
 
 | Verb | Tools |
 | --- | --- |
-| See | [probe](#probe), [run](#run), [inspect](#inspect), [gallery](#gallery) |
-| Tune | [sweep](#sweep), [mask](#mask) |
-| Find what is wrong | [suspects](#suspects), [misses](#misses) |
-| Correct | [correct](#correct) |
-| Check on a truth | [synth](#synth), [bench](#bench), [search](#search), [validate](#validate) |
-| Conclude | [stats](#stats), [history](#history) |
+| [See](#see) | [probe](#probe), [run](#run), [inspect](#inspect), [gallery](#gallery) |
+| [Tune](#tune) | [sweep](#sweep), [mask](#mask) |
+| [Find what is wrong](#find-what-is-wrong) | [suspects](#suspects), [misses](#misses) |
+| [Correct](#correct) | [correct](#correct) |
+| [Check on a truth](#check-on-a-truth) | [synth](#synth), [bench](#bench), [search](#search), [validate](#validate) |
+| [Conclude](#conclude) | [stats](#stats), [history](#history) |
 
 ## See
 
