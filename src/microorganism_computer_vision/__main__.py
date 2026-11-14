@@ -29,12 +29,12 @@ from microorganism_computer_vision.commands.review import (
     SuspectsCommand,
 )
 from microorganism_computer_vision.commands.run import RunCommand, SweepCommand
-from microorganism_computer_vision.commands.truth import (
+from microorganism_computer_vision.commands.truth.scenes import (
     BenchCommand,
     SearchCommand,
     SynthCommand,
-    ValidateCommand,
 )
+from microorganism_computer_vision.commands.truth.validate import ValidateCommand
 from microorganism_computer_vision.media.video import UsageError
 
 COMMANDS: Final[tuple[Command, ...]] = (

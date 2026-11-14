@@ -59,5 +59,25 @@ the untreated ones.
 - **[caution]** 6 s of 3 min are read; the toolkit holds a whole video in
   memory, and these are 23 GB as floats. **[question]** Reading in windows, or
   at a lower resolution, is the planned fix.
-- The *E. coli* videos of the same record (85 to 130 MB) are catalogued and
-  not yet run.
+
+## The *E. coli* videos
+
+**[fact]** 2026-11-14, by the agent. The record holds three *E. coli* videos,
+all under a drug and none untreated, so no drug can be compared to its
+absence. Each capillary is traced by hand
+([configurations](configurations/)), 150 frames read.
+
+| Condition | Classified | Motile share | Swimmers' median speed |
+| --- | ---: | ---: | ---: |
+| Gentamicin 0.5 | 400 | 50 % | 13 px/s |
+| Gentamicin 4 | 255 | 53 % | 13 px/s |
+| Ceftazidime 32 | 235 or 132 | — | 79 or 26 px/s |
+
+- **Under gentamicin, the two doses look alike**: half the cells swim, at the
+  same speed.
+- **[caution]** Under ceftazidime 32 the cells crowd into one corner, a
+  thousand of them within reach of each other: the tracker swaps their
+  identities. An assignment distance of 15 px gives 79 px/s, one of 6 px
+  gives 26 px/s. A result that moves with a tracking parameter this much is
+  not a result. **[question]** A crowd needs a tracker that weighs the
+  shapes, not only the distances.

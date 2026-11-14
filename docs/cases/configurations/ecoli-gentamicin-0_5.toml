@@ -1,0 +1,57 @@
+reason = "EC-Gentamicin-0_5: E. coli as dark dots of 4 x 3 px in the middle capillary, contrast 0.05; the capillaries above and below and the dark top right corner masked by hand; no scale bar, so pixels"
+
+[acquisition]
+
+[preprocessing]
+background = "temporal-median"
+polarity = "dark"
+window_low = 0.45
+window_high = 0.5
+gain = 1.0
+smoothing = 3
+even_exposure = true
+
+[preprocessing.mask]
+margin = 6
+ignore = []
+keep = []
+inside = []
+
+[[preprocessing.mask.ignore_regions]]
+points = [[0.0, 0.0], [973.0, 0.0], [0.0, 356.0]]
+
+[[preprocessing.mask.ignore_regions]]
+points = [[0.0, 906.0], [1280.0, 445.0], [1280.0, 1024.0], [0.0, 1024.0]]
+
+[[preprocessing.mask.ignore_regions]]
+points = [[1190.0, 0.0], [1280.0, 0.0], [1280.0, 310.0]]
+
+[detection]
+method = "fixed"
+threshold = 0.5
+opening = 0
+area = "pixels"
+min_area = 3
+max_area = 40
+min_elongation = 1.0
+static_cells = false
+
+[tracking]
+max_assignment_distance = 15.0
+max_missed_frames = 3
+max_velocity = 50.0
+process_noise = 1e-05
+measurement_noise = 1e-05
+
+[classification]
+min_track_length = 20
+lag_fraction = 0.33
+min_lags = 5
+circular_turns = 0.5
+circular_significance = 0.999
+min_step = 0.5
+turning_stride = 3
+
+[clip]
+start = 0
+stop = 150
