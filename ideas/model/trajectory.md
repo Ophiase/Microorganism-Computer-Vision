@@ -18,9 +18,9 @@ graph LR
 
 | Level | State at time $t$ | Space | For |
 | --- | --- | --- | --- |
-| Point | position $x(t)$ | $\mathbb{R}^2$ | any cell, the coarsest view |
-| Oriented point | $x(t)$ and body axis $\theta(t)$ | $\mathbb{R}^2 \times S^1$ | rods, swimmers |
-| Skeleton | $N$ points $p_1 \dots p_N$, $\lvert p_{i+1} - p_i \rvert = \ell$ | $(\mathbb{R}^2)^N$ under $N-1$ constraints | worms, filaments, long bacteria |
+| [Point](representation.md#point-and-oriented-point) | position $x(t)$ | $\mathbb{R}^2$ | any cell, the coarsest view |
+| [Oriented point](representation.md#point-and-oriented-point) | $x(t)$ and body axis $\theta(t)$ | $\mathbb{R}^2 \times S^1$ | rods, swimmers |
+| [Skeleton](representation.md#skeletons) | $N$ points $p_1 \dots p_N$, $\lvert p_{i+1} - p_i \rvert = \ell$ | $(\mathbb{R}^2)^N$ under $N-1$ constraints | worms, filaments, long bacteria |
 
 - **The axis is not the velocity.** $\theta$ is where the body points; the
   velocity $\dot x$ may point elsewhere: a tumbling cell, a rod pushed by

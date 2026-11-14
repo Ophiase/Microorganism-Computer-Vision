@@ -17,6 +17,8 @@ class Hypothesis(StrEnum):
     PERIODIC = "periodic"
     CONFINED = "confined"
     BODY_FRAME = "body-frame"
+    TRAPPED = "trapped"
+    SLOWED = "slowed"
 
     @property
     def null(self) -> str:
@@ -39,6 +41,14 @@ NULLS: dict[Hypothesis, str] = {
     Hypothesis.BODY_FRAME: (
         "kicks of equal size along and across the body (F-test on the mean"
         " squares of the steps projected on its axis)"
+    ),
+    Hypothesis.TRAPPED: (
+        "the decor does not hold the cells: as many observations near objects as"
+        " when the tracks are moved at random (surrogates)"
+    ),
+    Hypothesis.SLOWED: (
+        "speed does not depend on the distance to objects: the same slope as the"
+        " moved tracks' (surrogates)"
     ),
     Hypothesis.CONFINED: (
         "the MSD keeps growing: a saturating law is not preferred over a linear"

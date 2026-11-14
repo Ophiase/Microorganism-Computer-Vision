@@ -17,7 +17,9 @@ from microorganism_computer_vision.media.tables import (
 )
 from microorganism_computer_vision.reporting.markdown import report
 from microorganism_computer_vision.reporting.pictures.animation import animate
-from microorganism_computer_vision.reporting.pictures.figures import distributions
+from microorganism_computer_vision.reporting.pictures.charts.distributions import (
+    distributions,
+)
 from microorganism_computer_vision.reporting.pictures.looks import Zoom, look
 from microorganism_computer_vision.reporting.pictures.map import trajectory_map
 from microorganism_computer_vision.reporting.summary import RunSummary

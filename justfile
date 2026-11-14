@@ -67,7 +67,7 @@ check: lint types test rumdl
 [script("bash")]
 guards:
     status=0
-    for check in markdown french comment-slop hardcoded-url portable config-format yaml-extension file-length folder-size version; do
+    for check in markdown doc-shape french comment-slop hardcoded-url portable config-format yaml-extension file-length folder-size version; do
         just _guard "$check" || status=1
     done
     exit $status
