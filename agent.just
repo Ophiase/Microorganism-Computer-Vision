@@ -113,7 +113,7 @@ queue priority +command:
     echo "$task"
 
 [group("self")]
-[doc("Run the stacked commands niced, highest priority first, until none is left")]
+[doc("Run the stacked commands niced, highest first, each once the code is committed")]
 [script("bash")]
 worker:
     set -uo pipefail
@@ -121,6 +121,7 @@ worker:
     mkdir output/queue/lock 2>/dev/null || { echo "a worker already runs"; exit 0; }
     trap 'rmdir output/queue/lock' EXIT
     while task=$(ls output/queue/pending | sort | head -1) && [[ -n $task ]]; do
+        until git diff --quiet HEAD -- src libraries; do sleep 10; done
         mv "output/queue/pending/$task" "output/queue/$task"
         start=$(date +%s)
         if nice -n 19 bash "output/queue/$task" > "output/queue/${task%.sh}.log" 2>&1; then status=done; else status=failed; fi
