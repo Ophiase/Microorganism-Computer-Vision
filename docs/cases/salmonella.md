@@ -35,7 +35,7 @@ looks.
 
 Run 004 is a change of structure, not of a number: the exclusion of static
 objects did not exist, and was added to the library for this video
-(`preprocessing.exclude_static`). It is general: beads, host cells, debris
+(`preprocessing.mask.static`). It is general: beads, host cells, debris
 and burnt-in scale bars all qualify.
 
 | The 2025 configuration | The agent's |

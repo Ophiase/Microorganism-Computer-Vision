@@ -69,10 +69,17 @@ caught the diagonal rods: the area filter was the cause.
 
 ### mask
 
-**[question]** Not built yet. The large static objects (beads, host cells,
-debris, burnt-in text) are excluded today by a level on the median
-background, invisibly. A mask the agent can see, grow by hand and keep in
-the configuration would remove them from every test.
+Draws what a configuration ignores: the median frame, red where the mask
+hides it, the discs drawn by hand outlined and numbered.
+
+- **The mask** is part of the configuration, `preprocessing.mask`: a level
+  that hides large static objects automatically (beads, host cells, burnt-in
+  text), `ignore` discs the agent adds where the level missed, `keep` discs it
+  gives back.
+- **Everywhere**: the masked region holds no detection, no still cell, no
+  miss; the looks and the GIF show it darkened, seen but not looked at.
+- On the study's video, two discs on the host cells removed the still "rods"
+  their inner texture had made.
 
 ## Find what is wrong
 

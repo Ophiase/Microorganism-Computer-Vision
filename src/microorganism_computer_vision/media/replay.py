@@ -45,7 +45,9 @@ class Replay:
             ],
             corrections,
         )
-        result = PipelineResult(raw.foreground, raw.detections, tracks, verdicts)
+        result = PipelineResult(
+            raw.foreground, raw.detections, tracks, verdicts, raw.ignored
+        )
         scale = Scale.from_acquisition(configuration.acquisition, recording.frame_rate)
         return cls(folder, configuration, recording.video, result, scale)
 

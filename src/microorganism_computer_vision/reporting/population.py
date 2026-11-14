@@ -4,7 +4,7 @@ from typing import Final, Self
 import numpy as np
 from motility.diffusion import Motion
 from motility.diffusion.behaviour import Behaviour, behaviour, distance_to_objects
-from motility.vision.preprocessing import static_objects
+from motility.vision.regions.mask import static_objects
 from pydantic import BaseModel, Field
 from scipy.stats import binomtest
 
@@ -102,9 +102,9 @@ class Population(BaseModel):
 
 def _objects(replay: Replay) -> np.ndarray | None:
     preprocessing = replay.configuration.preprocessing
-    if preprocessing.exclude_static is None:
+    if preprocessing.mask.static is None:
         return None
-    return static_objects(replay.video, preprocessing.exclude_static, 0)
+    return static_objects(replay.video, preprocessing.mask.static, 0)
 
 
 def _rate(behaviours: Sequence[Behaviour], seconds_per_frame: float) -> float | None:
