@@ -3,7 +3,8 @@
 A cell's law may depend on where it is and on who is near. Every test here
 compares the real tracks with [surrogates](../population.md#surrogates-the-null-of-an-interaction):
 the same tracks shifted or moved, which keep each cell's law and break the
-relation under test. **[question]** None is built yet.
+relation under test. **[fact]** 2026-11-14: [trapped](#trapped) and
+[slowed](#slowed) are built, `mcv interactions`; the others are not.
 
 | Hypothesis | Question | Statistic |
 | --- | --- | --- |
@@ -17,6 +18,26 @@ relation under test. **[question]** None is built yet.
 The laws behind them are drawn in [interactions](../interactions.md).
 
 ## Trapped
+
+**[fact]** Checked on a truth: swimmers among obstacles, following their edges
+or bouncing off them; 100 % power, no false positive. The first surrogates
+were forbidden to cross an object and kept far from them: they called mere
+bouncing a trap 40 % of the time. They may cross now, and only the positions
+outside the objects count.
+
+**[fact]** 2026-11-14, five videos of the study, radius 10 px:
+
+| Video | Swimmers near objects | Surrogates | p | Non-motile near objects | p |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 342843, beads | 0.11 | 0.13 | 0.85 | 0.12 | 0.49 |
+| 342737 | 0.08 | 0.07 | 0.29 | 0.03 | 0.92 |
+| 342517, host cells | 0.13 | 0.13 | 0.47 | 0.14 | 0.37 |
+| 342580, host cells | **0.54** | 0.33 | **0.005** | **0.60** | **0.005** |
+| 342910, host cells | 0.02 | 0.04 | 0.74 | 0.05 | 0.28 |
+
+**[caution]** Only 342580 rejects, and for swimmers and non-motile cells
+alike: adhesion of every cell to the host cells, or fragments of the hosts'
+halos counted as cells. Not believed before a gallery of those tracks.
 
 Swimmers near a surface turn in circles and stay; the study's paper links
 this near-surface swimming to the sites where Salmonella invades host cells
